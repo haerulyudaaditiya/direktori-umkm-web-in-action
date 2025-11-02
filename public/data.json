@@ -1,0 +1,104 @@
+[
+  {
+    "id": 1,
+    "nama": "Warteg Barokah Jaya",
+    "slug": "warteg-barokah-jaya",
+    "kategori": "Makanan Berat",
+    "alamat": "Jl. Keadilan No. 12, Samping Gerbang Kampus",
+    "cerita": "Tempat andalan akhir bulan. Nasi, 2 sayur, dan tempe orek cuma 10rb. Ibu Ani-nya baik banget, kadang nasinya suka ditambahin. Wajib coba ayam baladonya!",
+    "foto": [
+      "https://images.unsplash.com/photo-1643886024293-b5d3d6bf92b2?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1325",
+      "https://images.unsplash.com/photo-1709201761899-7b36ce377f86?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1440"
+    ],
+    "lokasi_map": "<iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.66646101919!2d106.82496407498993!3d-6.175392393806132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2547b856d91142!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1700000000000' width='600' height='450' style='border:0;' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>",
+    "jam_buka": "Senin - Sabtu: 08:00 - 20:00",
+    "rentang_harga": "$",
+    "rating": 4.8,
+    "tags": ["Murah Banget", "Terima QRIS", "Banyak Pilihan"]
+  },
+  {
+    "id": 2,
+    "nama": "Kopi Senja di Teras",
+    "slug": "kopi-senja-teras",
+    "kategori": "Tempat Nongkrong",
+    "alamat": "Jl. Perjuangan No. 45, Seberang Gedung Rektorat",
+    "cerita": "Tempat nugas favorit. Kopi susu aren-nya pas, wifinya kenceng banget. Paling enak duduk di area outdoor pas sore-sore.",
+    "foto": [
+      "https://www.shutterstock.com/shutterstock/photos/2484334315/display_1500/stock-photo-ciputat-indonesia-june-view-of-a-simple-coffee-shop-during-the-day-with-a-mural-writing-2484334315.jpg",
+      "https://www.shutterstock.com/shutterstock/photos/1643922322/display_1500/stock-photo-wonosobo-central-java-indonesia-february-coffee-shop-with-simple-wooden-ornaments-1643922322.jpg"
+    ],
+    "lokasi_map": "<iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.66646101919!2d106.82496407498993!3d-6.175392393806132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2547b856d91142!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1700000000000' width='600' height='450' style='border:0;' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>",
+    "jam_buka": "Setiap Hari: 09:00 - 23:00",
+    "rentang_harga": "$$",
+    "rating": 4.5,
+    "tags": ["Ada WiFi", "Colokan Banyak", "Cozy", "Outdoor"]
+  },
+  {
+    "id": 3,
+    "nama": "Berkah Laundry Express",
+    "slug": "berkah-laundry-express",
+    "kategori": "Jasa",
+    "alamat": "Gg. Mawar No. 3, Belakang Kosan Pelangi",
+    "cerita": "Satu-satunya laundry yang bisa selesai 6 jam. Penyelamat di kala butuh baju cepet buat presentasi. Wanginya tahan lama.",
+    "foto": [
+      "https://images.unsplash.com/photo-1626785775672-b21f32d398e0?q=80&w=1974",
+      "https://images.unsplash.com/photo-1601062325375-37f0b5711202?q=80&w=1974"
+    ],
+    "lokasi_map": "<iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.66646101919!2d106.82496407498993!3d-6.175392393806132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2547b856d91142!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1700000000000' width='600' height='450' style='border:0;' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>",
+    "jam_buka": "Setiap Hari: 08:00 - 20:00",
+    "rentang_harga": "$",
+    "rating": 4.8,
+    "tags": ["Cepat Selesai", "Wangi", "Murah Banget"]
+  },
+  {
+    "id": 4,
+    "nama": "Seblak Prasmanan Teh Euis",
+    "slug": "seblak-teh-euis",
+    "kategori": "Cemilan",
+    "alamat": "Jl. Kenangan No. 10, Samping Indomaret",
+    "cerita": "Surganya pecinta seblak. Bisa ambil topping sendiri sepuasnya. Level pedesnya ada 1 sampai 5, level 3 aja udah nampol banget.",
+    "foto": [
+      "https://images.unsplash.com/photo-1628131349547-817d5830e6a3?q=80&w=1974",
+      "https://images.unsplash.com/photo-1628131349594-e81099f66c28?q=80&w=1974"
+    ],
+    "lokasi_map": "<iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.66646101919!2d106.82496407498993!3d-6.175392393806132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2547b856d91142!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1700000000000' width='600' height='450' style='border:0;' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>",
+    "jam_buka": "Setiap Hari: 11:00 - 22:00",
+    "rentang_harga": "$",
+    "rating": 4.6,
+    "tags": ["Pedas", "Prasmanan", "Murah Banget", "Banyak Pilihan"]
+  },
+  {
+    "id": 5,
+    "nama": "Print & Jilid 'Kilat'",
+    "slug": "print-kilat",
+    "kategori": "Jasa",
+    "alamat": "Jl. Pendidikan No. 77",
+    "cerita": "Penyelamat SKS (Sistem Kebut Semalam). Mau jilid skripsi jam 2 pagi juga dilayanin. Buka 24 jam non-stop.",
+    "foto": [
+      "https://images.unsplash.com/photo-1544328509-c3b28f8f8f01?q=80&w=1974",
+      "https://images.unsplash.com/photo-1510524413204-067f13f1d8c1?q=80&w=1974"
+    ],
+    "lokasi_map": "<iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.66646101919!2d106.82496407498993!3d-6.175392393806132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2547b856d91142!2sMonumen%2S%20Nasional!5e0!3m2!1sid!2sid!4v1700000000000' width='600' height='450' style='border:0;' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>",
+    "jam_buka": "Setiap Hari: Buka 24 Jam",
+    "rentang_harga": "$",
+    "rating": 4.9,
+    "tags": ["Buka 24 Jam", "Cepat Selesai", "Murah Banget"]
+  },
+  {
+    "id": 6,
+    "nama": "Nasi Padang 'Sederhana'",
+    "slug": "padang-sederhana",
+    "kategori": "Makanan Berat",
+    "alamat": "Jl. Raya Kampus No. 101",
+    "cerita": "Rendangnya juara. Kalau minta kuah dibanyakin, gratis. Pilihan lauknya paling komplit dan rasanya otentik.",
+    "foto": [
+      "https://images.unsplash.com/photo-1572642480826-6d0c6ab84f49?q=80&w=1974",
+      "https://images.unsplash.com/photo-1563240212-054f763366c2?q=80&w=1974"
+    ],
+    "lokasi_map": "<iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.66646101919!2d106.82496407498993!3d-6.175392393806132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2547b856d91142!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1700000000000' width='600' height='450' style='border:0;' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>",
+    "jam_buka": "Setiap Hari: 09:00 - 21:00",
+    "rentang_harga": "$$",
+    "rating": 4.7,
+    "tags": ["Banyak Pilihan", "Rendang Enak", "Terima QRIS"]
+  }
+]
