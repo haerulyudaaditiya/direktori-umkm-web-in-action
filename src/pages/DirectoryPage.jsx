@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton" 
-
+import { Link, useSearchParams } from "react-router-dom"; 
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,10 +19,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-function HomePage() {
+function DirectoryPage() {
+  const [searchParams] = useSearchParams();
+  const initialSearchTerm = searchParams.get("search") || "";
+
   const [umkmList, setUmkmList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [selectedTags, setSelectedTags] = useState([]);
 
@@ -93,8 +97,8 @@ function HomePage() {
 
           <Card className="mb-8 p-4 md:p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <Skeleton className="h-10 md:col-span-2" /> 
-              <Skeleton className="h-10" /> 
+              <Skeleton className="h-10 md:col-span-2" />
+              <Skeleton className="h-10" />
             </div>
             <div className="border-t border-border pt-4">
               <Skeleton className="h-4 w-1/4 mb-3" />
@@ -133,18 +137,16 @@ function HomePage() {
     );
   }
 
+  // --- PERBAIKAN 3: Menghapus {" "} yang tidak perlu ---
   return (
     <div className="bg-background text-foreground min-h-screen">
-      {" "}
       <div className="container mx-auto p-4 md:p-8">
         <h1 className="text-4xl font-bold mb-2">Kantong Aman</h1>
         <p className="text-xl text-muted-foreground mb-8">
-          {" "}
           Direktori Sobat Mahasiswa
         </p>
 
         <Card className="mb-8 p-4 md:p-6">
-          {" "}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <Input
               type="text"
@@ -171,9 +173,7 @@ function HomePage() {
             </Select>
           </div>
           <div className="border-t border-border pt-4">
-            {" "}
             <h3 className="text-sm font-semibold text-muted-foreground mb-3">
-              {" "}
               Filter Cepat:
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -199,12 +199,10 @@ function HomePage() {
             {filteredUMKM.map((umkm) => (
               <Link to={`/umkm/${umkm.slug}`} key={umkm.id} className="flex">
                 <Card className="w-full flex flex-col hover:border-primary transition-colors duration-200">
-                  {" "}
                   <CardHeader>
                     <CardTitle className="text-2xl">{umkm.nama}</CardTitle>
                     <CardDescription>
                       <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-                        {" "}
                         {umkm.kategori}
                       </span>
                     </CardDescription>
@@ -223,15 +221,11 @@ function HomePage() {
                   </CardContent>
                   <CardFooter>
                     <div className="flex flex-wrap gap-2">
-                      {umkm.tags.slice(0, 3).map(
-                        (
-                          tag 
-                        ) => (
-                          <Badge key={tag} variant="secondary">
-                            {tag}
-                          </Badge>
-                        )
-                      )}
+                      {umkm.tags.slice(0, 3).map((tag) => (
+                        <Badge key={tag} variant="secondary">
+                          {tag}
+                        </Badge>
+                      ))}
                     </div>
                   </CardFooter>
                 </Card>
@@ -251,4 +245,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default DirectoryPage;

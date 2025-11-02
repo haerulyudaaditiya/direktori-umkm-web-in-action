@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -8,10 +7,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button"; 
-import { Skeleton } from "@/components/ui/skeleton"; 
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function DetailPage() {
   const { slug } = useParams();
@@ -19,19 +18,15 @@ function DetailPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/data.json")
+    fetch('/data.json')
       .then((response) => response.json())
       .then((data) => {
         const foundUmkm = data.find((item) => item.slug === slug);
-
-        // Sedikit delay 300ms untuk simulasi & melihat skeleton
-        setTimeout(() => {
-          setUmkm(foundUmkm);
-          setIsLoading(false);
-        }, 300);
+        setUmkm(foundUmkm);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Gagal mengambil data:", error);
+        console.error('Gagal mengambil data:', error);
         setIsLoading(false);
       });
   }, [slug]);
@@ -79,8 +74,7 @@ function DetailPage() {
             Maaf, kami tidak bisa menemukan data untuk "{slug}".
           </CardDescription>
           <Button asChild>
-            {" "}
-            <Link to="/">Kembali ke Halaman Utama</Link>
+            <Link to="/direktori">Kembali ke Direktori</Link>
           </Button>
         </Card>
       </div>
@@ -91,7 +85,7 @@ function DetailPage() {
     <div className="bg-background text-foreground min-h-screen">
       <div className="container mx-auto max-w-4xl p-4 md:p-8">
         <Button asChild variant="outline" className="mb-6">
-          <Link to="/">&larr; Kembali ke Daftar</Link>
+          <Link to="/direktori">&larr; Kembali ke Direktori</Link>
         </Button>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -156,7 +150,6 @@ function DetailPage() {
             <CardContent>
               <p className="text-sm font-semibold mb-1">Jam Buka:</p>
               <p className="text-muted-foreground mb-4">{umkm.jam_buka}</p>
-
               <p className="text-sm font-semibold mb-2">Peta Lokasi:</p>
               <div
                 className="w-full h-64 rounded-lg overflow-hidden border"

@@ -56,6 +56,11 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%
   }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }
 
 @layer base {

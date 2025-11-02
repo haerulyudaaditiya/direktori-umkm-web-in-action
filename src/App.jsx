@@ -1,14 +1,14 @@
-// Cek file: src/App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import LandingPage from "./pages/LandingPage";
+import DirectoryPage from "./pages/DirectoryPage";
 import DetailPage from "./pages/DetailPage";
 
 function App() {
-  // Isinya HANYA ini. Tidak ada useState, useEffect, atau <div>
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/direktori" element={<DirectoryPage />} />
       <Route path="/umkm/:slug" element={<DetailPage />} />
     </Routes>
   );
