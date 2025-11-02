@@ -1,15 +1,14 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom'; // <-- HAPUS IMPORT INI
-import AnimatedOutlet from './AnimatedOutlet'; // <-- 1. IMPORT INI
-import Navbar from './Navbar';
-import Footer from './Footer';
+import AnimatedOutlet from './AnimatedOutlet.jsx';
+import Navbar from './Navbar.jsx';
+import Footer from './Footer.jsx';
 
 function SharedLayout() {
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="flex flex-col min-h-screen text-foreground">
       <Navbar />
-      <main className="flex-1">
-        <AnimatedOutlet /> {/* <-- 2. GANTI <Outlet /> DENGAN INI */}
+      <main className="flex-1 relative z-10">
+        <AnimatedOutlet />
       </main>
       <Footer />
     </div>
