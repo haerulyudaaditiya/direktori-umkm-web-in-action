@@ -15,36 +15,28 @@ function LandingPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  // Logika "Advance Search"
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchTerm.trim() === '') {
-      navigate('/direktori');
-    } else {
-      navigate(`/direktori?search=${searchTerm}`);
-    }
+    const query = searchTerm.trim();
+    navigate(query ? `/direktori?search=${query}` : '/direktori');
   };
 
   return (
-    // 'Fragment' <>...</> digunakan karena layout di-handle oleh SharedLayout
     <>
-      {/* BAGIAN 1: HERO SECTION */}
-      {/* Layout ini (flex-1) dirancang untuk 'pas' di dalam <main> dari SharedLayout,
-        mengisi sisa ruang vertikal antara Navbar dan Footer.
-      */}
-      <section className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-background to-slate-50 dark:from-background dark:to-slate-950">
-        <div className="container max-w-4xl py-20">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">
+      {/* Hero Section */}
+      <section className="flex flex-col items-center justify-center min-h-[70vh] text-center bg-gradient-to-b from-background to-slate-50 dark:from-background dark:to-slate-950">
+        <div className="container max-w-4xl py-20 px-6">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
             Temukan Jagoan UMKM Lokal.
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12">
-            Dari kopi tersembunyi, warteg legendaris, hingga laundry kilat. Kami
-            bantu kamu menemukan yang terbaik di sekitarmu.
+          <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10">
+            Dari kopi tersembunyi, warteg legendaris, hingga laundry kilat —
+            kami bantu kamu menemukan yang terbaik di sekitarmu.
           </p>
 
           <form
             onSubmit={handleSearchSubmit}
-            className="w-full max-w-lg mx-auto flex items-center space-x-2 mb-4"
+            className="flex items-center justify-center gap-2 max-w-lg mx-auto mb-4"
           >
             <Input
               type="text"
@@ -57,8 +49,9 @@ function LandingPage() {
               Cari
             </Button>
           </form>
+
           <p className="text-sm text-muted-foreground">
-            Atau,{' '}
+            Atau{' '}
             <Link
               to="/direktori"
               className="text-primary underline hover:opacity-80 font-medium"
@@ -70,46 +63,48 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* BAGIAN 2: FEATURES SECTION */}
+      {/* Features Section */}
       <section className="container mx-auto py-24 px-8">
         <h2 className="text-4xl font-bold text-center mb-12">
           Kenapa Pakai <span className="text-primary">Kantong Aman</span>?
         </h2>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card>
+          <Card className="hover:shadow-lg transition-all duration-300">
             <CardHeader>
               <Zap className="h-10 w-10 text-primary mb-4" />
               <CardTitle>Filter Cerdas</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                Bukan cuma kategori. Cari berdasarkan "Ada WiFi", "Colokan
-                Banyak", atau "Buka 24 Jam". Filter yang benar-benar kamu
-                butuhkan.
+                Cari berdasarkan kategori, WiFi, colokan, hingga jam buka.
+                Filter yang benar-benar kamu butuhkan.
               </CardDescription>
             </CardContent>
           </Card>
-          <Card>
+
+          <Card className="hover:shadow-lg transition-all duration-300">
             <CardHeader>
               <MapPin className="h-10 w-10 text-primary mb-4" />
               <CardTitle>Temukan Permata</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                Temukan "hidden gems" yang tidak ada di peta mainstream. Kami
-                kurasi khusus untuk Sobat Mahasiswa.
+                Jelajahi hidden gems yang belum masuk peta mainstream. Khusus
+                buat Sobat Mahasiswa.
               </CardDescription>
             </CardContent>
           </Card>
-          <Card>
+
+          <Card className="hover:shadow-lg transition-all duration-300">
             <CardHeader>
               <Heart className="h-10 w-10 text-primary mb-4" />
               <CardTitle>Dukung Lokal</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                Bantu usaha kecil di sekitarmu agar tetap bertahan dan
-                berkembang. Setiap kunjunganmu sangat berarti.
+                Bantu usaha kecil di sekitarmu agar tetap tumbuh dan berkembang.
+                Setiap kunjunganmu berarti banyak.
               </CardDescription>
             </CardContent>
           </Card>

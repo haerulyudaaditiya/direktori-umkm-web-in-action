@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom"; 
-import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -17,35 +17,35 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 
 function DirectoryPage() {
   const [searchParams] = useSearchParams();
-  const initialSearchTerm = searchParams.get("search") || "";
+  const initialSearchTerm = searchParams.get('search') || '';
 
   const [umkmList, setUmkmList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
-  const [selectedCategory, setSelectedCategory] = useState("Semua");
+  const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
-    fetch("/data.json")
+    fetch('/data.json')
       .then((response) => response.json())
       .then((data) => {
         setUmkmList(data);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Gagal mengambil data:", error);
+        console.error('Gagal mengambil data:', error);
         setIsLoading(false);
       });
   }, []);
 
   const { allCategories, allTags } = useMemo(() => {
-    const categories = new Set(["Semua"]);
+    const categories = new Set(['Semua']);
     const tags = new Set();
 
     umkmList.forEach((item) => {
@@ -76,7 +76,7 @@ function DirectoryPage() {
   const filteredUMKM = useMemo(() => {
     return umkmList.filter((umkm) => {
       const categoryMatch =
-        selectedCategory === "Semua" || umkm.kategori === selectedCategory;
+        selectedCategory === 'Semua' || umkm.kategori === selectedCategory;
       const searchMatch = umkm.nama
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
@@ -94,7 +94,6 @@ function DirectoryPage() {
         <div className="container mx-auto p-4 md:p-8">
           <Skeleton className="h-10 w-1/3 mb-2" />
           <Skeleton className="h-6 w-1/2 mb-8" />
-
           <Card className="mb-8 p-4 md:p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <Skeleton className="h-10 md:col-span-2" />
@@ -109,7 +108,6 @@ function DirectoryPage() {
               </div>
             </div>
           </Card>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, index) => (
               <Card key={index} className="w-full flex flex-col">
@@ -137,7 +135,6 @@ function DirectoryPage() {
     );
   }
 
-  // --- PERBAIKAN 3: Menghapus {" "} yang tidak perlu ---
   return (
     <div className="bg-background text-foreground min-h-screen">
       <div className="container mx-auto p-4 md:p-8">
@@ -155,7 +152,6 @@ function DirectoryPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
               value={searchTerm}
             />
-
             <Select
               onValueChange={handleCategoryChange}
               value={selectedCategory}
@@ -183,7 +179,7 @@ function DirectoryPage() {
                   <Badge
                     key={tag}
                     onClick={() => handleTagToggle(tag)}
-                    variant={isActive ? "default" : "outline"}
+                    variant={isActive ? 'default' : 'outline'}
                     className="cursor-pointer"
                   >
                     {tag}
@@ -198,7 +194,7 @@ function DirectoryPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredUMKM.map((umkm) => (
               <Link to={`/umkm/${umkm.slug}`} key={umkm.id} className="flex">
-                <Card className="w-full flex flex-col hover:border-primary transition-colors duration-200">
+                <Card className="w-full flex flex-col hover:border-primary transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1">
                   <CardHeader>
                     <CardTitle className="text-2xl">{umkm.nama}</CardTitle>
                     <CardDescription>
