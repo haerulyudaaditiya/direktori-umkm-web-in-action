@@ -1,14 +1,30 @@
-import React, { useState, useEffect, useMemo } from "react"; // Tambahkan useMemo
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton" 
+
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 function HomePage() {
   const [umkmList, setUmkmList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
-
-  // --- 1. STATE BARU ---
-  // Kita akan simpan tag yang dipilih dalam sebuah array
   const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
@@ -24,8 +40,6 @@ function HomePage() {
       });
   }, []);
 
-  // --- 2. LOGIKA BARU (Mengambil Kategori & Tag Unik) ---
-  // Kita gunakan 'useMemo' agar kalkulasi ini tidak diulang-ulang
   const { allCategories, allTags } = useMemo(() => {
     const categories = new Set(["Semua"]);
     const tags = new Set();
@@ -39,156 +53,198 @@ function HomePage() {
       allCategories: Array.from(categories),
       allTags: Array.from(tags),
     };
-  }, [umkmList]); // Hanya dijalankan ulang jika umkmList berubah
+  }, [umkmList]);
 
-  // --- 3. LOGIKA BARU (Fungsi Toggle Tag) ---
   const handleTagToggle = (tag) => {
     setSelectedTags((prevTags) => {
-      // Jika tag sudah ada di array, kita hapus (filter)
       if (prevTags.includes(tag)) {
         return prevTags.filter((t) => t !== tag);
-      }
-      // Jika tag belum ada, kita tambahkan
-      else {
+      } else {
         return [...prevTags, tag];
       }
     });
   };
 
-  // --- 4. LOGIKA BARU (Update Filter Utama) ---
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+  };
+
   const filteredUMKM = useMemo(() => {
     return umkmList.filter((umkm) => {
       const categoryMatch =
         selectedCategory === "Semua" || umkm.kategori === selectedCategory;
-
       const searchMatch = umkm.nama
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
-
-      // Cek apakah SEMUA tag yang dipilih ada di dalam 'umkm.tags'
       const tagMatch =
-        selectedTags.length === 0 || // Jika tidak ada tag dipilih, loloskan semua
-        selectedTags.every((tag) => umkm.tags.includes(tag)); // 'every' = 'semua'
+        selectedTags.length === 0 ||
+        selectedTags.every((tag) => umkm.tags.includes(tag));
 
       return categoryMatch && searchMatch && tagMatch;
     });
-  }, [umkmList, searchTerm, selectedCategory, selectedTags]); // Filter ini akan jalan ulang jika salah satu state ini berubah
+  }, [umkmList, searchTerm, selectedCategory, selectedTags]);
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center p-4 text-center">
-        <h1 className="text-2xl font-bold">Memuat data UMKM...</h1>
+      <div className="bg-background text-foreground min-h-screen">
+        <div className="container mx-auto p-4 md:p-8">
+          <Skeleton className="h-10 w-1/3 mb-2" />
+          <Skeleton className="h-6 w-1/2 mb-8" />
+
+          <Card className="mb-8 p-4 md:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <Skeleton className="h-10 md:col-span-2" /> 
+              <Skeleton className="h-10" /> 
+            </div>
+            <div className="border-t border-border pt-4">
+              <Skeleton className="h-4 w-1/4 mb-3" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-6 w-20 rounded-full" />
+                <Skeleton className="h-6 w-24 rounded-full" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+            </div>
+          </Card>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <Card key={index} className="w-full flex flex-col">
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/3" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-48 w-full mb-4" />
+                  <Skeleton className="h-4 w-full mb-1" />
+                  <Skeleton className="h-4 w-full mb-1" />
+                  <Skeleton className="h-4 w-2/3" />
+                </CardContent>
+                <CardFooter>
+                  <div className="flex flex-wrap gap-2">
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                    <Skeleton className="h-5 w-14 rounded-full" />
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    // Kita buat padding default untuk mobile (p-4)
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-background text-foreground min-h-screen">
+      {" "}
       <div className="container mx-auto p-4 md:p-8">
-        {" "}
-        {/* p-4 (mobile), md:p-8 (desktop) */}
         <h1 className="text-4xl font-bold mb-2">Kantong Aman</h1>
-        <p className="text-xl text-gray-600 mb-8">Direktori Sobat Mahasiswa</p>
-        {/* --- AREA INTERAKTIF --- */}
-        <div className="mb-8 p-4 md:p-6 bg-white rounded-lg shadow-md">
-          {/* Search & Kategori */}
-          {/* Di mobile (default): 1 kolom. Di desktop (md:): 3 kolom */}
+        <p className="text-xl text-muted-foreground mb-8">
+          {" "}
+          Direktori Sobat Mahasiswa
+        </p>
+
+        <Card className="mb-8 p-4 md:p-6">
+          {" "}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <input
+            <Input
               type="text"
-              placeholder="Cari nama warung..."
-              className="md:col-span-2 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Cari nama warung kopi atau warteg..."
+              className="md:col-span-2"
               onChange={(e) => setSearchTerm(e.target.value)}
               value={searchTerm}
             />
-            <select
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onChange={(e) => setSelectedCategory(e.target.value)}
+
+            <Select
+              onValueChange={handleCategoryChange}
               value={selectedCategory}
             >
-              {allCategories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih Kategori" />
+              </SelectTrigger>
+              <SelectContent>
+                {allCategories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-
-          {/* --- RENDER TOMBOL TAG (X-FACTOR!) --- */}
-          <div className="border-t border-gray-200 pt-4">
-            <h3 className="text-sm font-semibold text-gray-600 mb-2">
+          <div className="border-t border-border pt-4">
+            {" "}
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3">
+              {" "}
               Filter Cepat:
             </h3>
-            {/* 'flex-wrap' adalah kunci mobile-first. Tombol akan otomatis turun baris jika tidak muat */}
             <div className="flex flex-wrap gap-2">
               {allTags.map((tag) => {
                 const isActive = selectedTags.includes(tag);
                 return (
-                  <button
+                  <Badge
                     key={tag}
                     onClick={() => handleTagToggle(tag)}
-                    // Ganti style berdasarkan 'isActive'
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200
-                      ${
-                        isActive
-                          ? "bg-blue-600 text-white shadow-md"
-                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                      }
-                    `}
+                    variant={isActive ? "default" : "outline"}
+                    className="cursor-pointer"
                   >
                     {tag}
-                  </button>
+                  </Badge>
                 );
               })}
             </div>
           </div>
-        </div>
-        {/* --- Kumpulan Kartu UMKM --- */}
+        </Card>
+
         {filteredUMKM.length > 0 ? (
-          // Default: 1 kolom (mobile-first). md: 2 kolom. lg: 3 kolom.
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredUMKM.map((umkm) => (
-              <Link to={`/umkm/${umkm.slug}`} key={umkm.id}>
-                <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full">
-                  <div className="h-48 bg-gray-200">
-                    <img
-                      src={umkm.foto[0]}
-                      alt={umkm.nama}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <span className="text-sm font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
-                      {umkm.kategori}
-                    </span>
-                    <h2 className="text-2xl font-bold my-2">{umkm.nama}</h2>
-                    <p className="text-gray-700 mb-4 text-sm">
+              <Link to={`/umkm/${umkm.slug}`} key={umkm.id} className="flex">
+                <Card className="w-full flex flex-col hover:border-primary transition-colors duration-200">
+                  {" "}
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{umkm.nama}</CardTitle>
+                    <CardDescription>
+                      <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                        {" "}
+                        {umkm.kategori}
+                      </span>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <div className="h-48 bg-muted rounded-md overflow-hidden mb-4">
+                      <img
+                        src={umkm.foto[0]}
+                        alt={umkm.nama}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="text-muted-foreground text-sm">
                       {umkm.cerita.substring(0, 100)}...
                     </p>
+                  </CardContent>
+                  <CardFooter>
                     <div className="flex flex-wrap gap-2">
-                      {umkm.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs bg-gray-200 px-2 py-1 rounded"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                      {umkm.tags.slice(0, 3).map(
+                        (
+                          tag 
+                        ) => (
+                          <Badge key={tag} variant="secondary">
+                            {tag}
+                          </Badge>
+                        )
+                      )}
                     </div>
-                  </div>
-                </div>
+                  </CardFooter>
+                </Card>
               </Link>
             ))}
           </div>
         ) : (
-          // Empty State
-          <div className="text-center p-10 md:p-16 bg-white rounded-lg shadow-md">
+          <Card className="text-center p-10 md:p-16">
             <h2 className="text-2xl font-bold mb-2">Yah, tidak ditemukan</h2>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Coba ganti kata kunci pencarian atau filternya.
             </p>
-          </div>
+          </Card>
         )}
       </div>
     </div>
