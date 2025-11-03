@@ -167,8 +167,16 @@ const CheckoutPage = () => {
     dispatch({ type: 'START_ORDER', payload: order });
     dispatch({ type: 'CLEAR_CART' });
 
-    // Navigate ke confirmation
-    navigate(`/order-confirmation/${order.id}`);
+    navigate('/payment', {
+      state: {
+        orderData: {
+          customer: formData,
+          items: state.cart,
+          deliveryOption,
+          total: finalTotal,
+        },
+      },
+    });
   };
 
   const isFormValid = () => {

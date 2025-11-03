@@ -7,6 +7,7 @@ import DetailPage from './pages/DetailPage';
 import MenuPage from './pages/MenuPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderConfirmation from './pages/OrderConfirmation';
+import PaymentPage from './pages/PaymentPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="umkm/:slug" element={<DetailPage />} />
         <Route path="menu/:slug" element={<MenuPage />} />
         <Route path="checkout" element={<CheckoutPage />} />
+        <Route path="payment" element={<PaymentPage />} />
         <Route
           path="order-confirmation/:orderId"
           element={<OrderConfirmation />}
