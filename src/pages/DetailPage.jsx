@@ -18,6 +18,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import {
+  Utensils,
   MapPin,
   Clock,
   Star,
@@ -333,6 +334,22 @@ function DetailPage() {
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 </Button>
+
+                {/* Tombol Lihat Menu untuk UMKM yang punya menu */}
+                {umkm.menu && (
+                  <Button
+                    asChild
+                    className="w-full bg-amber-500 hover:bg-amber-600 h-12"
+                  >
+                    <Link
+                      to={`/menu/${umkm.slug}`}
+                      className="flex items-center gap-2"
+                    >
+                      <Utensils className="h-4 w-4" />
+                      Lihat Menu & Pesan
+                    </Link>
+                  </Button>
+                )}
 
                 <Button
                   variant="outline"

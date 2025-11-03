@@ -1,7 +1,9 @@
+// src/SharedLayout.jsx (update)
 import React from 'react';
 import AnimatedOutlet from './AnimatedOutlet.jsx';
 import Navbar from './Navbar.jsx';
 import Footer from './Footer.jsx';
+import FloatingCart from '../features/cart/FloatingCart.jsx';
 
 function SharedLayout() {
   return (
@@ -10,6 +12,7 @@ function SharedLayout() {
       <main className="flex-1 relative z-10">
         <AnimatedOutlet />
       </main>
+      <FloatingCart />
       <Footer />
     </div>
   );

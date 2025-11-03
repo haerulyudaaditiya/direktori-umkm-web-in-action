@@ -14,7 +14,59 @@
     "jam_buka": "Senin - Sabtu: 08:00 - 20:00",
     "rentang_harga": "$",
     "rating": 4.8,
-    "tags": ["Murah Banget", "Terima QRIS", "Banyak Pilihan"]
+    "tags": ["Murah Banget", "Terima QRIS", "Banyak Pilihan"],
+    "menu": [
+      {
+        "id": 1,
+        "nama": "Nasi + Ayam Balado + Tempe Orek",
+        "harga": 15000,
+        "kategori": "paket",
+        "gambar": "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=300&h=200&fit=crop",
+        "deskripsi": "Paket lengkap dengan nasi panas, ayam balado spesial, dan tempe orek renyah",
+        "rating": 4.9,
+        "waktuMasak": 10
+      },
+      {
+        "id": 2,
+        "nama": "Nasi + Ikan Goreng + Sayur Asem",
+        "harga": 12000,
+        "kategori": "paket",
+        "gambar": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop",
+        "deskripsi": "Ikan goreng crispy dengan sayur asem segar",
+        "rating": 4.7,
+        "waktuMasak": 8
+      },
+      {
+        "id": 3,
+        "nama": "Nasi + Rendang + Daun Singkong",
+        "harga": 18000,
+        "kategori": "paket",
+        "gambar": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&h=200&fit=crop",
+        "deskripsi": "Rendang empuk dengan daun singkong rebus",
+        "rating": 4.8,
+        "waktuMasak": 12
+      },
+      {
+        "id": 4,
+        "nama": "Es Teh Manis",
+        "harga": 3000,
+        "kategori": "minuman",
+        "gambar": "https://images.unsplash.com/photo-1597481499750-3e11b15f1c02?w=300&h=200&fit=crop",
+        "deskripsi": "Es teh manis segar dengan gula pasir",
+        "rating": 4.5,
+        "waktuMasak": 2
+      },
+      {
+        "id": 5,
+        "nama": "Jeruk Es",
+        "harga": 4000,
+        "kategori": "minuman",
+        "gambar": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&h=200&fit=crop",
+        "deskripsi": "Jeruk peras segar dengan es",
+        "rating": 4.6,
+        "waktuMasak": 3
+      }
+    ]
   },
   {
     "id": 2,
@@ -31,7 +83,59 @@
     "jam_buka": "Setiap Hari: 09:00 - 23:00",
     "rentang_harga": "$$",
     "rating": 4.5,
-    "tags": ["Ada WiFi", "Colokan Banyak", "Cozy", "Outdoor"]
+    "tags": ["Ada WiFi", "Colokan Banyak", "Cozy", "Outdoor"],
+    "menu": [
+      {
+        "id": 1,
+        "nama": "Es Kopi Susu Gula Aren",
+        "harga": 18000,
+        "kategori": "kopi",
+        "gambar": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=200&fit=crop",
+        "deskripsi": "Kopi robusta dengan susu segar dan gula aren asli",
+        "rating": 4.8,
+        "waktuMasak": 5
+      },
+      {
+        "id": 2,
+        "nama": "Americano Hot",
+        "harga": 15000,
+        "kategori": "kopi",
+        "gambar": "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
+        "deskripsi": "Kopi hitam americano untuk teman belajar",
+        "rating": 4.6,
+        "waktuMasak": 3
+      },
+      {
+        "id": 3,
+        "nama": "Latte Art",
+        "harga": 20000,
+        "kategori": "kopi",
+        "gambar": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=200&fit=crop",
+        "deskripsi": "Latte dengan art menarik dan rasa creamy",
+        "rating": 4.7,
+        "waktuMasak": 6
+      },
+      {
+        "id": 4,
+        "nama": "Croissant Almond",
+        "harga": 12000,
+        "kategori": "snack",
+        "gambar": "https://images.unsplash.com/photo-1555507036-ab794f27d2e9?w=300&h=200&fit=crop",
+        "deskripsi": "Croissant dengan filling almond yang gurih",
+        "rating": 4.7,
+        "waktuMasak": 2
+      },
+      {
+        "id": 5,
+        "nama": "Banana Bread",
+        "harga": 10000,
+        "kategori": "snack",
+        "gambar": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=300&h=200&fit=crop",
+        "deskripsi": "Pisang bakar dengan madu dan kayu manis",
+        "rating": 4.5,
+        "waktuMasak": 4
+      }
+    ]
   },
   {
     "id": 3,
@@ -65,7 +169,49 @@
     "jam_buka": "Setiap Hari: 11:00 - 22:00",
     "rentang_harga": "$",
     "rating": 4.6,
-    "tags": ["Pedas", "Prasmanan", "Murah Banget", "Banyak Pilihan"]
+    "tags": ["Pedas", "Prasmanan", "Murah Banget", "Banyak Pilihan"],
+    "menu": [
+      {
+        "id": 1,
+        "nama": "Seblak Kerupuk Original",
+        "harga": 8000,
+        "kategori": "seblak",
+        "gambar": "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=300&h=200&fit=crop",
+        "deskripsi": "Seblak kerupuk dengan kuah kental original",
+        "rating": 4.6,
+        "waktuMasak": 8
+      },
+      {
+        "id": 2,
+        "nama": "Seblak Komplit Level 3",
+        "harga": 15000,
+        "kategori": "seblak",
+        "gambar": "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&h=200&fit=crop",
+        "deskripsi": "Seblak dengan telur, sosis, bakso, dan level pedas 3",
+        "rating": 4.8,
+        "waktuMasak": 12
+      },
+      {
+        "id": 3,
+        "nama": "Seblak Ceker Level 5",
+        "harga": 12000,
+        "kategori": "seblak",
+        "gambar": "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=300&h=200&fit=crop",
+        "deskripsi": "Seblak ceker empuk dengan level pedas maksimal",
+        "rating": 4.9,
+        "waktuMasak": 15
+      },
+      {
+        "id": 4,
+        "nama": "Es Jeruk",
+        "harga": 5000,
+        "kategori": "minuman",
+        "gambar": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&h=200&fit=crop",
+        "deskripsi": "Es jeruk segar untuk teman seblak pedas",
+        "rating": 4.5,
+        "waktuMasak": 2
+      }
+    ]
   },
   {
     "id": 5,
@@ -99,6 +245,48 @@
     "jam_buka": "Setiap Hari: 09:00 - 21:00",
     "rentang_harga": "$$",
     "rating": 4.7,
-    "tags": ["Banyak Pilihan", "Rendang Enak", "Terima QRIS"]
+    "tags": ["Banyak Pilihan", "Rendang Enak", "Terima QRIS"],
+    "menu": [
+      {
+        "id": 1,
+        "nama": "Nasi Padang Paket Komplit",
+        "harga": 25000,
+        "kategori": "paket",
+        "gambar": "https://images.unsplash.com/photo-1559620192-032c4bc4674e?w=300&h=200&fit=crop",
+        "deskripsi": "Nasi dengan rendang, daun singkong, dan gulai nangka",
+        "rating": 4.8,
+        "waktuMasak": 10
+      },
+      {
+        "id": 2,
+        "nama": "Rendang Daging Spesial",
+        "harga": 20000,
+        "kategori": "lauk",
+        "gambar": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop",
+        "deskripsi": "Rendang daging sapi empuk dengan bumbu rempah",
+        "rating": 4.9,
+        "waktuMasak": 15
+      },
+      {
+        "id": 3,
+        "nama": "Gulai Kepala Ikan",
+        "harga": 18000,
+        "kategori": "lauk",
+        "gambar": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&h=200&fit=crop",
+        "deskripsi": "Gulai kepala ikan kakap dengan kuah santan",
+        "rating": 4.7,
+        "waktuMasak": 12
+      },
+      {
+        "id": 4,
+        "nama": "Es Teh Tarek",
+        "harga": 6000,
+        "kategori": "minuman",
+        "gambar": "https://images.unsplash.com/photo-1597481499750-3e11b15f1c02?w=300&h=200&fit=crop",
+        "deskripsi": "Es teh dengan gula aren dan susu",
+        "rating": 4.6,
+        "waktuMasak": 3
+      }
+    ]
   }
 ]
