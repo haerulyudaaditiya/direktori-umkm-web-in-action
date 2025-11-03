@@ -1,14 +1,20 @@
 // src/components/FloatingCart.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useOrder } from '@/contexts/OrderContext';
 import { Button } from '@/components/ui/button';
+import { Link, useLocation } from 'react-router-dom';
 
 const FloatingCart = () => {
   const { state, dispatch } = useOrder();
   const [isExpanded, setIsExpanded] = useState(false);
+  const location = useLocation();
+  
+  useEffect(() => {
+     setIsExpanded(false);
+  }, [location.pathname]);
 
   const totalPrice = state.cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -163,9 +169,13 @@ const FloatingCart = () => {
                       Rp {totalPrice.toLocaleString()}
                     </span>
                   </div>
-
-                  <Button className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-12 font-bold">
-                    Pesan Sekarang ({state.cartCount} items)
+                  <Button
+                    asChild
+                    className="w-full bg-green-500 hover:bg-green-600 h-12 font-bold"
+                  >
+                    <Link to="/checkout">
+                      Pesan Sekarang ({state.cartCount} items)
+                    </Link>
                   </Button>
                 </div>
               )}
