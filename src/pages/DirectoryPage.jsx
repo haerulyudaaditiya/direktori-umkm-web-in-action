@@ -178,7 +178,7 @@ function DirectoryPage() {
             <span>Direktori UMKM Karawang</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold font-serif bg-gradient-to-r from-green-600 to-amber-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-amber-600 bg-clip-text text-transparent mb-4">
             Jelajahi UMKM Lokal
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -365,7 +365,7 @@ function DirectoryPage() {
             <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
               <Store className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
-            <h2 className="text-2xl font-bold mb-2 font-serif text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
               UMKM Tidak Ditemukan
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
