@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import { ArrowLeft, Star, Clock, Plus, Minus } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useOrder } from '@/contexts/OrderContext';
@@ -57,7 +57,7 @@ const MenuPage = () => {
   // Skeleton yang lebih detail untuk MenuPage:
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-8">
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
         <div className="container mx-auto max-w-4xl px-4">
           {/* Header Skeleton */}
           <div className="flex items-center gap-4 mb-8">
@@ -78,7 +78,10 @@ const MenuPage = () => {
           {/* Menu Items Skeleton */}
           <div className="grid gap-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex gap-4 bg-white rounded-2xl p-4">
+              <div
+                key={i}
+                className="flex gap-4 bg-white dark:bg-gray-800 rounded-2xl p-4"
+              >
                 <Skeleton className="w-32 h-32 rounded-xl" />
                 <div className="flex-1 space-y-3">
                   <Skeleton className="h-6 w-3/4" />
@@ -99,10 +102,12 @@ const MenuPage = () => {
 
   if (!umkm || !umkm.menu) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 flex items-center justify-center">
-        <Card className="text-center p-8">
-          <h2 className="text-2xl font-bold mb-4">Menu Tidak Tersedia</h2>
-          <p className="text-gray-600 mb-6">
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <Card className="text-center p-8 glass-card border border-green-200 dark:border-green-800">
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+            Menu Tidak Tersedia
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             UMKM ini belum memiliki menu online.
           </p>
           <Button asChild>
@@ -124,18 +129,25 @@ const MenuPage = () => {
       : umkm.menu.filter((item) => item.kategori === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="container mx-auto max-w-4xl px-4">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button asChild variant="outline" size="icon">
+          <Button
+            asChild
+            variant="outline"
+            size="icon"
+            className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50"
+          >
             <Link to="/direktori">
               <ArrowLeft className="w-4 h-4" />
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{umkm.nama}</h1>
-            <div className="flex items-center gap-4 text-gray-600 mt-2">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {umkm.nama}
+            </h1>
+            <div className="flex items-center gap-4 text-gray-600 dark:text-gray-300 mt-2">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 <span>{umkm.rating}</span>
@@ -144,7 +156,7 @@ const MenuPage = () => {
                 <Clock className="w-4 h-4" />
                 <span>15-25 min</span>
               </div>
-              <span className="text-green-600 font-semibold">
+              <span className="text-green-600 dark:text-green-400 font-semibold">
                 {umkm.rentang_harga}
               </span>
             </div>
@@ -160,7 +172,7 @@ const MenuPage = () => {
               className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
                 selectedCategory === category
                   ? 'bg-green-500 text-white shadow-lg'
-                  : 'bg-white text-gray-600 hover:bg-gray-100 border'
+                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
               }`}
             >
               {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -175,7 +187,7 @@ const MenuPage = () => {
               key={menuItem.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden border hover:shadow-xl transition-all"
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-800 hover:shadow-xl transition-all"
             >
               <div className="flex">
                 <img
@@ -187,18 +199,18 @@ const MenuPage = () => {
                 <div className="flex-1 p-4">
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-900">
+                      <h3 className="font-bold text-lg text-gray-900 dark:text-white">
                         {menuItem.nama}
                       </h3>
-                      <p className="text-gray-600 text-sm mt-1">
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
                         {menuItem.deskripsi}
                       </p>
                     </div>
                     <div className="text-right ml-4">
-                      <div className="text-lg font-bold text-green-600">
+                      <div className="text-lg font-bold text-green-600 dark:text-green-400">
                         Rp {menuItem.harga.toLocaleString()}
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mt-1">
                         <Clock className="w-3 h-3" />
                         <span>{menuItem.waktuMasak} min</span>
                       </div>
@@ -206,7 +218,7 @@ const MenuPage = () => {
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                       <span>{menuItem.rating}</span>
                     </div>
@@ -223,7 +235,7 @@ const MenuPage = () => {
                       )}
                       <Button
                         onClick={() => addToCart(menuItem)}
-                        className="bg-green-500 hover:bg-green-600"
+                        className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
                         size="sm"
                       >
                         <Plus className="w-4 h-4 mr-1" />
@@ -239,7 +251,9 @@ const MenuPage = () => {
 
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Tidak ada menu dalam kategori ini.</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              Tidak ada menu dalam kategori ini.
+            </p>
           </div>
         )}
       </div>

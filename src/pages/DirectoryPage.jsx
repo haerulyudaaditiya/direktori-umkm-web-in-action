@@ -233,7 +233,7 @@ function DirectoryPage() {
                 <Button
                   variant="outline"
                   onClick={clearAllFilters}
-                  className="h-12 border-green-300 text-green-700 hover:bg-green-50 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50"
+                  className="h-12 border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
                 >
                   <X className="h-4 w-4 mr-2" />
                   Hapus Filter

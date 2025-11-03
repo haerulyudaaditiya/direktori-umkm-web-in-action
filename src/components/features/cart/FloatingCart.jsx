@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
-// Benar: Mengimpor dari file context di mana hook itu dibuat
 import { useOrder } from '@/contexts/OrderContext';
 import { Button } from '@/components/ui/button';
 
@@ -63,7 +62,7 @@ const FloatingCart = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4"
+            className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-end justify-center p-4"
             onClick={() => setIsExpanded(false)}
           >
             <motion.div
@@ -71,15 +70,17 @@ const FloatingCart = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-hidden"
+              className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md max-h-[80vh] overflow-hidden border border-green-200 dark:border-green-800"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex justify-between items-center p-4 border-b">
-                <h3 className="text-lg font-bold">Keranjang Pesanan</h3>
+              <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  Keranjang Pesanan
+                </h3>
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -88,7 +89,7 @@ const FloatingCart = () => {
               {/* Cart Items */}
               <div className="overflow-y-auto max-h-96 p-4">
                 {state.cart.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8">
+                  <div className="text-center text-gray-500 dark:text-gray-400 py-8">
                     Keranjang kosong
                   </div>
                 ) : (
@@ -99,7 +100,7 @@ const FloatingCart = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
-                      className="flex items-center gap-3 py-3 border-b"
+                      className="flex items-center gap-3 py-3 border-b border-gray-200 dark:border-gray-700"
                     >
                       <img
                         src={item.image}
@@ -108,8 +109,10 @@ const FloatingCart = () => {
                       />
 
                       <div className="flex-1">
-                        <h4 className="font-semibold text-sm">{item.name}</h4>
-                        <p className="text-green-600 font-bold">
+                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white">
+                          {item.name}
+                        </h4>
+                        <p className="text-green-600 dark:text-green-400 font-bold">
                           Rp {item.price.toLocaleString()}
                         </p>
 
@@ -118,12 +121,12 @@ const FloatingCart = () => {
                             onClick={() =>
                               updateQuantity(item.id, item.quantity - 1)
                             }
-                            className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300"
+                            className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
 
-                          <span className="text-sm font-medium w-8 text-center">
+                          <span className="text-sm font-medium w-8 text-center text-gray-900 dark:text-white">
                             {item.quantity}
                           </span>
 
@@ -131,7 +134,7 @@ const FloatingCart = () => {
                             onClick={() =>
                               updateQuantity(item.id, item.quantity + 1)
                             }
-                            className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300"
+                            className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -140,7 +143,7 @@ const FloatingCart = () => {
 
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-full"
+                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -151,15 +154,17 @@ const FloatingCart = () => {
 
               {/* Footer */}
               {state.cart.length > 0 && (
-                <div className="p-4 border-t">
+                <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="font-semibold">Total:</span>
-                    <span className="text-lg font-bold text-green-600">
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      Total:
+                    </span>
+                    <span className="text-lg font-bold text-green-600 dark:text-green-400">
                       Rp {totalPrice.toLocaleString()}
                     </span>
                   </div>
 
-                  <Button className="w-full bg-green-500 hover:bg-green-600 h-12 font-bold">
+                  <Button className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-12 font-bold">
                     Pesan Sekarang ({state.cartCount} items)
                   </Button>
                 </div>
