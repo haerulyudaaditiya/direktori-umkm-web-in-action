@@ -150,7 +150,7 @@ const PaymentPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
         <div className="container mx-auto max-w-2xl px-4">
-          <Card className="glass-card border border-green-200 dark:border-green-800 bg-white dark:bg-gray-900 hover:shadow-lg transition-all duration-300 text-center p-8">
+          <Card className="glass-card border border-green-200 dark:border-green-800 text-center p-8">
             <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
               <Clock className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
@@ -160,10 +160,7 @@ const PaymentPage = () => {
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               Silakan kembali ke checkout untuk melanjutkan pembayaran.
             </p>
-            <Button
-              asChild
-              className="bg-green-500 hover:bg-green-600 text-white"
-            >
+            <Button asChild className="bg-green-500 hover:bg-green-600">
               <Link to="/checkout">Kembali ke Checkout</Link>
             </Button>
           </Card>
@@ -222,19 +219,15 @@ const PaymentPage = () => {
           {/* Payment Methods */}
           <div className="lg:col-span-2 space-y-6">
             {/* Security Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center justify-center gap-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4 hover:shadow-md transition-all duration-300"
-            >
+            <div className="flex items-center justify-center gap-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4">
               <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
               <span className="text-sm font-medium text-green-700 dark:text-green-300">
                 Pembayaran 100% Aman & Terenkripsi
               </span>
-            </motion.div>
+            </div>
 
             {/* Payment Methods Grid */}
-            <Card className="glass-card border border-green-200 dark:border-green-800 bg-white dark:bg-gray-900 hover:shadow-lg transition-all duration-300">
+            <Card className="glass-card border border-green-200 dark:border-green-800">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                   Pilih Metode Pembayaran
@@ -285,7 +278,7 @@ const PaymentPage = () => {
                               <Badge
                                 key={idx}
                                 variant="secondary"
-                                className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300"
+                                className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-green-100 dark:hover:bg-green-900/30 hover:border-green-300 dark:hover:border-green-600 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-200"
                               >
                                 {feature}
                               </Badge>
@@ -321,7 +314,7 @@ const PaymentPage = () => {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="glass-card border border-green-200 dark:border-green-800 bg-white dark:bg-gray-900 hover:shadow-lg transition-all duration-300">
+                  <Card className="glass-card border border-green-200 dark:border-green-800">
                     <CardHeader>
                       <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <selectedMethodData.icon
@@ -336,12 +329,10 @@ const PaymentPage = () => {
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="flex justify-center w-full" // Tambah w-full
+                          className="flex justify-center w-full"
                         >
-                          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-dashed border-green-300 dark:border-green-600 hover:shadow-md transition-all duration-300 mx-auto">
-                            {' '}
+                          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-dashed border-green-300 dark:border-green-600">
                             <div className="w-48 h-48 bg-gradient-to-br from-green-400 to-blue-500 rounded-lg flex items-center justify-center mb-4 mx-auto">
-                              {' '}
                               <QrCode className="w-32 h-32 text-white" />
                             </div>
                             <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
@@ -355,7 +346,7 @@ const PaymentPage = () => {
                       {/* Manual Transfer Instructions */}
                       {selectedMethod === 'transfer' && (
                         <div className="space-y-3">
-                          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300">
+                          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                             <div className="font-mono text-center space-y-2">
                               <div className="text-sm text-gray-600 dark:text-gray-400">
                                 Bank BCA
@@ -391,7 +382,7 @@ const PaymentPage = () => {
                                 <Badge
                                   key={ewallet}
                                   variant="outline"
-                                  className="text-xs bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300"
+                                  className="text-xs bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
                                 >
                                   {ewallet}
                                 </Badge>
@@ -408,7 +399,7 @@ const PaymentPage = () => {
                             Bayar ketika pesanan sudah diterima. Siapkan uang
                             tunai atau gunakan QRIS di tempat.
                           </p>
-                          <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg p-3 hover:shadow-md transition-all duration-300">
+                          <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg p-3">
                             <p className="text-sm text-amber-700 dark:text-amber-300 text-center">
                               Total yang harus dibayar:{' '}
                               <span className="font-bold">
@@ -427,7 +418,7 @@ const PaymentPage = () => {
                         <Button
                           onClick={handlePaymentSubmit}
                           disabled={isProcessing}
-                          className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-12 text-lg font-bold text-white mt-4 transition-all duration-300"
+                          className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-12 text-lg font-bold text-white mt-4"
                         >
                           {isProcessing ? (
                             <>
@@ -467,7 +458,7 @@ const PaymentPage = () => {
                       rotate: [0, 10, -10, 0],
                     }}
                     transition={{ duration: 1 }}
-                    className="w-20 h-20 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center hover:shadow-lg transition-all duration-300"
+                    className="w-20 h-20 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center"
                   >
                     <Sparkles className="h-10 w-10 text-green-600 dark:text-green-400" />
                   </motion.div>
@@ -489,7 +480,7 @@ const PaymentPage = () => {
             transition={{ delay: 0.2 }}
             className="space-y-6"
           >
-            <Card className="glass-card border border-green-200 dark:border-green-800 bg-white dark:bg-gray-900 hover:shadow-lg transition-all duration-300 sticky top-6">
+            <Card className="glass-card border border-green-200 dark:border-green-800 sticky top-6">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                   Ringkasan Pesanan
@@ -498,13 +489,10 @@ const PaymentPage = () => {
               <CardContent className="space-y-4">
                 {/* Order Items */}
                 <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-                  {order.items.map((item, index) => (
-                    <motion.div
+                  {order.items.map((item) => (
+                    <div
                       key={item.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex justify-between items-start pb-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg p-2 -mx-2 transition-all duration-300"
+                      className="flex justify-between items-start pb-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0"
                     >
                       <div className="flex-1">
                         <div className="font-medium text-gray-900 dark:text-white">
@@ -517,13 +505,13 @@ const PaymentPage = () => {
                       <div className="text-green-600 dark:text-green-400 font-semibold whitespace-nowrap">
                         Rp {(item.price * item.quantity).toLocaleString()}
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
 
                 {/* Price Breakdown */}
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
-                  <div className="flex justify-between text-sm hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg p-2 -mx-2 transition-all duration-300">
+                  <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">
                       Subtotal
                     </span>
@@ -539,7 +527,7 @@ const PaymentPage = () => {
                   </div>
 
                   {order.deliveryOption === 'delivery' && (
-                    <div className="flex justify-between text-sm hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg p-2 -mx-2 transition-all duration-300">
+                    <div className="flex justify-between text-sm">
                       <span className="text-gray-600 dark:text-gray-400">
                         Ongkos Kirim
                       </span>
@@ -549,7 +537,7 @@ const PaymentPage = () => {
                     </div>
                   )}
 
-                  <div className="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg p-2 -mx-2 transition-all duration-300">
+                  <div className="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
                     <span className="text-gray-900 dark:text-white">Total</span>
                     <span className="text-green-600 dark:text-green-400">
                       Rp {order.total.toLocaleString()}
@@ -560,15 +548,15 @@ const PaymentPage = () => {
                 {/* Security Features */}
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-all duration-300 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                       <Shield className="w-4 h-4 text-green-500 dark:text-green-400" />
                       <span>Pembayaran terenkripsi</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-all duration-300 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                       <CheckCircle2 className="w-4 h-4 text-green-500 dark:text-green-400" />
                       <span>Garansi uang kembali</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-all duration-300 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                       <Clock className="w-4 h-4 text-green-500 dark:text-green-400" />
                       <span>Konfirmasi instan</span>
                     </div>

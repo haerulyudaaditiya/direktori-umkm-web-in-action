@@ -44,7 +44,7 @@ function Navbar() {
               asChild
               className={`text-sm font-medium rounded-lg px-3 py-2 transition-all ${
                 location.pathname === item.path
-                  ? 'text-green-700 bg-green-100 dark:bg-green-900 dark:text-green-400'
+                  ? 'text-green-700 bg-green-100 border border-green-300 dark:bg-green-900 dark:border-green-600 dark:text-green-400'
                   : 'text-muted-foreground hover:text-green-700 hover:bg-green-100/50 dark:hover:bg-green-900/50 dark:hover:text-green-400'
               }`}
             >
@@ -86,7 +86,7 @@ function Navbar() {
                         to={item.path}
                         className={`text-lg font-medium rounded-lg px-3 py-3 transition-all ${
                           location.pathname === item.path
-                            ? 'text-green-700 bg-green-100 dark:bg-green-900 dark:text-green-400'
+                            ? 'text-green-700 bg-green-100 border border-green-300 dark:bg-green-900 dark:border-green-600 dark:text-green-400'
                             : 'text-muted-foreground hover:text-green-700 hover:bg-green-100/50 dark:hover:bg-green-900/50 dark:hover:text-green-400'
                         }`}
                       >

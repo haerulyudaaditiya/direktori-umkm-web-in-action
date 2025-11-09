@@ -468,7 +468,7 @@ const CheckoutPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="glasscard border border-green-200 dark:border-green-800">
+              <Card className="glas-scard border border-green-200 dark:border-green-800">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                     Catatan Tambahan

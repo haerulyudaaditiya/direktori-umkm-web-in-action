@@ -172,6 +172,7 @@ const FloatingCart = () => {
                   <Button
                     asChild
                     className="w-full bg-green-500 hover:bg-green-600 h-12 font-bold"
+                    onClick={() => setIsExpanded(false)}
                   >
                     <Link to="/checkout">
                       Pesan Sekarang ({state.cartCount} items)

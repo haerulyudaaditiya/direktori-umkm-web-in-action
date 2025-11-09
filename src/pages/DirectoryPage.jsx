@@ -142,10 +142,7 @@ function DirectoryPage() {
           {/* UMKM Cards Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <Card
-                key={i}
-                className="glass-card overflow-hidden group hover:shadow-xl transition-all duration-300"
-              >
+              <Card key={i} className="glass-card overflow-hidden">
                 <Skeleton className="h-48 w-full" />
                 <CardHeader className="p-5">
                   <Skeleton className="h-6 w-3/4 mb-2" />
@@ -187,8 +184,8 @@ function DirectoryPage() {
           </p>
         </div>
 
-        {/* FILTER SECTION - Diperbaiki untuk dark mode */}
-        <Card className="p-6 mb-10 glass-card border border-green-200 dark:border-green-800 sticky top-20 z-40">
+        {/* FILTER SECTION */}
+        <Card className="p-6 mb-10 glass-card border border-green-200 dark:border-green-800 lg:sticky lg:top-20 z-40">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
               <div className="md:col-span-2 relative">
@@ -302,13 +299,13 @@ function DirectoryPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredUMKM.map((umkm) => (
               <Link to={`/umkm/${umkm.slug}`} key={umkm.id} className="group">
-                <Card className="glass-card overflow-hidden rounded-2xl border border-green-200 dark:border-green-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                <Card className="glass-card overflow-hidden rounded-2xl border border-green-200 dark:border-green-800 transition-all">
                   {/* Gambar UMKM */}
                   <div className="relative h-48 w-full overflow-hidden">
                     <img
                       src={umkm.foto[0]}
                       alt={umkm.nama}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="w-full h-full object-cover"
                     />
                     <Badge className="absolute top-3 right-3 bg-green-500 text-white shadow-lg border-0">
                       {umkm.kategori}
@@ -320,7 +317,7 @@ function DirectoryPage() {
                   </div>
 
                   <CardHeader className="p-5 pb-3">
-                    <CardTitle className="text-xl font-bold line-clamp-1 group-hover:text-green-600 transition-colors">
+                    <CardTitle className="text-xl font-bold line-clamp-1 text-gray-900 dark:text-white">
                       {umkm.nama}
                     </CardTitle>
                     <CardDescription className="flex items-center gap-4 text-sm pt-2">
@@ -344,13 +341,16 @@ function DirectoryPage() {
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                          className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/30 dark:hover:text-green-300"
                         >
                           {tag}
                         </Badge>
                       ))}
                       {umkm.tags.length > 3 && (
-                        <Badge variant="outline" className="text-gray-500">
+                        <Badge
+                          variant="outline"
+                          className="text-gray-500 dark:text-gray-400 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-transparent dark:hover:bg-transparent"
+                        >
                           +{umkm.tags.length - 3} lainnya
                         </Badge>
                       )}

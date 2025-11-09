@@ -50,10 +50,6 @@ const LandingPage = () => {
     }
   };
 
-  const handleCategoryClick = (category) => {
-    navigate(`/direktori?kategori=${encodeURIComponent(category)}`);
-  };
-
   // Data Kategori UMKM Karawang
   const categories = [
     {
@@ -330,10 +326,9 @@ const LandingPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             {categories.map((category, index) => (
-              <button
+              <div
                 key={index}
-                onClick={() => handleCategoryClick(category.query)}
-                className="group text-left bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700"
+                className="group text-left bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 cursor-pointer"
               >
                 <div
                   className={`p-3 rounded-2xl ${category.bgColor} dark:bg-gray-700 w-12 h-12 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
@@ -349,8 +344,21 @@ const LandingPage = () => {
                 <div className="text-xs font-semibold text-green-600 dark:text-green-400">
                   {category.count} Tempat
                 </div>
-              </button>
+              </div>
             ))}
+          </div>
+
+          {/* CTA Button untuk redirect ke direktori */}
+          <div className="text-center mt-12">
+            <Button
+              asChild
+              className="bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl px-8 py-4 text-lg"
+            >
+              <Link to="/direktori" className="flex items-center gap-2">
+                Jelajahi Semua Kategori
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

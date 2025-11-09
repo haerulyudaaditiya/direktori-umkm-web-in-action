@@ -28,12 +28,6 @@ import {
   Wheat,
 } from 'lucide-react';
 
-function extractMapSrc(iframeString) {
-  if (!iframeString) return null;
-  const match = iframeString.match(/src="([^"]+)"/);
-  return match ? match[1] : null;
-}
-
 function DetailPage() {
   const { slug } = useParams();
   const [umkm, setUmkm] = useState(null);
@@ -149,8 +143,6 @@ function DetailPage() {
     );
   }
 
-  const mapSrcLink = extractMapSrc(umkm.lokasi_map);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="container mx-auto max-w-6xl px-4 md:px-8">
@@ -176,7 +168,7 @@ function DetailPage() {
         {/* Image Gallery */}
         <div className="mb-10">
           <Carousel
-            className="w-full rounded-2xl overflow-hidden shadow-2xl border border-green-200 dark:border-green-800"
+            className="w-full rounded-2xl overflow-hidden border border-green-200 dark:border-green-800"
             setApi={setCarouselApi}
           >
             <CarouselContent>
@@ -189,7 +181,7 @@ function DetailPage() {
                       className="w-full h-full object-cover"
                     />
                     {i === 0 && (
-                      <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 shadow-lg text-sm font-semibold">
+                      <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-sm font-semibold">
                         {umkm.kategori}
                       </Badge>
                     )}
@@ -203,8 +195,18 @@ function DetailPage() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4 bg-white/90 hover:bg-white border-green-200 text-green-700" />
-            <CarouselNext className="right-4 bg-white/90 hover:bg-white border-green-200 text-green-700" />
+            <CarouselPrevious
+              className="
+                left-4 bg-white/90 hover:bg-white border-green-200 text-green-700 hover:text-green-700
+                dark:bg-gray-900/80 dark:hover:bg-gray-800 dark:border-green-700 dark:text-green-300 dark:hover:text-green-300
+              "
+            />
+            <CarouselNext
+              className="
+                right-4 bg-white/90 hover:bg-white border-green-200 text-green-700 hover:text-green-700
+                dark:bg-gray-900/80 dark:hover:bg-gray-800 dark:border-green-700 dark:text-green-300 dark:hover:text-green-300
+              "
+            />
           </Carousel>
 
           {/* Thumbnail Navigation */}
@@ -216,7 +218,7 @@ function DetailPage() {
                   onClick={() => setActiveImageIndex(i)}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                     activeImageIndex === i
-                      ? 'border-green-500 shadow-lg scale-105'
+                      ? 'border-green-500 scale-105'
                       : 'border-green-200 dark:border-green-800 hover:border-green-400'
                   }`}
                 >
@@ -232,7 +234,7 @@ function DetailPage() {
         </div>
 
         {/* Main Info Card */}
-        <Card className="mb-8 glass-card border border-green-200 dark:border-green-800 shadow-lg">
+        <Card className="mb-8 glass-card border border-green-200 dark:border-green-800">
           <CardHeader className="pb-4">
             <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-amber-600 bg-clip-text text-transparent mb-3">
               {umkm.nama}
@@ -245,19 +247,19 @@ function DetailPage() {
 
           <CardContent className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
-              <Badge className="bg-green-500 text-white border-0 text-sm font-semibold">
+              <Badge className="bg-green-500 text-white border-0 text-sm font-semibold hover:bg-green-600 dark:hover:bg-green-600 transition-colors duration-200">
                 {umkm.kategori}
               </Badge>
               <Badge
                 variant="secondary"
-                className="flex items-center gap-1 bg-amber-50 text-amber-700 border-amber-200"
+                className="flex items-center gap-1 bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 hover:border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700 dark:hover:bg-amber-800/50 dark:hover:border-amber-500 transition-colors duration-200"
               >
                 <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
                 <span className="font-bold">{umkm.rating}</span>
               </Badge>
               <Badge
                 variant="secondary"
-                className="bg-green-50 text-green-700 border-green-200"
+                className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 dark:hover:bg-green-800/50 dark:hover:border-green-500 transition-colors duration-200"
               >
                 {umkm.rentang_harga}
               </Badge>
@@ -268,7 +270,7 @@ function DetailPage() {
                 <Badge
                   key={tag}
                   variant="outline"
-                  className="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-green-200 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900/30 transition-all"
+                  className="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-green-200 dark:border-green-700"
                 >
                   #{tag}
                 </Badge>
@@ -319,12 +321,15 @@ function DetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                // Ganti bagian ini di DetailPage
                 <Button
                   asChild
                   className="w-full bg-green-600 hover:bg-green-700 h-12"
                 >
                   <a
-                    href={mapSrcLink || '#'}
+                    href={`https://maps.google.com/?q=${encodeURIComponent(
+                      umkm.alamat
+                    )}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2"
@@ -334,7 +339,6 @@ function DetailPage() {
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 </Button>
-
                 {/* Tombol Lihat Menu untuk UMKM yang punya menu */}
                 {umkm.menu && (
                   <Button
@@ -350,7 +354,6 @@ function DetailPage() {
                     </Link>
                   </Button>
                 )}
-
                 <Button
                   variant="outline"
                   className="w-full border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300 h-12"
@@ -399,13 +402,7 @@ function DetailPage() {
               </Button>
               <Button
                 variant="outline"
-                className="
-                  border-white 
-                  bg-transparent text-green-100 
-                  hover:bg-white hover:text-green-600 
-                  dark:border-white dark:bg-transparent dark:text-white 
-                  dark:hover:bg-white dark:hover:text-green-600
-                "
+                className="border-white bg-transparent text-white hover:bg-white hover:text-green-600"
               >
                 Bagikan UMKM Ini
               </Button>
