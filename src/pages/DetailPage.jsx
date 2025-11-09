@@ -321,7 +321,6 @@ function DetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                // Ganti bagian ini di DetailPage
                 <Button
                   asChild
                   className="w-full bg-green-600 hover:bg-green-700 h-12"
@@ -354,12 +353,21 @@ function DetailPage() {
                     </Link>
                   </Button>
                 )}
+                {/* Tombol Hubungi Support */}
                 <Button
+                  onClick={() => {
+                    const message = `Halo KantongAman, saya tertarik dengan ${umkm.nama}. Bisa info lebih lanjut?`;
+                    const phoneNumber = '6281234567890';
+                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                      message
+                    )}`;
+                    window.open(whatsappUrl, '_blank');
+                  }}
                   variant="outline"
                   className="w-full border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300 h-12"
                 >
                   <Phone className="h-4 w-4" />
-                  Hubungi UMKM
+                  Hubungi Support
                 </Button>
               </CardContent>
             </Card>

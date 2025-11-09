@@ -233,8 +233,10 @@ Dukung UMKM lokal dengan #KantongAman!`;
     if (!order) return;
 
     const orderNumber = order.orderNumber || generateOrderNumber(order.id);
-    const phoneNumber = '628123456789';
-    const message = `Halo, saya ingin bertanya tentang pesanan #${orderNumber} - ${
+    const umkmName = order.items[0]?.umkm || 'UMKM';
+    const phoneNumber = '6281234567890';
+
+    const message = `Halo ${umkmName}, saya ingin bertanya tentang pesanan #${orderNumber} - ${
       order.customer?.name || 'Pelanggan'
     }`;
 
