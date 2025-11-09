@@ -139,21 +139,16 @@ function DetailPage() {
                 Maaf, kami tidak menemukan data untuk "
                 <span className="font-semibold">{slug}</span>".
               </CardDescription>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Button
+                asChild
+                variant="outline"
+                className="border-green-500 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
               >
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-green-500 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
-                >
-                  <Link to="/direktori" className="flex items-center gap-2">
-                    <ArrowLeft className="h-4 w-4" />
-                    Kembali ke Direktori
-                  </Link>
-                </Button>
-              </motion.div>
+                <Link to="/direktori" className="flex items-center gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Kembali ke Direktori
+                </Link>
+              </Button>
             </Card>
           </motion.div>
         </div>
@@ -170,18 +165,16 @@ function DetailPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center justify-between mb-8"
         >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              asChild
-              variant="outline"
-              className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
-            >
-              <Link to="/direktori" className="flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Kembali ke Direktori
-              </Link>
-            </Button>
-          </motion.div>
+          <Button
+            asChild
+            variant="outline"
+            className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
+          >
+            <Link to="/direktori" className="flex items-center gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Kembali ke Direktori
+            </Link>
+          </Button>
 
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -268,10 +261,8 @@ function DetailPage() {
               className="flex gap-3 mt-4 overflow-x-auto py-2"
             >
               {umkm.foto.map((foto, i) => (
-                <motion.button
+                <button
                   key={i}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveImageIndex(i)}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                     activeImageIndex === i
@@ -284,7 +275,7 @@ function DetailPage() {
                     alt={`Thumbnail ${i + 1}`}
                     className="w-full h-full object-cover"
                   />
-                </motion.button>
+                </button>
               ))}
             </motion.div>
           )}
@@ -314,19 +305,19 @@ function DetailPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <Badge className="bg-green-500 text-white border-0 text-sm font-semibold hover:bg-green-600 dark:hover:bg-green-600 transition-colors duration-200">
+                <Badge className="bg-green-500 text-white border-0 text-sm font-semibold">
                   {umkm.kategori}
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="flex items-center gap-1 bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 hover:border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700 dark:hover:bg-amber-800/50 dark:hover:border-amber-500 transition-colors duration-200"
+                  className="flex items-center gap-1 bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700"
                 >
                   <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
                   <span className="font-bold">{umkm.rating}</span>
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 dark:hover:bg-green-800/50 dark:hover:border-green-500 transition-colors duration-200"
+                  className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700"
                 >
                   {umkm.rentang_harga}
                 </Badge>
@@ -360,12 +351,10 @@ function DetailPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
-            layout // ← Tambah ini
+            layout
           >
             <Card className="glass-card border border-green-200 dark:border-green-800 h-full min-h-0">
               <CardHeader className="pb-4">
-                {' '}
-                {/* Kurangi padding bawah */}
                 <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   <motion.div
                     animate={{
@@ -379,8 +368,6 @@ function DetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                {' '}
-                {/* Kurangi padding atas */}
                 <motion.p
                   className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
                   initial={{ opacity: 0 }}
@@ -428,70 +415,55 @@ function DetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <Button
+                  asChild
+                  className="w-full bg-green-600 hover:bg-green-700 h-12"
                 >
-                  <Button
-                    asChild
-                    className="w-full bg-green-600 hover:bg-green-700 h-12"
+                  <a
+                    href={`https://maps.google.com/?q=${encodeURIComponent(
+                      umkm.alamat
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
                   >
-                    <a
-                      href={`https://maps.google.com/?q=${encodeURIComponent(
-                        umkm.alamat
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2"
-                    >
-                      <MapPin className="h-4 w-4" />
-                      Buka di Google Maps
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </Button>
-                </motion.div>
+                    <MapPin className="h-4 w-4" />
+                    Buka di Google Maps
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
 
                 {/* Tombol Lihat Menu untuk UMKM yang punya menu */}
                 {umkm.menu && (
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  <Button
+                    asChild
+                    className="w-full bg-amber-500 hover:bg-amber-600 h-12"
                   >
-                    <Button
-                      asChild
-                      className="w-full bg-amber-500 hover:bg-amber-600 h-12"
+                    <Link
+                      to={`/menu/${umkm.slug}`}
+                      className="flex items-center gap-2"
                     >
-                      <Link
-                        to={`/menu/${umkm.slug}`}
-                        className="flex items-center gap-2"
-                      >
-                        <Utensils className="h-4 w-4" />
-                        Lihat Menu & Pesan
-                      </Link>
-                    </Button>
-                  </motion.div>
+                      <Utensils className="h-4 w-4" />
+                      Lihat Menu & Pesan
+                    </Link>
+                  </Button>
                 )}
 
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <Button
+                  onClick={() => {
+                    const message = `Halo KantongAman, saya tertarik dengan ${umkm.nama}. Bisa info lebih lanjut?`;
+                    const phoneNumber = '6281234567890';
+                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                      message
+                    )}`;
+                    window.open(whatsappUrl, '_blank');
+                  }}
+                  variant="outline"
+                  className="w-full border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300 h-12"
                 >
-                  <Button
-                    onClick={() => {
-                      const message = `Halo KantongAman, saya tertarik dengan ${umkm.nama}. Bisa info lebih lanjut?`;
-                      const phoneNumber = '6281234567890';
-                      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                        message
-                      )}`;
-                      window.open(whatsappUrl, '_blank');
-                    }}
-                    variant="outline"
-                    className="w-full border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300 h-12"
-                  >
-                    <Phone className="h-4 w-4" />
-                    Hubungi Support
-                  </Button>
-                </motion.div>
+                  <Phone className="h-4 w-4" />
+                  Hubungi Support
+                </Button>
               </CardContent>
             </Card>
 
@@ -544,36 +516,21 @@ function DetailPage() {
               Jelajahi berbagai usaha lokal lainnya yang siap melayani Anda
               dengan produk dan jasa terbaik.
             </motion.p>
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.0 }}
-            >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                asChild
+                className="bg-white text-green-600 hover:bg-green-50 font-semibold"
               >
-                <Button
-                  asChild
-                  className="bg-white text-green-600 hover:bg-green-50 font-semibold"
-                >
-                  <Link to="/direktori">Jelajahi Semua UMKM</Link>
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                <Link to="/direktori">Jelajahi Semua UMKM</Link>
+              </Button>
+              <Button
+                variant="outline"
+                className="border-white bg-transparent text-white hover:bg-white hover:text-green-600"
               >
-                <Button
-                  variant="outline"
-                  className="border-white bg-transparent text-white hover:bg-white hover:text-green-600"
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Bagikan UMKM Ini
-                </Button>
-              </motion.div>
-            </motion.div>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Bagikan UMKM Ini
+              </Button>
+            </div>
           </div>
         </motion.div>
       </div>
