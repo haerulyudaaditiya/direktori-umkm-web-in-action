@@ -1,5 +1,8 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -33,12 +36,7 @@ import {
 
 const LandingPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -211,36 +209,53 @@ const LandingPage = () => {
         <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-emerald-400/30 rounded-full blur-lg animate-bounce"></div>
 
         <div className="container-custom relative z-10">
-          <div
-            className={`max-w-4xl mx-auto text-center transition-all duration-1000 ${
-              isVisible
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-10'
-            }`}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl mx-auto text-center"
           >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-8 border border-white/30">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-8 border border-white/30"
+            >
               <Sprout className="h-4 w-4" />
               <span>Platform Resmi UMKM Karawang</span>
-            </div>
+            </motion.div>
 
             {/* Main Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight"
+            >
               <span className="block">Temukan Keberagaman</span>
               <span className="block bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent">
                 UMKM Karawang
               </span>
-            </h1>
+            </motion.h1>
 
             {/* Description */}
-            <p className="text-xl sm:text-2xl text-green-100 max-w-3xl mx-auto mb-10 leading-relaxed">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl sm:text-2xl text-green-100 max-w-3xl mx-auto mb-10 leading-relaxed"
+            >
               Jelajahi 500+ usaha lokal terbaik di jantung lumbung padi
               Indonesia. Dari kuliner autentik hingga jasa terpercaya, semua ada
               di genggaman Anda.
-            </p>
+            </motion.p>
 
             {/* Search Bar */}
-            <form
+            <motion.form
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
               onSubmit={handleSearchSubmit}
               className="max-w-2xl mx-auto mb-8"
             >
@@ -263,10 +278,15 @@ const LandingPage = () => {
                   Cari
                 </Button>
               </div>
-            </form>
+            </motion.form>
 
             {/* Quick Stats */}
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-green-100">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-wrap justify-center gap-6 text-sm text-green-100"
+            >
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
                 <span>100% UMKM Terverifikasi</span>
@@ -279,18 +299,26 @@ const LandingPage = () => {
                 <Shield className="h-4 w-4" />
                 <span>Aman & Terpercaya</span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Statistics Section */}
       <section className="section-padding bg-white dark:bg-gray-800">
         <div className="container-custom">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             {stats.map((stat, index) => (
-              <div
+              <motion.div
                 key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
                 className="glass-card rounded-2xl p-6 text-center group hover:shadow-xl transition-all duration-300"
               >
                 <div className="flex justify-center mb-3">
@@ -304,30 +332,52 @@ const LandingPage = () => {
                 <div className="text-sm text-gray-600 dark:text-gray-300 font-medium">
                   {stat.label}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Categories Section */}
       <section className="section-padding bg-gray-50 dark:bg-gray-900">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4"
+            >
               Jelajahi <span className="text-gradient-karawang">Kategori</span>{' '}
               UMKM
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
+            >
               Temukan berbagai jenis usaha mikro, kecil, dan menengah yang
               menjadi tulang punggung ekonomi Karawang
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6"
+          >
             {categories.map((category, index) => (
-              <div
+              <motion.div
                 key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
                 className="group text-left bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 cursor-pointer"
               >
                 <div
@@ -344,12 +394,17 @@ const LandingPage = () => {
                 <div className="text-xs font-semibold text-green-600 dark:text-green-400">
                   {category.count} Tempat
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* CTA Button untuk redirect ke direktori */}
-          <div className="text-center mt-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="text-center mt-12"
+          >
             <Button
               asChild
               className="bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl px-8 py-4 text-lg"
@@ -359,28 +414,50 @@ const LandingPage = () => {
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="section-padding bg-white dark:bg-gray-800">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4"
+            >
               Mengapa Pilih{' '}
               <span className="text-gradient-karawang">KantongAman</span>?
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
+            >
               Platform khusus yang dirancang untuk memajukan UMKM Karawang
               dengan teknologi modern
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
             {features.map((feature, index) => (
-              <div
+              <motion.div
                 key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
                 className="text-center group hover:transform hover:-translate-y-2 transition-all duration-300"
               >
                 <div className="flex justify-center mb-6">
@@ -394,70 +471,101 @@ const LandingPage = () => {
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                   {feature.description}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className="section-padding bg-gradient-to-br from-green-50 to-amber-50 dark:from-gray-800 dark:to-gray-700">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4"
+            >
               Apa Kata <span className="text-gradient-karawang">Mereka</span>?
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
+            >
               Dengarkan pengalaman langsung dari pengguna dan pemilik UMKM yang
               telah merasakan manfaat KantongAman
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {testimonials.map((testimonial, index) => (
-              <Card
+              <motion.div
                 key={index}
-                className="glass-card rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 group"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                className="flex"
               >
-                <CardContent className="p-0">
-                  {/* Quote Icon */}
-                  <div className="flex justify-start mb-4">
-                    <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
-                      <Quote className="h-6 w-6 text-green-600 dark:text-green-400" />
+                <Card className="glass-card rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 group flex flex-col h-full">
+                  <CardContent className="p-0 flex flex-col flex-1">
+                    {/* Quote Icon */}
+                    <div className="flex justify-start mb-4">
+                      <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                        <Quote className="h-6 w-6 text-green-600 dark:text-green-400" />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Testimonial Text */}
-                  <p className="text-gray-600 dark:text-gray-300 italic mb-6 leading-relaxed">
-                    "{testimonial.comment}"
-                  </p>
-
-                  {/* Rating Stars */}
-                  <div className="mb-4">
-                    <StarRating rating={testimonial.rating} />
-                  </div>
-
-                  {/* User Info */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-amber-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                      {testimonial.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-gray-900 dark:text-white">
-                        {testimonial.name}
-                      </h4>
-                      <p className="text-sm text-green-600 dark:text-green-400">
-                        {testimonial.role}
+                    {/* Testimonial Text - Fixed height */}
+                    <div className="flex-1 mb-4 min-h-[120px]">
+                      <p className="text-gray-600 dark:text-gray-300 italic leading-relaxed line-clamp-4">
+                        "{testimonial.comment}"
                       </p>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+
+                    {/* Rating Stars */}
+                    <div className="mb-4">
+                      <StarRating rating={testimonial.rating} />
+                    </div>
+
+                    {/* User Info */}
+                    <div className="flex items-center gap-3 mt-auto">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-amber-500 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                        {testimonial.name.charAt(0)}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white truncate">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-sm text-green-600 dark:text-green-400 truncate">
+                          {testimonial.role}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Additional Trust Indicators */}
-          <div className="mt-16 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-16 text-center"
+          >
             <div className="inline-flex items-center gap-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-lg">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-green-600" />
@@ -480,25 +588,44 @@ const LandingPage = () => {
                 </span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="section-padding bg-gradient-to-br from-green-600 via-emerald-600 to-yellow-500 text-white">
         <div className="container-custom text-center">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-4xl mx-auto"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6"
+            >
               Siap Mendukung
               <br />
               <span className="text-amber-200">UMKM Karawang?</span>
-            </h2>
-            <p className="text-xl opacity-90 mb-10 max-w-2xl mx-auto leading-relaxed">
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl opacity-90 mb-10 max-w-2xl mx-auto leading-relaxed"
+            >
               Bergabunglah dengan ribuan pengguna yang sudah menemukan usaha
               lokal terbaik. Dukung ekonomi daerah dan temukan keunikan
               Karawang.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
               <Button
                 asChild
                 className="btn-secondary bg-white text-green-600 hover:bg-green-50 font-bold rounded-xl px-8 py-4 text-lg shadow-2xl min-w-[200px]"
@@ -515,8 +642,8 @@ const LandingPage = () => {
               >
                 <Link to="/tentang">Pelajari Lebih Lanjut</Link>
               </Button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </div>
