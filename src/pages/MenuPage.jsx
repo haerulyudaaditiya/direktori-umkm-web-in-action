@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import { ArrowLeft, Star, Clock, Plus } from 'lucide-react';
+import { ArrowLeft, Phone, MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useOrder } from '@/contexts/OrderContext';
 import { Skeleton } from '@/components/ui/skeleton';
+
+// Import components dan utils
+import { getUMKMType, hasMenu, hasLayanan, hasProduk } from '@/utils/umkmTypes';
+import UMKMHeader from '@/components/umkm/UMKMHeader';
+import FoodSection from '@/components/umkm/FoodSection';
+import ServiceSection from '@/components/umkm/ServiceSection';
+import RetailSection from '@/components/umkm/RetailSection';
 
 const MenuPage = () => {
   const { slug } = useParams();
-  const { dispatch } = useOrder();
   const [umkm, setUmkm] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('semua');
-  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     fetch('/data.json')
@@ -30,294 +33,192 @@ const MenuPage = () => {
       });
   }, [slug]);
 
-  const addToCart = (menuItem) => {
-    dispatch({
-      type: 'ADD_TO_CART',
-      payload: {
-        id: menuItem.id,
-        name: menuItem.nama,
-        price: menuItem.harga,
-        image: menuItem.gambar,
-        umkm: umkm.nama,
-      },
-    });
-
-    setQuantities((prev) => ({
-      ...prev,
-      [menuItem.id]: (prev[menuItem.id] || 0) + 1,
-    }));
-
-    setTimeout(() => {
-      setQuantities((prev) => ({ ...prev, [menuItem.id]: 0 }));
-    }, 1000);
+  // Fallback untuk WhatsApp direct order
+  const handleDirectWhatsApp = () => {
+    const message = `Halo ${
+      umkm.nama
+    }, saya tertarik dengan ${umkm.kategori.toLowerCase()} Anda. Bisa info lebih lanjut?`;
+    const whatsappUrl = `https://wa.me/${umkm.kontak}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
-        <div className="container mx-auto max-w-4xl px-3 sm:px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8"
-          >
-            <Skeleton className="h-8 w-8 sm:h-10 sm:w-10 rounded-full" />
-            <div className="flex-1">
-              <Skeleton className="h-6 sm:h-8 w-48 sm:w-64 mb-2" />
-              <Skeleton className="h-3 sm:h-4 w-36 sm:w-48" />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="flex gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2"
-          >
-            {[...Array(5)].map((_, i) => (
-              <Skeleton
-                key={i}
-                className="h-8 sm:h-10 w-16 sm:w-20 rounded-full"
-              />
-            ))}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid gap-4 sm:gap-6"
-          >
-            {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="flex gap-3 sm:gap-4 bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4"
-              >
-                <Skeleton className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl" />
-                <div className="flex-1 space-y-2 sm:space-y-3">
-                  <Skeleton className="h-5 sm:h-6 w-3/4" />
-                  <Skeleton className="h-3 sm:h-4 w-full" />
-                  <Skeleton className="h-3 sm:h-4 w-2/3" />
-                  <div className="flex justify-between items-center">
-                    <Skeleton className="h-3 sm:h-4 w-16 sm:w-20" />
-                    <Skeleton className="h-8 sm:h-10 w-20 sm:w-24 rounded-lg" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
+        <div className="container mx-auto max-w-4xl px-4">
+          <Skeleton className="h-12 w-full mb-8 rounded-xl" />
+          <Skeleton className="h-64 w-full rounded-2xl" />
         </div>
       </div>
     );
   }
 
-  if (!umkm || !umkm.menu) {
+  if (!umkm) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <Card className="text-center p-6 sm:p-8 glass-card border border-green-200 dark:border-green-800 w-full max-w-md">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center"
-            >
-              <Plus className="h-8 w-8 text-green-600 dark:text-green-400" />
-            </motion.div>
-            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">
-              Menu Tidak Tersedia
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base">
-              UMKM ini belum memiliki menu online.
-            </p>
-            <Button asChild className="w-full sm:w-auto">
-              <Link to="/direktori">Kembali ke Direktori</Link>
-            </Button>
-          </Card>
-        </motion.div>
+        <Card className="text-center p-8 glass-card border border-green-200 dark:border-green-800 w-full max-w-md">
+          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+            <MessageCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+          </div>
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+            UMKM Tidak Ditemukan
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
+            Maaf, UMKM yang Anda cari tidak ditemukan.
+          </p>
+          <Button asChild className="w-full">
+            <Link to="/direktori">Kembali ke Direktori</Link>
+          </Button>
+        </Card>
       </div>
     );
   }
 
-  const categories = [
-    'semua',
-    ...new Set(umkm.menu.map((item) => item.kategori)),
-  ];
-
-  const filteredItems =
-    selectedCategory === 'semua'
-      ? umkm.menu
-      : umkm.menu.filter((item) => item.kategori === selectedCategory);
+  // Tentukan jenis UMKM dan data yang tersedia
+  const umkmType = getUMKMType(umkm.kategori);
+  const hasData = hasMenu(umkm) || hasLayanan(umkm) || hasProduk(umkm);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
-      <div className="container mx-auto max-w-4xl px-3 sm:px-4">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
+      <div className="container mx-auto max-w-4xl px-4">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8"
-        >
-          <Button
-            asChild
-            variant="outline"
-            size="icon"
-            className="
-              h-8 w-8 sm:h-10 sm:w-10
-              border-green-300 text-green-700 
-              hover:bg-green-50 hover:text-green-800 
-              dark:border-green-700 dark:text-green-300 
-              dark:hover:bg-green-900/50 dark:hover:text-green-200
-              transition-colors duration-200
-            "
-          >
-            <Link to="/direktori">
-              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
-            </Link>
-          </Button>
-          <div className="flex-1 min-w-0">
-            <motion.h1
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white truncate"
-            >
-              {umkm.nama}
-            </motion.h1>
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center gap-2 sm:gap-4 text-gray-600 dark:text-gray-300 mt-1 sm:mt-2 flex-wrap"
-            >
-              <div className="flex items-center gap-1 text-xs sm:text-sm">
-                <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-                <span>{umkm.rating}</span>
-              </div>
-              <div className="flex items-center gap-1 text-xs sm:text-sm">
-                <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span>15-25 min</span>
-              </div>
-              <span className="text-green-600 dark:text-green-400 font-semibold text-xs sm:text-sm">
-                {umkm.rentang_harga}
-              </span>
-            </motion.div>
-          </div>
-        </motion.div>
+        <UMKMHeader umkm={umkm} type={umkmType} />
 
-        {/* Category Filter */}
+        {/* Konten Berdasarkan Jenis UMKM */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="flex gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide"
         >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-3 sm:px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-xs sm:text-sm flex-shrink-0 ${
-                selectedCategory === category
-                  ? 'bg-green-500 text-white shadow-lg'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
-              }`}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
+          {hasData ? (
+            <>
+              {/* UMKM dengan Menu Makanan */}
+              {umkmType === 'food' && hasMenu(umkm) && (
+                <FoodSection menu={umkm.menu} umkm={umkm} />
+              )}
+
+              {/* UMKM Jasa dengan Layanan */}
+              {umkmType === 'service' && hasLayanan(umkm) && (
+                <ServiceSection layanan={umkm.layanan} umkm={umkm} />
+              )}
+
+              {/* UMKM Retail dengan Produk */}
+              {umkmType === 'retail' && hasProduk(umkm) && (
+                <RetailSection produk={umkm.produk} umkm={umkm} />
+              )}
+
+              {/* Fallback untuk UMKM tanpa data spesifik */}
+              {!hasMenu(umkm) && !hasLayanan(umkm) && !hasProduk(umkm) && (
+                <FallbackSection umkm={umkm} type={umkmType} />
+              )}
+            </>
+          ) : (
+            /* UMKM tanpa data - Tampilkan fallback */
+            <FallbackSection umkm={umkm} type={umkmType} />
+          )}
         </motion.div>
 
-        {/* Menu Items */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="grid gap-4 sm:gap-6"
-          >
-            {filteredItems.map((menuItem, index) => (
-              <motion.div
-                key={menuItem.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700"
-              >
-                <div className="flex flex-col sm:flex-row">
-                  <img
-                    src={menuItem.gambar}
-                    alt={menuItem.nama}
-                    className="w-full h-40 sm:w-32 sm:h-32 object-cover"
-                  />
+        {/* Contact Info Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8"
+        >
+          <Card className="glass-card border border-green-200 dark:border-green-800">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                Informasi Kontak
+              </h3>
 
-                  <div className="flex-1 p-3 sm:p-4">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white truncate">
-                          {menuItem.nama}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2">
-                          {menuItem.deskripsi}
-                        </p>
-                      </div>
-                      <div className="text-left sm:text-right sm:ml-4">
-                        <div className="text-base sm:text-lg font-bold text-green-600 dark:text-green-400">
-                          Rp {menuItem.harga.toLocaleString()}
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          <Clock className="w-3 h-3" />
-                          <span>{menuItem.waktuMasak} min</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center mt-3 sm:mt-0">
-                      <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                        <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-                        <span>{menuItem.rating}</span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {quantities[menuItem.id] > 0 && (
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold"
-                          >
-                            +{quantities[menuItem.id]}
-                          </motion.span>
-                        )}
-                        <Button
-                          onClick={() => addToCart(menuItem)}
-                          className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-8 sm:h-9 text-xs"
-                          size="sm"
-                        >
-                          <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                          Tambah
-                        </Button>
-                      </div>
-                    </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <Phone className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      Telepon/WhatsApp
+                    </p>
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {umkm.kontak}
+                    </p>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
 
-        {filteredItems.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-8 sm:py-12"
-          >
-            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
-              Tidak ada menu dalam kategori ini.
-            </p>
-          </motion.div>
-        )}
+                <div className="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                  <MapPin className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      Alamat
+                    </p>
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {umkm.alamat}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Direct WhatsApp Button untuk fallback */}
+                {!hasData && (
+                  <Button
+                    onClick={handleDirectWhatsApp}
+                    className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-12 text-lg"
+                  >
+                    <Phone className="w-5 h-5 mr-2" />
+                    Hubungi via WhatsApp
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
+  );
+};
+
+// Fallback Component untuk UMKM tanpa data spesifik
+const FallbackSection = ({ umkm, type }) => {
+  const getFallbackMessage = () => {
+    switch (type) {
+      case 'food':
+        return 'Menu belum tersedia untuk UMKM ini. Silakan hubungi langsung untuk informasi menu.';
+      case 'service':
+        return 'Detail layanan belum tersedia. Silakan hubungi langsung untuk informasi layanan.';
+      case 'retail':
+        return 'Katalog produk belum tersedia. Silakan hubungi langsung untuk informasi produk.';
+      default:
+        return 'Informasi pemesanan belum tersedia. Silakan hubungi langsung.';
+    }
+  };
+
+  return (
+    <Card className="glass-card border border-green-200 dark:border-green-800 text-center p-8">
+      <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+        <MessageCircle className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+      </div>
+      <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+        Informasi Pemesanan
+      </h3>
+      <p className="text-gray-600 dark:text-gray-300 mb-6">
+        {getFallbackMessage()}
+      </p>
+      <Button
+        onClick={() => {
+          const message = `Halo ${
+            umkm.nama
+          }, saya tertarik dengan ${umkm.kategori.toLowerCase()} Anda. Bisa info lebih lanjut?`;
+          const whatsappUrl = `https://wa.me/${
+            umkm.kontak
+          }?text=${encodeURIComponent(message)}`;
+          window.open(whatsappUrl, '_blank');
+        }}
+        className="bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700"
+      >
+        <Phone className="w-4 h-4 mr-2" />
+        Hubungi Langsung
+      </Button>
+    </Card>
   );
 };
 

@@ -433,21 +433,24 @@ function DetailPage() {
                   </a>
                 </Button>
 
-                {/* Tombol Lihat Menu untuk UMKM yang punya menu */}
-                {umkm.menu && (
-                  <Button
-                    asChild
-                    className="w-full bg-amber-500 hover:bg-amber-600 h-12"
+                {/* Tombol untuk SEMUA UMKM - tidak conditional */}
+                <Button
+                  asChild
+                  className="w-full bg-amber-500 hover:bg-amber-600 h-12"
+                >
+                  <Link
+                    to={`/menu/${umkm.slug}`}
+                    className="flex items-center gap-2"
                   >
-                    <Link
-                      to={`/menu/${umkm.slug}`}
-                      className="flex items-center gap-2"
-                    >
-                      <Utensils className="h-4 w-4" />
-                      Lihat Menu & Pesan
-                    </Link>
-                  </Button>
-                )}
+                    <Utensils className="h-4 w-4" />
+                    {/* Text menyesuaikan jenis UMKM */}
+                    {umkm.kategori === 'Jasa'
+                      ? 'Pesan Layanan'
+                      : umkm.kategori === 'Retail'
+                      ? 'Lihat Katalog'
+                      : 'Lihat Menu & Pesan'}
+                  </Link>
+                </Button> 
 
                 <Button
                   onClick={() => {

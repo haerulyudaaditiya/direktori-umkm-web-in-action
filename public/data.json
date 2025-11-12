@@ -36,36 +36,6 @@
         "deskripsi": "Ikan goreng crispy dengan sayur asem segar",
         "rating": 4.7,
         "waktuMasak": 8
-      },
-      {
-        "id": 3,
-        "nama": "Nasi + Rendang + Daun Singkong",
-        "harga": 18000,
-        "kategori": "paket",
-        "gambar": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&h=200&fit=crop",
-        "deskripsi": "Rendang empuk dengan daun singkong rebus",
-        "rating": 4.8,
-        "waktuMasak": 12
-      },
-      {
-        "id": 4,
-        "nama": "Es Teh Manis",
-        "harga": 3000,
-        "kategori": "minuman",
-        "gambar": "https://images.unsplash.com/photo-1597481499750-3e11b15f1c02?w=300&h=200&fit=crop",
-        "deskripsi": "Es teh manis segar dengan gula pasir",
-        "rating": 4.5,
-        "waktuMasak": 2
-      },
-      {
-        "id": 5,
-        "nama": "Jeruk Es",
-        "harga": 4000,
-        "kategori": "minuman",
-        "gambar": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&h=200&fit=crop",
-        "deskripsi": "Jeruk peras segar dengan es",
-        "rating": 4.6,
-        "waktuMasak": 3
       }
     ]
   },
@@ -74,7 +44,7 @@
     "nama": "Kopi Senja di Teras",
     "slug": "kopi-senja-teras",
     "kontak": "628178345901",
-    "kategori": "Tempat Nongkrong",
+    "kategori": "Minuman",
     "alamat": "Jl. Perjuangan No. 45, Seberang Rektorat",
     "cerita": "Tempat 'healing' favorit setelah kelas. Kopi Senja menawarkan es kopi susu gula aren terbaik di kota, dengan biji kopi lokal pilihan. Area outdoor-nya adalah tempat sempurna untuk menikmati senja sambil mengerjakan tugas. WiFi kencang dan colokan banyak.",
     "foto": [
@@ -106,36 +76,6 @@
         "deskripsi": "Kopi hitam americano untuk teman belajar",
         "rating": 4.6,
         "waktuMasak": 3
-      },
-      {
-        "id": 3,
-        "nama": "Latte Art",
-        "harga": 20000,
-        "kategori": "kopi",
-        "gambar": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=200&fit=crop",
-        "deskripsi": "Latte dengan art menarik dan rasa creamy",
-        "rating": 4.7,
-        "waktuMasak": 6
-      },
-      {
-        "id": 4,
-        "nama": "Croissant Almond",
-        "harga": 12000,
-        "kategori": "snack",
-        "gambar": "https://images.unsplash.com/photo-1555507036-ab794f27d2e9?w=300&h=200&fit=crop",
-        "deskripsi": "Croissant dengan filling almond yang gurih",
-        "rating": 4.7,
-        "waktuMasak": 2
-      },
-      {
-        "id": 5,
-        "nama": "Banana Bread",
-        "harga": 10000,
-        "kategori": "snack",
-        "gambar": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=300&h=200&fit=crop",
-        "deskripsi": "Pisang bakar dengan madu dan kayu manis",
-        "rating": 4.5,
-        "waktuMasak": 4
       }
     ]
   },
@@ -155,7 +95,30 @@
     "jam_buka": "Setiap Hari: 08:00 - 20:00",
     "rentang_harga": "$",
     "rating": 4.8,
-    "tags": ["Cepat Selesai", "Wangi", "Murah Banget"]
+    "tags": ["Cepat Selesai", "Wangi", "Murah Banget"],
+    "layanan": [
+      {
+        "id": 1,
+        "nama": "Laundry Kilat 6 Jam",
+        "harga": 15000,
+        "deskripsi": "Cuci kering lipat dalam 6 jam",
+        "satuan": "kg"
+      },
+      {
+        "id": 2,
+        "nama": "Laundry Reguler",
+        "harga": 10000,
+        "deskripsi": "Cuci kering lipat 24 jam",
+        "satuan": "kg"
+      },
+      {
+        "id": 3,
+        "nama": "Setrika Saja",
+        "harga": 5000,
+        "deskripsi": "Jasa setrika tanpa cuci",
+        "satuan": "kg"
+      }
+    ]
   },
   {
     "id": 4,
@@ -194,26 +157,6 @@
         "deskripsi": "Seblak dengan telur, sosis, bakso, dan level pedas 3",
         "rating": 4.8,
         "waktuMasak": 12
-      },
-      {
-        "id": 3,
-        "nama": "Seblak Ceker Level 5",
-        "harga": 12000,
-        "kategori": "seblak",
-        "gambar": "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=300&h=200&fit=crop",
-        "deskripsi": "Seblak ceker empuk dengan level pedas maksimal",
-        "rating": 4.9,
-        "waktuMasak": 15
-      },
-      {
-        "id": 4,
-        "nama": "Es Jeruk",
-        "harga": 5000,
-        "kategori": "minuman",
-        "gambar": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&h=200&fit=crop",
-        "deskripsi": "Es jeruk segar untuk teman seblak pedas",
-        "rating": 4.5,
-        "waktuMasak": 2
       }
     ]
   },
@@ -233,7 +176,37 @@
     "jam_buka": "Setiap Hari: Buka 24 Jam",
     "rentang_harga": "$",
     "rating": 4.9,
-    "tags": ["Buka 24 Jam", "Cepat Selesai", "Murah Banget"]
+    "tags": ["Buka 24 Jam", "Cepat Selesai", "Murah Banget"],
+    "layanan": [
+      {
+        "id": 1,
+        "nama": "Print Hitam Putih",
+        "harga": 300,
+        "deskripsi": "Print dokumen hitam putih",
+        "satuan": "lembar"
+      },
+      {
+        "id": 2,
+        "nama": "Print Berwarna",
+        "harga": 1000,
+        "deskripsi": "Print dokumen berwarna",
+        "satuan": "lembar"
+      },
+      {
+        "id": 3,
+        "nama": "Jilid Soft Cover",
+        "harga": 5000,
+        "deskripsi": "Jilid laporan/skripsi soft cover",
+        "satuan": "buku"
+      },
+      {
+        "id": 4,
+        "nama": "Jilid Hard Cover",
+        "harga": 15000,
+        "deskripsi": "Jilid skripsi hard cover premium",
+        "satuan": "buku"
+      }
+    ]
   },
   {
     "id": 6,
@@ -272,26 +245,179 @@
         "deskripsi": "Rendang daging sapi empuk dengan bumbu rempah",
         "rating": 4.9,
         "waktuMasak": 15
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "nama": "Toko Kelontong Berkah Murah",
+    "slug": "toko-berkah-murah",
+    "kontak": "628812345670",
+    "kategori": "Retail",
+    "alamat": "Jl. Melati No. 25, Depan Kampus",
+    "cerita": "Toko serba ada yang jadi andalan mahasiswa. Dari sabun sampai snack, dari alat tulis sampai kebutuhan sehari-hari. Buka sampai larut malam dan harganya sangat terjangkau. Pemiliknya ramah dan sering kasih diskon untuk pelanggan tetap.",
+    "foto": [
+      "https://images.unsplash.com/photo-1604719312566-8912e2217f77?w=500&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=500&auto=format&fit=crop&q=60"
+    ],
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.304018786411!2d106.8488000153525!3d-6.28014099548481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2f3e8b3b0f5%3A0x5e509c3a3b7d195a!2sToko%20Kelontong%20Berkah!5e0!3m2!1sen!2sid!4v1730550600000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "jam_buka": "Setiap Hari: 07:00 - 23:00",
+    "rentang_harga": "$",
+    "rating": 4.6,
+    "tags": ["Buka Sampai Malam", "Murah", "Lengkap"],
+    "produk": [
+      {
+        "id": 1,
+        "nama": "Beras Pandan Wangi 5kg",
+        "harga": 75000,
+        "deskripsi": "Beras premium khas Karawang, pulen dan wangi",
+        "gambar": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&h=200&fit=crop"
+      },
+      {
+        "id": 2,
+        "nama": "Minyak Goreng 2L",
+        "harga": 28000,
+        "deskripsi": "Minyak goreng kemasan botol 2 liter",
+        "gambar": "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=300&h=200&fit=crop"
       },
       {
         "id": 3,
-        "nama": "Gulai Kepala Ikan",
-        "harga": 18000,
-        "kategori": "lauk",
-        "gambar": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&h=200&fit=crop",
-        "deskripsi": "Gulai kepala ikan kakap dengan kuah santan",
-        "rating": 4.7,
-        "waktuMasak": 12
+        "nama": "Gula Pasir 1kg",
+        "harga": 15000,
+        "deskripsi": "Gula pasir kristal putih kemasan 1kg",
+        "gambar": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&h=200&fit=crop"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "nama": "Warung Buah Segar Pak Joko",
+    "slug": "warung-buah-pak-joko",
+    "kontak": "628823456781",
+    "kategori": "Retail",
+    "alamat": "Jl. Mangga No. 8, Pasar Karawang",
+    "cerita": "Buah-buahan segar langsung dari petani lokal Karawang. Pak Joko sendiri yang memetik dari kebunnya setiap pagi. Dijamin fresh dan harga lebih murah dari supermarket. Cocok untuk yang suka hidup sehat atau buat oleh-oleh.",
+    "foto": [
+      "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=500&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1546540742-2bdc8754f2a9?w=500&auto=format&fit=crop&q=60"
+    ],
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.195047806085!2d106.8290393153525!3d-6.23594199548177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3b146a8a251%3A0x1d3f30508b8b056!2sWarung%20Buah%20Pak%20Joko!5e0!3m2!1sen!2sid!4v1730550700000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "jam_buka": "Setiap Hari: 06:00 - 18:00",
+    "rentang_harga": "$$",
+    "rating": 4.7,
+    "tags": ["Buah Segar", "Lokal", "Sehat"],
+    "produk": [
+      {
+        "id": 1,
+        "nama": "Pisang Cavendish",
+        "harga": 25000,
+        "deskripsi": "Pisang cavendish segar, manis dan empuk",
+        "gambar": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=200&fit=crop"
       },
       {
-        "id": 4,
-        "nama": "Es Teh Tarek",
-        "harga": 6000,
+        "id": 2,
+        "nama": "Jeruk Pontianak",
+        "harga": 20000,
+        "deskripsi": "Jeruk pontianak manis, segar, dan banyak air",
+        "gambar": "https://images.unsplash.com/photo-1547514701-42782101795e?w=300&h=200&fit=crop"
+      },
+      {
+        "id": 3,
+        "nama": "Semangka Merah",
+        "harga": 15000,
+        "deskripsi": "Semangka merah manis, segar, dan berair",
+        "gambar": "https://images.unsplash.com/photo-1582281298055-e25b84a90f26?w=300&h=200&fit=crop"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "nama": "Bengkel Motor Jaya Abadi",
+    "slug": "bengkel-jaya-abadi",
+    "kontak": "628834567892",
+    "kategori": "Jasa",
+    "alamat": "Jl. Pahlawan No. 15, Karawang",
+    "cerita": "Bengkel langganan mahasiswa sejak 2010. Sparepart ori dan harga jasa terjangkau. Bisa servis ringan sampai berat, plus cuci motor gratis setiap servis. Mas-mas mekaniknya ramah dan berpengalaman.",
+    "foto": [
+      "https://images.unsplash.com/photo-1603712607846-2c9d4533757f?w=500&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1626806789293-40d839a89c86?w=500&auto=format&fit=crop&q=60"
+    ],
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.304018786411!2d106.8488000153525!3d-6.28014099548481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2f3e8b3b0f5%3A0x5e509c3a3b7d195a!2sBengkel%20Jaya%20Abadi!5e0!3m2!1sen!2sid!4v1730550800000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "jam_buka": "Senin - Minggu: 08:00 - 21:00",
+    "rentang_harga": "$$",
+    "rating": 4.8,
+    "tags": ["Sparepart Ori", "Berkualitas", "Ramah"],
+    "layanan": [
+      {
+        "id": 1,
+        "nama": "Ganti Oli Mesin",
+        "harga": 45000,
+        "deskripsi": "Ganti oli mesin termasuk oli dan service ringan",
+        "satuan": "motor"
+      },
+      {
+        "id": 2,
+        "nama": "Service Rutin",
+        "harga": 75000,
+        "deskripsi": "Service lengkap termasuk cek rem, lampu, dan aki",
+        "satuan": "motor"
+      },
+      {
+        "id": 3,
+        "nama": "Ganti Ban",
+        "harga": 150000,
+        "deskripsi": "Ganti ban baru termasuk pemasangan dan balancing",
+        "satuan": "pasang"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "nama": "Kedai Roti Mama Lisa",
+    "slug": "kedai-roti-mama-lisa",
+    "kontak": "628845678903",
+    "kategori": "Kuliner",
+    "alamat": "Jl. Cempaka No. 30, Karawang",
+    "cerita": "Roti bakar legendaris sejak 2005. Dikenal dengan roti bakar coklat keju yang lumer dan harganya sangat terjangkau. Mama Lisa sendiri yang membuat adonan setiap pagi. Tempat nongkrong favorit anak muda Karawang.",
+    "foto": [
+      "https://images.unsplash.com/photo-1555507036-ab794f27d2e9?w=500&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=500&auto=format&fit=crop&q=60"
+    ],
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.195047806085!2d106.8290393153525!3d-6.23594199548177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3b146a8a251%3A0x1d3f30508b8b056!2sKedai%20Roti%20Mama%20Lisa!5e0!3m2!1sen!2sid!4v1730550900000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "jam_buka": "Setiap Hari: 14:00 - 22:00",
+    "rentang_harga": "$",
+    "rating": 4.9,
+    "tags": ["Roti Bakar", "Murah", "Enak"],
+    "menu": [
+      {
+        "id": 1,
+        "nama": "Roti Bakar Coklat Keju",
+        "harga": 8000,
+        "kategori": "roti",
+        "gambar": "https://images.unsplash.com/photo-1555507036-ab794f27d2e9?w=300&h=200&fit=crop",
+        "deskripsi": "Roti bakar dengan coklat dan keju yang lumer",
+        "rating": 4.9,
+        "waktuMasak": 5
+      },
+      {
+        "id": 2,
+        "nama": "Roti Bakar Kacang Coklat",
+        "harga": 7000,
+        "kategori": "roti",
+        "gambar": "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=300&h=200&fit=crop",
+        "deskripsi": "Roti bakar dengan selai kacang dan coklat",
+        "rating": 4.8,
+        "waktuMasak": 5
+      },
+      {
+        "id": 3,
+        "nama": "Es Jeruk",
+        "harga": 5000,
         "kategori": "minuman",
-        "gambar": "https://images.unsplash.com/photo-1597481499750-3e11b15f1c02?w=300&h=200&fit=crop",
-        "deskripsi": "Es teh dengan gula aren dan susu",
-        "rating": 4.6,
-        "waktuMasak": 3
+        "gambar": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&h=200&fit=crop",
+        "deskripsi": "Es jeruk segar untuk teman roti bakar",
+        "rating": 4.7,
+        "waktuMasak": 2
       }
     ]
   }
