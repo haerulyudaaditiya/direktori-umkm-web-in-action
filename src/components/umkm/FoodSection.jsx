@@ -1,4 +1,3 @@
-// src/components/umkm/FoodSection.jsx
 import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
@@ -8,8 +7,8 @@ import { useOrder } from '@/contexts/OrderContext';
 
 const FoodSection = ({ menu, umkm }) => {
   const { dispatch } = useOrder();
-  const [quantities, setQuantities] = useState({});
   const [selectedCategory, setSelectedCategory] = useState('semua');
+  const [quantities, setQuantities] = useState({});
 
   const categories = ['semua', ...new Set(menu.map((item) => item.kategori))];
   const filteredItems =
@@ -26,7 +25,6 @@ const FoodSection = ({ menu, umkm }) => {
         price: menuItem.harga,
         image: menuItem.gambar,
         umkm: umkm.nama,
-        umkmSlug: umkm.slug,
       },
     });
 
@@ -42,17 +40,18 @@ const FoodSection = ({ menu, umkm }) => {
 
   return (
     <>
-      {/* Category Filter */}
+      {/* CATEGORY FILTER - SAMA PERSIS */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide"
+        transition={{ delay: 0.3 }}
+        className="flex gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide"
       >
         {categories.map((category) => (
           <button
             key={category}
             onClick={() => setSelectedCategory(category)}
-            className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-sm flex-shrink-0 ${
+            className={`px-3 sm:px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-xs sm:text-sm flex-shrink-0 ${
               selectedCategory === category
                 ? 'bg-green-500 text-white shadow-lg'
                 : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
@@ -63,11 +62,12 @@ const FoodSection = ({ menu, umkm }) => {
         ))}
       </motion.div>
 
-      {/* Menu Items */}
+      {/* MENU ITEMS - SAMA PERSIS */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="grid gap-4"
+        transition={{ duration: 0.3 }}
+        className="grid gap-4 sm:gap-6"
       >
         {filteredItems.map((menuItem, index) => (
           <motion.div
@@ -75,7 +75,7 @@ const FoodSection = ({ menu, umkm }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700"
+            className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700"
           >
             <div className="flex flex-col sm:flex-row">
               <img
@@ -84,18 +84,18 @@ const FoodSection = ({ menu, umkm }) => {
                 className="w-full h-40 sm:w-32 sm:h-32 object-cover"
               />
 
-              <div className="flex-1 p-4">
+              <div className="flex-1 p-3 sm:p-4">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white truncate">
+                    <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white truncate">
                       {menuItem.nama}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mt-1 line-clamp-2">
+                    <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2">
                       {menuItem.deskripsi}
                     </p>
                   </div>
                   <div className="text-left sm:text-right sm:ml-4">
-                    <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                    <div className="text-base sm:text-lg font-bold text-green-600 dark:text-green-400">
                       Rp {menuItem.harga.toLocaleString()}
                     </div>
                     <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -105,9 +105,9 @@ const FoodSection = ({ menu, umkm }) => {
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <div className="flex justify-between items-center mt-3 sm:mt-0">
+                  <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
                     <span>{menuItem.rating}</span>
                   </div>
 
@@ -123,10 +123,10 @@ const FoodSection = ({ menu, umkm }) => {
                     )}
                     <Button
                       onClick={() => addToCart(menuItem)}
-                      className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-9 text-sm"
+                      className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-8 sm:h-9 text-xs"
                       size="sm"
                     >
-                      <Plus className="w-4 h-4 mr-1" />
+                      <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                       Tambah
                     </Button>
                   </div>
@@ -136,6 +136,18 @@ const FoodSection = ({ menu, umkm }) => {
           </motion.div>
         ))}
       </motion.div>
+
+      {filteredItems.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center py-8 sm:py-12"
+        >
+          <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
+            Tidak ada menu dalam kategori ini.
+          </p>
+        </motion.div>
+      )}
     </>
   );
 };
