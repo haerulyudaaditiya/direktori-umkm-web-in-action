@@ -235,18 +235,22 @@
   },
   {
     "id": 4,
-    "nama": "Seblak Prasmanan Teh Euis",
-    "slug": "seblak-teh-euis",
-    "kontak": "628957431208",
+    "nama": "Seblak Bandung Slowdown",
+    "slug": "seblak-bandung-slowdown",
+    "kontak": "6285313799939",
     "kategori": "Cemilan",
-    "alamat": "Jl. Kenangan No. 10, Samping Indomaret",
+    "alamat": "Jl. HS.Ronggo Waluyo No.2, Sukaharja, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Surganya pecinta seblak. Di sini, kamu bisa ambil topping sendiri sepuasnya (prasmanan). Level pedasnya ada dari 1 sampai 5 'Naga'. Level 3 saja sudah cukup menantang. Kuah kencurnya sangat 'medok' dan otentik. Selalu ramai saat jam pulang kuliah.",
     "foto": [
-      "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80"
+      ["/images/seblak-slowdown/display1.jpg"],
+      ["/images/seblak-slowdown/display2.jpg"],
+      ["/images/seblak-slowdown/display3.jpg"]
+
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.079204899144!2d106.8430763153526!3d-6.252037995472879!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3b146a8a251%3A0x1d3f30508b8b056!2sSeblak%20Prasmanan!5e0!3m2!1sen!2sid!4v1730550300000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-    "jam_buka": "Setiap Hari: 11:00 - 22:00",
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.320464497005!2d107.29288277482988!3d-6.319850993669586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6977d40fd83cc3%3A0xc8878de6fd2cdc1e!2sSeblak%20Bandung%20Slowdown!5e1!3m2!1sid!2sid!4v1763233331213!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.319848794528219,
+    "lng": 107.29545269747493,
+    "jam_buka": "Setiap Hari: Buka 24 Jam",
     "rentang_harga": "$",
     "rating": 4.6,
     "tags": ["Pedas", "Prasmanan", "Murah Banget", "Banyak Pilihan"],
@@ -254,20 +258,20 @@
       {
         "id": 1,
         "nama": "Seblak Kerupuk Original",
-        "harga": 8000,
+        "harga": 18000,
         "kategori": "seblak",
-        "gambar": "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=300&h=200&fit=crop",
+        "gambar": ["/images/seblak-slowdown/seblak-kerupuk.jpg"],
         "deskripsi": "Seblak kerupuk dengan kuah kental original",
         "rating": 4.6,
         "waktuMasak": 8
       },
       {
         "id": 2,
-        "nama": "Seblak Komplit Level 3",
-        "harga": 15000,
+        "nama": "Seblak Komplit",
+        "harga": 25000,
         "kategori": "seblak",
-        "gambar": "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&h=200&fit=crop",
-        "deskripsi": "Seblak dengan telur, sosis, bakso, dan level pedas 3",
+        "gambar": ["/images/seblak-slowdown/seblak-komplit.jpg"],
+        "deskripsi": "Seblak dengan telur, sosis, dan bakso",
         "rating": 4.8,
         "waktuMasak": 12
       }
