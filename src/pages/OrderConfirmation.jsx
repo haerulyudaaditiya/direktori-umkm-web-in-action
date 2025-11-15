@@ -63,14 +63,14 @@ const OrderConfirmation = () => {
 
           // Simpan ke localStorage
           const savedOrders = JSON.parse(
-            localStorage.getItem('kantongAman_orders') || '[]'
+            localStorage.getItem('karawangMart_orders') || '[]'
           );
           const updatedOrders = [
             ...savedOrders.filter((o) => o.id !== orderId),
             orderData,
           ];
           localStorage.setItem(
-            'kantongAman_orders',
+            'karawangMart_orders',
             JSON.stringify(updatedOrders)
           );
           return;
@@ -88,7 +88,7 @@ const OrderConfirmation = () => {
 
         // Priority 3: Dari localStorage
         const savedOrders = JSON.parse(
-          localStorage.getItem('kantongAman_orders') || '[]'
+          localStorage.getItem('karawangMart_orders') || '[]'
         );
         const savedOrder = savedOrders.find((o) => o.id === orderId);
 
@@ -145,13 +145,13 @@ const OrderConfirmation = () => {
 
         // Update status order di localStorage
         const savedOrders = JSON.parse(
-          localStorage.getItem('kantongAman_orders') || '[]'
+          localStorage.getItem('karawangMart_orders') || '[]'
         );
         const updatedOrders = savedOrders.map((o) =>
           o.id === order.id ? { ...o, status: 'ready' } : o
         );
         localStorage.setItem(
-          'kantongAman_orders',
+          'karawangMart_orders',
           JSON.stringify(updatedOrders)
         );
 
@@ -208,12 +208,12 @@ const OrderConfirmation = () => {
         : 'Ambil di lokasi UMKM'
     }
 
-Dukung UMKM lokal dengan #KantongAman!`;
+Dukung UMKM lokal dengan #KarawangMart!`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Pesanan #${orderNumber} - KantongAman`,
+          title: `Pesanan #${orderNumber} - KarawangMart`,
           text: shareText,
           url: window.location.href,
         });

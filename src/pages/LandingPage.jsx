@@ -433,7 +433,7 @@ const LandingPage = () => {
               className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4"
             >
               Mengapa Pilih{' '}
-              <span className="text-gradient-karawang">KantongAman</span>?
+              <span className="text-gradient-karawang">KarawangMart</span>?
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 10 }}
@@ -500,7 +500,7 @@ const LandingPage = () => {
               className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
             >
               Dengarkan pengalaman langsung dari pengguna dan pemilik UMKM yang
-              telah merasakan manfaat KantongAman
+              telah merasakan manfaat KarawangMart
             </motion.p>
           </motion.div>
 

@@ -14,7 +14,7 @@ const Footer = () => {
                 <Wheat className="h-6 w-6 text-white" />
               </div>
               <div>
-                <div className="text-xl font-bold">KantongAman Karawang</div>
+                <div className="text-xl font-bold">KarawangMart</div>
                 <div className="text-green-400 text-sm">
                   Platform UMKM Terpercaya
                 </div>
@@ -75,7 +75,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Mail className="h-4 w-4 text-green-500" />
-                <span>info@kantongamankarawang.id</span>
+                <span>info@karawangmart.id</span>
               </div>
             </div>
           </div>
@@ -85,7 +85,7 @@ const Footer = () => {
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} KantongAman Karawang. All rights
+              © {new Date().getFullYear()} KarawangMart. All rights
               reserved.
             </div>
             <div className="text-gray-400 text-sm">
@@ -94,7 +94,7 @@ const Footer = () => {
               </span>{' '}
               oleh{' '}
               <span className="text-amber-400 font-semibold">
-                Haerul Yuda Aditiya
+                TandemNgoding
               </span>
             </div>
           </div>

@@ -454,7 +454,7 @@ function DetailPage() {
 
                 <Button
                   onClick={() => {
-                    const message = `Halo KantongAman, saya tertarik dengan ${umkm.nama}. Bisa info lebih lanjut?`;
+                    const message = `Halo KarawangMart, saya tertarik dengan ${umkm.nama}. Bisa info lebih lanjut?`;
                     const phoneNumber = '6281234567890';
                     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
                       message

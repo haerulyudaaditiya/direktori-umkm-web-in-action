@@ -25,10 +25,9 @@ function Navbar() {
         <Link to="/" className="flex items-center space-x-2 group">
           <div className="relative">
             <Wheat className="h-6 w-6 text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform" />
-            <Store className="h-3 w-3 text-amber-600 dark:text-amber-400 absolute -bottom-1 -right-1" />
           </div>
           <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-green-600 to-amber-600 bg-clip-text text-transparent">
-            KantongAman
+            KarawangMart
           </span>
           <span className="text-xs text-green-500 font-medium bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full">
             Karawang
@@ -71,10 +70,9 @@ function Navbar() {
                 <Link to="/" className="flex items-center space-x-2 mb-6">
                   <div className="relative">
                     <Wheat className="h-6 w-6 text-green-600 dark:text-green-400" />
-                    <Store className="h-3 w-3 text-amber-600 dark:text-amber-400 absolute -bottom-1 -right-1" />
                   </div>
                   <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-green-600 to-amber-600 bg-clip-text text-transparent">
-                    KantongAman
+                    KarawangMart
                   </span>
                 </Link>
 
