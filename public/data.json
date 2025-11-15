@@ -1,41 +1,63 @@
 [
   {
     "id": 1,
-    "nama": "Warteg Barokah Jaya",
-    "slug": "warteg-barokah-jaya",
-    "kontak": "628123456789",
+    "nama": "Soto Mie Bogor Kang Enjam",
+    "lat": -6.3235367,
+    "lng": 107.3002425,
+    "slug": "soto-mie-bogor-kang-enjam",
+    "kontak": "6281294321408",
     "kategori": "Makanan Berat",
-    "alamat": "Jl. Keadilan No. 12, Samping Gerbang Kampus",
-    "cerita": "Warteg Barokah Jaya adalah penyelamat sejati di akhir bulan. Dikenal dengan resep ayam balado legendaris dan tempe orek yang tak pernah gagal. Ibu Ani, sang pemilik, seringkali memberikan bonus nasi. Tempat ini bukan sekadar warung, tapi rumah kedua bagi mahasiswa.",
+    "alamat": "Jl. HS.Ronggo Waluyo No.184, Puseurjaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
+    "cerita": "Soto Mie Bogor Kang Enjam di Karawang adalah tujuan wajib bagi pencinta kuliner hangat dan segar. Dengan kuah gurih khas Bogor, potongan daging empuk, serta mie dan risol yang bikin nagih, setiap mangkuk terasa seperti pelukan hangat di hari sibuk. Kang Enjam yang ramah selalu memastikan pelanggan pulang dengan perut kenyang dan hati senang. Tempat ini bukan sekadar tempat makan, tapi pelipur rindu bagi siapa pun yang membutuhkan kenyamanan dalam setiap suapan.",
     "foto": [
-      "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80"
+      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=2069&q=80",
+      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=2080&q=80"
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.0159048187836!2d106.8269603153526!3d-6.261685395467404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2385108f235%3A0x6a94f6c1f111005f!2sWarteg%20Barokah%20Jaya!5e0!3m2!1sen!2sid!4v1730550000000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-    "jam_buka": "Senin - Sabtu: 08:00 - 20:00",
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m17!1m11!1m3!1d142.62566909882273!2d107.30024248811104!3d-6.323536707368411!2m2!1f0!2f1.1949184874067216!3m2!1i1024!2i768!4f35!3m3!1m2!1s0x2e6977d2c9302bb1%3A0xe4705a5ab98b6a63!2sSoto%20Mie%20Bogor%20Kang%20Enjam!5e1!3m2!1sid!2sid!4v1763207656606!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "jam_buka": "Setiap Hari: 08:00 - 20:00",
     "rentang_harga": "$",
-    "rating": 4.8,
-    "tags": ["Murah Banget", "Terima QRIS", "Banyak Pilihan"],
+    "rating": 4.5,
+    "tags": ["Makan di tempat", "Bawa Pulang", "Antar Tanpa Ketemu"],
     "menu": [
       {
         "id": 1,
-        "nama": "Nasi + Ayam Balado + Tempe Orek",
-        "harga": 15000,
-        "kategori": "paket",
+        "nama": "Soto Mie Bogor",
+        "harga": 18000,
+        "kategori": "makanan",
         "gambar": "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=300&h=200&fit=crop",
-        "deskripsi": "Paket lengkap dengan nasi panas, ayam balado spesial, dan tempe orek renyah",
-        "rating": 4.9,
+        "deskripsi": "Soto mie khas Bogor dengan daging empuk, mie kenyal, dan kuah gurih segar.",
+        "rating": 4.8,
         "waktuMasak": 10
       },
       {
         "id": 2,
-        "nama": "Nasi + Ikan Goreng + Sayur Asem",
-        "harga": 12000,
-        "kategori": "paket",
+        "nama": "Soto Mie Risol",
+        "harga": 20000,
+        "kategori": "makanan",
         "gambar": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop",
-        "deskripsi": "Ikan goreng crispy dengan sayur asem segar",
+        "deskripsi": "Soto mie lengkap dengan risol isi bihun yang renyah dan nagih.",
         "rating": 4.7,
-        "waktuMasak": 8
+        "waktuMasak": 10
+      },
+      {
+        "id": 3,
+        "nama": "Es Teh Manis",
+        "harga": 5000,
+        "kategori": "minuman",
+        "gambar": "https://images.unsplash.com/photo-1576754383934-1904c9107588?w=300&h=200&fit=crop",
+        "deskripsi": "Es teh manis segar yang cocok menemani soto hangat.",
+        "rating": 4.6,
+        "waktuMasak": 1
+      },
+      {
+        "id": 4,
+        "nama": "Es Jeruk",
+        "harga": 7000,
+        "kategori": "minuman",
+        "gambar": "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300&h=200&fit=crop",
+        "deskripsi": "Es jeruk segar perasan asli.",
+        "rating": 4.5,
+        "waktuMasak": 2
       }
     ]
   },

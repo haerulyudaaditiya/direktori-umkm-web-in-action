@@ -420,9 +420,7 @@ function DetailPage() {
                   className="w-full bg-green-600 hover:bg-green-700 h-12"
                 >
                   <a
-                    href={`https://maps.google.com/?q=${encodeURIComponent(
-                      umkm.alamat
-                    )}`}
+                    href={`https://maps.google.com/?q=${umkm.lat},${umkm.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2"
@@ -450,7 +448,7 @@ function DetailPage() {
                       ? 'Lihat Katalog'
                       : 'Lihat Menu & Pesan'}
                   </Link>
-                </Button> 
+                </Button>
 
                 <Button
                   onClick={() => {
