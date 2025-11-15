@@ -30,6 +30,7 @@ import {
   Wheat,
   Store,
 } from 'lucide-react';
+import { getCategoryFallback } from '@/utils/categoryFallback';
 
 function DirectoryPage() {
   const [searchParams] = useSearchParams();
@@ -42,6 +43,7 @@ function DirectoryPage() {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedTags, setSelectedTags] = useState([]);
   const [sortBy, setSortBy] = useState('rating');
+  const [imageErrors, setImageErrors] = useState({});
 
   useEffect(() => {
     fetch('/data.json')
@@ -358,13 +360,32 @@ function DirectoryPage() {
               >
                 <Link to={`/umkm/${umkm.slug}`} className="group">
                   <Card className="glass-card overflow-hidden rounded-2xl border border-green-200 dark:border-green-800 transition-all">
-                    {/* Gambar UMKM */}
                     <div className="relative h-48 w-full overflow-hidden">
-                      <img
-                        src={umkm.foto[0]}
-                        alt={umkm.nama}
-                        className="w-full h-full object-cover"
-                      />
+                      {imageErrors[umkm.id] ? (
+                        <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                          {(() => {
+                            const fallbackConfig = getCategoryFallback(
+                              umkm.kategori
+                            );
+                            const IconComponent = fallbackConfig.icon;
+                            return (
+                              <IconComponent className="w-10 h-10 text-white" />
+                            );
+                          })()}
+                        </div>
+                      ) : (
+                        <img
+                          src={umkm.foto[0]}
+                          alt={umkm.nama}
+                          onError={() =>
+                            setImageErrors((prev) => ({
+                              ...prev,
+                              [umkm.id]: true,
+                            }))
+                          }
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                       <Badge className="absolute top-3 right-3 bg-green-500 text-white shadow-lg border-0">
                         {umkm.kategori}
                       </Badge>

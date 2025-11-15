@@ -30,6 +30,7 @@ import {
   Wheat,
   Sparkles,
 } from 'lucide-react';
+import { getCategoryFallback } from '@/utils/categoryFallback';
 
 function DetailPage() {
   const { slug } = useParams();
@@ -37,6 +38,7 @@ function DetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [carouselApi, setCarouselApi] = useState(null);
+  const [imageErrors, setImageErrors] = useState({});
 
   useEffect(() => {
     fetch('/data.json')
@@ -207,11 +209,28 @@ function DetailPage() {
                     transition={{ duration: 0.5 }}
                     className="w-full h-80 md:h-[480px] relative"
                   >
-                    <img
-                      src={foto}
-                      alt={`${umkm.nama} ${i + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                    {imageErrors[i] ? (
+                      <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                        {(() => {
+                          const fallbackConfig = getCategoryFallback(
+                            umkm.kategori
+                          );
+                          const IconComponent = fallbackConfig.icon;
+                          return (
+                            <IconComponent className="w-16 h-16 text-white" />
+                          );
+                        })()}
+                      </div>
+                    ) : (
+                      <img
+                        src={foto}
+                        alt={`${umkm.nama} ${i + 1}`}
+                        onError={() =>
+                          setImageErrors((prev) => ({ ...prev, [i]: true }))
+                        }
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                     {i === 0 && (
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -270,11 +289,31 @@ function DetailPage() {
                       : 'border-green-200 dark:border-green-800 hover:border-green-400'
                   }`}
                 >
-                  <img
-                    src={foto}
-                    alt={`Thumbnail ${i + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                  {imageErrors[`thumb_${i}`] ? (
+                    // FALLBACK untuk thumbnail
+                    <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                      {(() => {
+                        const fallbackConfig = getCategoryFallback(
+                          umkm.kategori
+                        );
+                        const IconComponent = fallbackConfig.icon;
+                        return <IconComponent className="w-6 h-6 text-white" />;
+                      })()}
+                    </div>
+                  ) : (
+                    // Thumbnail asli
+                    <img
+                      src={foto}
+                      alt={`Thumbnail ${i + 1}`}
+                      onError={() =>
+                        setImageErrors((prev) => ({
+                          ...prev,
+                          [`thumb_${i}`]: true,
+                        }))
+                      }
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </button>
               ))}
             </motion.div>

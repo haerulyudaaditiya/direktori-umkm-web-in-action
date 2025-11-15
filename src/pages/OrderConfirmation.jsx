@@ -38,6 +38,7 @@ const OrderConfirmation = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [imageErrors, setImageErrors] = useState({});
 
   // Generate order number yang konsisten
   const generateOrderNumber = (id) => {
@@ -543,11 +544,23 @@ Dukung UMKM lokal dengan #KarawangMart!`;
                         transition={{ delay: 0.5 + index * 0.1 }}
                         className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700"
                       >
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-16 h-16 rounded-lg object-cover"
-                        />
+                        {imageErrors[item.id] ? (
+                          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                            <Utensils className="w-6 h-6 text-white" />
+                          </div>
+                        ) : (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            onError={() =>
+                              setImageErrors((prev) => ({
+                                ...prev,
+                                [item.id]: true,
+                              }))
+                            }
+                            className="w-16 h-16 rounded-lg object-cover"
+                          />
+                        )}
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>

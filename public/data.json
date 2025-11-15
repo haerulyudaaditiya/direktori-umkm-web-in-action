@@ -10,52 +10,120 @@
     "alamat": "Jl. HS.Ronggo Waluyo No.184, Puseurjaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Soto Mie Bogor Kang Enjam di Karawang adalah tujuan wajib bagi pencinta kuliner hangat dan segar. Dengan kuah gurih khas Bogor, potongan daging empuk, serta mie dan risol yang bikin nagih, setiap mangkuk terasa seperti pelukan hangat di hari sibuk. Kang Enjam yang ramah selalu memastikan pelanggan pulang dengan perut kenyang dan hati senang. Tempat ini bukan sekadar tempat makan, tapi pelipur rindu bagi siapa pun yang membutuhkan kenyamanan dalam setiap suapan.",
     "foto": [
-      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=2069&q=80",
+      ["/images/soto-mie-bogor-kang-enjam/display1.jpg"],
       "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=2080&q=80"
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m17!1m11!1m3!1d142.62566909882273!2d107.30024248811104!3d-6.323536707368411!2m2!1f0!2f1.1949184874067216!3m2!1i1024!2i768!4f35!3m3!1m2!1s0x2e6977d2c9302bb1%3A0xe4705a5ab98b6a63!2sSoto%20Mie%20Bogor%20Kang%20Enjam!5e1!3m2!1sid!2sid!4v1763207656606!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
     "jam_buka": "Setiap Hari: 08:00 - 20:00",
-    "rentang_harga": "$",
+    "rentang_harga": "$$",
     "rating": 4.5,
-    "tags": ["Makan di tempat", "Bawa Pulang", "Antar Tanpa Ketemu"],
+    "tags": ["Rasa Enak", "Disajikan Segar", "Porsi Pas"],
     "menu": [
       {
         "id": 1,
-        "nama": "Soto Mie Bogor",
-        "harga": 18000,
+        "nama": "Soto Mie Bogor Campur",
+        "harga": 25000,
         "kategori": "makanan",
-        "gambar": "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=300&h=200&fit=crop",
-        "deskripsi": "Soto mie khas Bogor dengan daging empuk, mie kenyal, dan kuah gurih segar.",
+        "gambar": ["/images/soto-mie-bogor-kang-enjam/soto-mie-bogor.jpg"],
+        "deskripsi": "Mie kuning, mie putih, dan kol di siram kuah kaldu di beri daging.",
         "rating": 4.8,
         "waktuMasak": 10
       },
       {
         "id": 2,
-        "nama": "Soto Mie Risol",
-        "harga": 20000,
+        "nama": "Mie Kocok",
+        "harga": 25000,
         "kategori": "makanan",
-        "gambar": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop",
-        "deskripsi": "Soto mie lengkap dengan risol isi bihun yang renyah dan nagih.",
+        "gambar": ["/images/soto-mie-bogor-kang-enjam/mie-kocok.jpg"],
+        "deskripsi": "Mie kuning dan tauge di siram kuah kaldu di beri daging, kikil, dan risol.",
         "rating": 4.7,
         "waktuMasak": 10
       },
       {
         "id": 3,
-        "nama": "Es Teh Manis",
-        "harga": 5000,
-        "kategori": "minuman",
-        "gambar": "https://images.unsplash.com/photo-1576754383934-1904c9107588?w=300&h=200&fit=crop",
-        "deskripsi": "Es teh manis segar yang cocok menemani soto hangat.",
+        "nama": "Soto Mie Bogor Kikil",
+        "harga": 25000,
+        "kategori": "makanan",
+        "gambar": [
+          "/images/soto-mie-bogor-kang-enjam/soto-mie-bogor-kikil.jpg"
+        ],
+        "deskripsi": "Mie kuning, mie putih, dan kol di siram kuah kaldu di beri kikil dan risol.",
         "rating": 4.6,
-        "waktuMasak": 1
+        "waktuMasak": 10
       },
       {
         "id": 4,
+        "nama": "Mie Kocok Kikil",
+        "harga": 25000,
+        "kategori": "makanan",
+        "gambar": ["/images/soto-mie-bogor-kang-enjam/mie-kocok-kikil.jpg"],
+        "deskripsi": "Mie,tauge, risoles, daun bawang, bawang goreng, kentang dan kikil.",
+        "rating": 4.5,
+        "waktuMasak": 10
+      },
+      {
+        "id": 5,
+        "nama": "Soto Mie Bogor Daging",
+        "harga": 30000,
+        "kategori": "makanan",
+        "gambar": [
+          "/images/soto-mie-bogor-kang-enjam/soto-mie-bogor-daging.jpg"
+        ],
+        "deskripsi": "Mie kuning, mie putih, dan kol di siram kuah kaldu di beri daging dan risol.",
+        "rating": 4.4,
+        "waktuMasak": 10
+      },
+      {
+        "id": 6,
+        "nama": "Toge Goreng Khas Bogor",
+        "harga": 20000,
+        "kategori": "makanan",
+        "gambar": [
+          "/images/soto-mie-bogor-kang-enjam/toge-goreng-khas-bogor.jpg"
+        ],
+        "deskripsi": "Toge,Tahu,Lontong,Mie Kuning,Tauco,Oncom Bumbu",
+        "rating": 4.4,
+        "waktuMasak": 10
+      },
+      {
+        "id": 7,
+        "nama": "Nasi",
+        "harga": 5000,
+        "kategori": "tambahan",
+        "gambar": [
+          "/images/soto-mie-bogor-kang-enjam/nasi.jpg"
+        ],
+        "deskripsi": "",
+        "rating": 4.4,
+        "waktuMasak": 2
+      },
+      {
+        "id": 8,
         "nama": "Es Jeruk",
         "harga": 7000,
         "kategori": "minuman",
-        "gambar": "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300&h=200&fit=crop",
-        "deskripsi": "Es jeruk segar perasan asli.",
+        "gambar": ["/images/soto-mie-bogor-kang-enjam/es-jeruk.jpg"],
+        "deskripsi": "Perasan air jeruk di beri es dan sedikit gula.",
+        "rating": 4.5,
+        "waktuMasak": 2
+      },
+      {
+        "id": 9,
+        "nama": "Es Teh Manis",
+        "harga": 5000,
+        "kategori": "minuman",
+        "gambar": ["/images/soto-mie-bogor-kang-enjam/es-teh-manis.jpg"],
+        "deskripsi": "",
+        "rating": 4.5,
+        "waktuMasak": 2
+      },
+      {
+        "id": 10,
+        "nama": "Es Teh Tawar",
+        "harga": 5000,
+        "kategori": "minuman",
+        "gambar": ["/images/soto-mie-bogor-kang-enjam/es-teh-tawar.jpg"],
+        "deskripsi": "",
         "rating": 4.5,
         "waktuMasak": 2
       }

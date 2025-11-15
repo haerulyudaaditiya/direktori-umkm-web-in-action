@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getCategoryFallback } from '@/utils/categoryFallback';
 
 const ServiceSection = ({ layanan, umkm }) => {
   const [selectedCategory, setSelectedCategory] = useState('semua');
@@ -25,42 +26,6 @@ const ServiceSection = ({ layanan, umkm }) => {
     selectedCategory === 'semua'
       ? layanan
       : layanan.filter((item) => item.nama.startsWith(selectedCategory));
-
-  // Fungsi untuk mendapatkan icon berdasarkan nama layanan
-  const getServiceIcon = (serviceName) => {
-    const name = serviceName.toLowerCase();
-
-    if (name.includes('laundry') || name.includes('cuci'))
-      return <WashingMachine className="w-8 h-8 text-white" />;
-
-    if (
-      name.includes('print') ||
-      name.includes('cetak') ||
-      name.includes('fotokopi')
-    )
-      return <Printer className="w-8 h-8 text-white" />;
-
-    if (
-      name.includes('jilid') ||
-      name.includes('binding') ||
-      name.includes('laporan')
-    )
-      return <BookOpen className="w-8 h-8 text-white" />;
-
-    if (
-      name.includes('bengkel') ||
-      name.includes('service') ||
-      name.includes('ganti') ||
-      name.includes('oli')
-    )
-      return <Wrench className="w-8 h-8 text-white" />;
-
-    if (name.includes('setrika') || name.includes('iron'))
-      return <Sparkles className="w-8 h-8 text-white" />;
-
-    // Default icon untuk layanan lainnya
-    return <Settings className="w-8 h-8 text-white" />;
-  };
 
   const handleOrder = (service) => {
     const message = `Halo ${umkm.nama}, saya ingin memesan layanan:\n\n*${
@@ -114,14 +79,12 @@ const ServiceSection = ({ layanan, umkm }) => {
             className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700"
           >
             <div className="flex flex-col sm:flex-row">
-              {/* Custom Icon dengan Gradient HIJAU */}
-              <div className="w-full h-40 sm:w-32 sm:h-32 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center relative overflow-hidden">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.15)_1px,transparent_0)] bg-[length:20px_20px]"></div>
-                {/* Service Icon */}
-                <div className="relative z-10">
-                  {getServiceIcon(service.nama)}
-                </div>
+              <div className="w-full h-40 sm:w-32 sm:h-32 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                {(() => {
+                  const fallbackConfig = getCategoryFallback('jasa');
+                  const IconComponent = fallbackConfig.icon;
+                  return <IconComponent className="w-10 h-10 text-white" />;
+                })()}
               </div>
 
               <div className="flex-1 p-3 sm:p-4">

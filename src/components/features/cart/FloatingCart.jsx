@@ -6,11 +6,13 @@ import { ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useOrder } from '@/contexts/OrderContext';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
+import { Utensils } from 'lucide-react';
 
 const FloatingCart = () => {
   const { state, dispatch } = useOrder();
   const [isExpanded, setIsExpanded] = useState(false);
   const location = useLocation();
+  const [imageErrors, setImageErrors] = useState({});
   
   useEffect(() => {
      setIsExpanded(false);
@@ -108,11 +110,24 @@ const FloatingCart = () => {
                       exit={{ opacity: 0, x: 20 }}
                       className="flex items-center gap-3 py-3 border-b border-gray-200 dark:border-gray-700"
                     >
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-16 h-16 rounded-lg object-cover"
-                      />
+                      {/* Untuk setiap item di cart */}
+                      {imageErrors[item.id] ? (
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Utensils className="w-5 h-5 text-white" />
+                        </div>
+                      ) : (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          onError={() =>
+                            setImageErrors((prev) => ({
+                              ...prev,
+                              [item.id]: true,
+                            }))
+                          }
+                          className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                        />
+                      )}
 
                       <div className="flex-1">
                         <h4 className="font-semibold text-sm text-gray-900 dark:text-white">

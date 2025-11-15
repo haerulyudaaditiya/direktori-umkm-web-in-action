@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const RetailSection = ({ produk, umkm }) => {
   const [selectedCategory, setSelectedCategory] = useState('semua');
+  const [imageErrors, setImageErrors] = useState({});
 
   const categories = [
     'semua',
@@ -68,11 +69,20 @@ const RetailSection = ({ produk, umkm }) => {
             className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700"
           >
             <div className="flex flex-col sm:flex-row">
-              <img
-                src={product.gambar}
-                alt={product.nama}
-                className="w-full h-40 sm:w-32 sm:h-32 object-cover"
-              />
+              {imageErrors[product.id] ? (
+                <div className="w-full h-40 sm:w-32 sm:h-32 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                  <ShoppingBag className="w-8 h-8 text-white" />
+                </div>
+              ) : (
+                <img
+                  src={product.gambar}
+                  alt={product.nama}
+                  onError={() =>
+                    setImageErrors((prev) => ({ ...prev, [product.id]: true }))
+                  }
+                  className="w-full h-40 sm:w-32 sm:h-32 object-cover"
+                />
+              )}
 
               <div className="flex-1 p-3 sm:p-4">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
@@ -103,7 +113,7 @@ const RetailSection = ({ produk, umkm }) => {
 
                   <Button
                     onClick={() => handleOrder(product)}
-                    className="bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 h-8 sm:h-9 text-xs"
+                    className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-8 sm:h-9 text-xs"
                     size="sm"
                   >
                     <ShoppingBag className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
