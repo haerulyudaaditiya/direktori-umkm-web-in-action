@@ -2,8 +2,6 @@
   {
     "id": 1,
     "nama": "Soto Mie Bogor Kang Enjam",
-    "lat": -6.3235367,
-    "lng": 107.3002425,
     "slug": "soto-mie-bogor-kang-enjam",
     "kontak": "6281294321408",
     "kategori": "Makanan Berat",
@@ -11,9 +9,12 @@
     "cerita": "Soto Mie Bogor Kang Enjam di Karawang adalah tujuan wajib bagi pencinta kuliner hangat dan segar. Dengan kuah gurih khas Bogor, potongan daging empuk, serta mie dan risol yang bikin nagih, setiap mangkuk terasa seperti pelukan hangat di hari sibuk. Kang Enjam yang ramah selalu memastikan pelanggan pulang dengan perut kenyang dan hati senang. Tempat ini bukan sekadar tempat makan, tapi pelipur rindu bagi siapa pun yang membutuhkan kenyamanan dalam setiap suapan.",
     "foto": [
       ["/images/soto-mie-bogor-kang-enjam/display1.jpg"],
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=2080&q=80"
+      ["/images/soto-mie-bogor-kang-enjam/soto-mie-bogor-kikil.jpg"],
+      ["/images/soto-mie-bogor-kang-enjam/mie-kocok.jpg"]
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m17!1m11!1m3!1d142.62566909882273!2d107.30024248811104!3d-6.323536707368411!2m2!1f0!2f1.1949184874067216!3m2!1i1024!2i768!4f35!3m3!1m2!1s0x2e6977d2c9302bb1%3A0xe4705a5ab98b6a63!2sSoto%20Mie%20Bogor%20Kang%20Enjam!5e1!3m2!1sid!2sid!4v1763207656606!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.3235367,
+    "lng": 107.3002425,
     "jam_buka": "Setiap Hari: 08:00 - 20:00",
     "rentang_harga": "$$",
     "rating": 4.5,
@@ -90,9 +91,7 @@
         "nama": "Nasi",
         "harga": 5000,
         "kategori": "tambahan",
-        "gambar": [
-          "/images/soto-mie-bogor-kang-enjam/nasi.jpg"
-        ],
+        "gambar": ["/images/soto-mie-bogor-kang-enjam/nasi.jpg"],
         "deskripsi": "",
         "rating": 4.4,
         "waktuMasak": 2
@@ -113,7 +112,7 @@
         "harga": 5000,
         "kategori": "minuman",
         "gambar": ["/images/soto-mie-bogor-kang-enjam/es-teh-manis.jpg"],
-        "deskripsi": "",
+        "deskripsi": "Teh manis segar dengan es batu",
         "rating": 4.5,
         "waktuMasak": 2
       },
@@ -123,7 +122,7 @@
         "harga": 5000,
         "kategori": "minuman",
         "gambar": ["/images/soto-mie-bogor-kang-enjam/es-teh-tawar.jpg"],
-        "deskripsi": "",
+        "deskripsi": "Teh tawar segar dengan es batu",
         "rating": 4.5,
         "waktuMasak": 2
       }
@@ -131,57 +130,81 @@
   },
   {
     "id": 2,
-    "nama": "Kopi Senja di Teras",
-    "slug": "kopi-senja-teras",
+    "nama": "Es Teh Tali Pinggir Karawang",
+    "slug": "es-teh-tali-pinggir-karawang",
     "kontak": "628178345901",
     "kategori": "Minuman",
-    "alamat": "Jl. Perjuangan No. 45, Seberang Rektorat",
-    "cerita": "Tempat 'healing' favorit setelah kelas. Kopi Senja menawarkan es kopi susu gula aren terbaik di kota, dengan biji kopi lokal pilihan. Area outdoor-nya adalah tempat sempurna untuk menikmati senja sambil mengerjakan tugas. WiFi kencang dan colokan banyak.",
+    "alamat": "Jl. HS.Ronggo Waluyo No.109, Sirnabaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
+    "cerita": "Es Teh Tali Pinggir Karawang adalah tempat minum segar favorit warga sekitar. Es tehnya terkenal manisnya pas, harganya ramah, dan lokasinya strategis di pinggir jalan cocok untuk mampir cepat maupun nongkrong santai.",
     "foto": [
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2047&q=80",
-      "https://images.unsplash.com/photo-1445116572660-236099ec97a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
+      ["/images/es-teh-tali-pinggir-karawang/display1.jpg"]
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.304018786411!2d106.8488000153525!3d-6.28014099548481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2f3e8b3b0f5%3A0x5e509c3a3b7d195a!2sKopi%20Senja!5e0!3m2!1sen!2sid!4v1730550100000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-    "jam_buka": "Setiap Hari: 09:00 - 23:00",
-    "rentang_harga": "$$",
-    "rating": 4.5,
-    "tags": ["Ada WiFi", "Colokan Banyak", "Cozy", "Outdoor"],
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d499.7627850497879!2d107.30243516623224!3d-6.323388930798183!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69771162b48321%3A0xfe536fa072b60bfc!2sEs%20Teh%20Tali%20Pinggir%20Karawang!5e1!3m2!1sid!2sid!4v1763229462927!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.323388930798183,
+    "lng": 107.30243516623224,
+    "jam_buka": "Setiap Hari: 10:00 - 22:00",
+    "rentang_harga": "$",
+    "rating": 4.3,
+    "tags": ["Pilihan Teh Enak", "Outdoor", "Bawa Pulang"],
     "menu": [
       {
         "id": 1,
-        "nama": "Es Kopi Susu Gula Aren",
-        "harga": 18000,
-        "kategori": "kopi",
-        "gambar": "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=200&fit=crop",
-        "deskripsi": "Kopi robusta dengan susu segar dan gula aren asli",
+        "nama": "Es Teh Manis Sedang",
+        "harga": 6000,
+        "kategori": "Teh",
+        "gambar": ["/images/es-teh-tali-pinggir-karawang/sedang.jpg"],
+        "deskripsi": "Teh manis segar dengan es batu",
         "rating": 4.8,
-        "waktuMasak": 5
+        "waktuMasak": 3
       },
       {
         "id": 2,
-        "nama": "Americano Hot",
-        "harga": 15000,
-        "kategori": "kopi",
-        "gambar": "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
-        "deskripsi": "Kopi hitam americano untuk teman belajar",
-        "rating": 4.6,
+        "nama": "Es Teh Manis Jumbo",
+        "harga": 8000,
+        "kategori": "Teh",
+        "gambar": ["/images/es-teh-tali-pinggir-karawang/jumbo.jpg"],
+        "deskripsi": "Teh manis segar dengan es batu",
+        "rating": 4.8,
+        "waktuMasak": 3
+      },
+      {
+        "id": 3,
+        "nama": "Es Teh Manis Lemon",
+        "harga": 10000,
+        "kategori": "Teh",
+        "gambar": ["/images/es-teh-tali-pinggir-karawang/lemon.jpg"],
+        "deskripsi": "Teh manis lemon segar dengan es batu",
+        "rating": 4.8,
+        "waktuMasak": 3
+      },
+      {
+        "id": 4,
+        "nama": "Es Teh Manis Kecil",
+        "harga": 4000,
+        "kategori": "Teh",
+        "gambar": ["/images/es-teh-tali-pinggir-karawang/kecil.jpg"],
+        "deskripsi": "Teh manis segar dengan es batu",
+        "rating": 4.8,
         "waktuMasak": 3
       }
     ]
   },
   {
     "id": 3,
-    "nama": "Berkah Laundry Express",
-    "slug": "berkah-laundry-express",
-    "kontak": "628221009876",
+    "nama": "Let's Laundry Karawang",
+    "slug": "lets-laundry-karawang",
+    "kontak": "6287776266123",
     "kategori": "Jasa",
-    "alamat": "Gg. Mawar No. 3, Belakang Kosan Pelangi",
+    "alamat": "Jl. HS.Ronggo Waluyo No.151, Puseurjaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Satu-satunya laundry yang mengerti arti 'deadline'. Layanan ekspres 6 jam-nya adalah penyelamat di kala butuh kemeja bersih untuk presentasi. Wanginya tahan lama dan harganya sangat ramah di kantong mahasiswa. Ibu pemiliknya sangat ramah.",
     "foto": [
-      "https://images.unsplash.com/photo-1626806789293-40d839a89c86?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1582735689361-5ed983d23424?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+      ["/images/lets-laundry/display2.jpg"],
+      ["/images/lets-laundry/display1.jpg"],
+      ["/images/lets-laundry/display3.jpg"]
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.195047806085!2d106.8290393153525!3d-6.23594199548177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3b146a8a251%3A0x1d3f30508b8b056!2sBerkah%20Laundry!5e0!3m2!1sen!2sid!4v1730550200000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.2908813119643!2d107.29658647483008!3d-6.323844293665662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e697732f2bf6eeb%3A0x1175ce1d67adbcf9!2sLet&#39;s%20Laundry%20Karawang!5e1!3m2!1sid!2sid!4v1763231473732!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.323844293665662,
+    "lng": 107.29658647483008,
     "jam_buka": "Setiap Hari: 08:00 - 20:00",
     "rentang_harga": "$",
     "rating": 4.8,

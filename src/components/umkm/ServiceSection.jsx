@@ -110,11 +110,8 @@ const ServiceSection = ({ layanan, umkm }) => {
 
                 <div className="flex justify-between items-center mt-3 sm:mt-0">
                   <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-                    <span>4.8</span>
                   </div>
 
-                  {/* TOMBOL WARNA HIJAU */}
                   <Button
                     onClick={() => handleOrder(service)}
                     className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-8 sm:h-9 text-xs"

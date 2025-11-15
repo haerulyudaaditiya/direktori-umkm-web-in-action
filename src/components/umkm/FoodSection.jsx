@@ -118,8 +118,6 @@ const FoodSection = ({ menu, umkm }) => {
 
                 <div className="flex justify-between items-center mt-3 sm:mt-0">
                   <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-                    <span>{menuItem.rating}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
