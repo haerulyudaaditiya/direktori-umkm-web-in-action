@@ -394,7 +394,6 @@ function DirectoryPage() {
                         <span className="font-semibold">{umkm.rating}</span>
                       </div>
                     </div>
-
                     <CardHeader className="p-5 pb-3">
                       <CardTitle className="text-xl font-bold line-clamp-1 text-gray-900 dark:text-white">
                         {umkm.nama}
@@ -410,9 +409,8 @@ function DirectoryPage() {
                         </span>
                       </CardDescription>
                     </CardHeader>
-
                     <CardContent className="p-5 pt-0">
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2 min-h-[2.5rem]">
                         {umkm.alamat}
                       </p>
                       <div className="flex flex-wrap gap-2">
