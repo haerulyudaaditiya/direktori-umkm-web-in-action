@@ -8,9 +8,9 @@
     "alamat": "Jl. HS.Ronggo Waluyo No.184, Puseurjaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Soto Mie Bogor Kang Enjam di Karawang adalah tujuan wajib bagi pencinta kuliner hangat dan segar. Dengan kuah gurih khas Bogor, potongan daging empuk, serta mie dan risol yang bikin nagih, setiap mangkuk terasa seperti pelukan hangat di hari sibuk. Kang Enjam yang ramah selalu memastikan pelanggan pulang dengan perut kenyang dan hati senang. Tempat ini bukan sekadar tempat makan, tapi pelipur rindu bagi siapa pun yang membutuhkan kenyamanan dalam setiap suapan.",
     "foto": [
-      ["/images/soto-mie-bogor-kang-enjam/display1.jpg"],
-      ["/images/soto-mie-bogor-kang-enjam/soto-mie-bogor-kikil.jpg"],
-      ["/images/soto-mie-bogor-kang-enjam/mie-kocok.jpg"]
+      "/images/soto-mie-bogor-kang-enjam/display1.jpg",
+      "/images/soto-mie-bogor-kang-enjam/soto-mie-bogor-kikil.jpg",
+      "/images/soto-mie-bogor-kang-enjam/mie-kocok.jpg"
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m17!1m11!1m3!1d142.62566909882273!2d107.30024248811104!3d-6.323536707368411!2m2!1f0!2f1.1949184874067216!3m2!1i1024!2i768!4f35!3m3!1m2!1s0x2e6977d2c9302bb1%3A0xe4705a5ab98b6a63!2sSoto%20Mie%20Bogor%20Kang%20Enjam!5e1!3m2!1sid!2sid!4v1763207656606!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
     "lat": -6.3235367,
@@ -137,7 +137,7 @@
     "alamat": "Jl. HS.Ronggo Waluyo No.109, Sirnabaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Es Teh Tali Pinggir Karawang adalah tempat minum segar favorit warga sekitar. Es tehnya terkenal manisnya pas, harganya ramah, dan lokasinya strategis di pinggir jalan cocok untuk mampir cepat maupun nongkrong santai.",
     "foto": [
-      ["/images/es-teh-tali-pinggir-karawang/display1.jpg"]
+      "/images/es-teh-tali-pinggir-karawang/display1.jpg"
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d499.7627850497879!2d107.30243516623224!3d-6.323388930798183!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69771162b48321%3A0xfe536fa072b60bfc!2sEs%20Teh%20Tali%20Pinggir%20Karawang!5e1!3m2!1sid!2sid!4v1763229462927!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
     "lat": -6.323388930798183,
@@ -198,9 +198,9 @@
     "alamat": "Jl. HS.Ronggo Waluyo No.151, Puseurjaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Satu-satunya laundry yang mengerti arti 'deadline'. Layanan ekspres 6 jam-nya adalah penyelamat di kala butuh kemeja bersih untuk presentasi. Wanginya tahan lama dan harganya sangat ramah di kantong mahasiswa. Ibu pemiliknya sangat ramah.",
     "foto": [
-      ["/images/lets-laundry/display2.jpg"],
-      ["/images/lets-laundry/display1.jpg"],
-      ["/images/lets-laundry/display3.jpg"]
+      "/images/lets-laundry/display2.jpg",
+      "/images/lets-laundry/display1.jpg",
+      "/images/lets-laundry/display3.jpg"
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.2908813119643!2d107.29658647483008!3d-6.323844293665662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e697732f2bf6eeb%3A0x1175ce1d67adbcf9!2sLet&#39;s%20Laundry%20Karawang!5e1!3m2!1sid!2sid!4v1763231473732!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
     "lat": -6.323844293665662,
@@ -242,9 +242,9 @@
     "alamat": "Jl. HS.Ronggo Waluyo No.2, Sukaharja, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Surganya pecinta seblak. Di sini, kamu bisa ambil topping sendiri sepuasnya (prasmanan). Level pedasnya ada dari 1 sampai 5 'Naga'. Level 3 saja sudah cukup menantang. Kuah kencurnya sangat 'medok' dan otentik. Selalu ramai saat jam pulang kuliah.",
     "foto": [
-      ["/images/seblak-slowdown/display1.jpg"],
-      ["/images/seblak-slowdown/display2.jpg"],
-      ["/images/seblak-slowdown/display3.jpg"]
+      "/images/seblak-slowdown/display1.jpg",
+      "/images/seblak-slowdown/display2.jpg",
+      "/images/seblak-slowdown/display3.jpg"
 
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.320464497005!2d107.29288277482988!3d-6.319850993669586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6977d40fd83cc3%3A0xc8878de6fd2cdc1e!2sSeblak%20Bandung%20Slowdown!5e1!3m2!1sid!2sid!4v1763233331213!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
@@ -286,8 +286,8 @@
     "alamat": "Ruko Mahkota Regency, Jl. HS.Ronggo Waluyo No.4 Blok A1, Sirnabaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Tempat andalan mahasiswa ketika semua serba mendadak. Mau print laporan, fotokopi bahan kuliah, sampai jilid skripsi yang kepentok deadline semua bisa selesai cepat. Pelayanannya ramah, hasilnya rapi, dan harganya tetap aman buat kantong akhir bulan.",
     "foto": [
-      ["/images/taufiq-foto-copy/display1.jpg"],
-      ["/images/taufiq-foto-copy/display2.jpg"]
+      "/images/taufiq-foto-copy/display1.jpg",
+      "/images/taufiq-foto-copy/display2.jpg"
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.290240990396!2d107.3061133!3d-6.3239307000000045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69763333b85fd5%3A0x60e0b5bfd6d6bcab!2sTaufiq%20Photo%20Copy%20%26%20Print%20Center!5e1!3m2!1sid!2sid!4v1763236153703!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
     "lat": -6.3239307,
@@ -336,8 +336,8 @@
     "alamat": "Jl. HS.Ronggo Waluyo No.2, Sukaharja, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Warteg paling aman dan nyaman buat anak UBP yang butuh makan enak tanpa mikir dompet. Pilihan lauknya banyak, porsinya berani, dan sambalnya punya ciri khas pedes gurih yang bikin balik lagi. Tempat favorit mahasiswa buat makan cepat, murah, dan ngisi tenaga sebelum masuk kelas.",
     "foto": [
-      ["/images/warteg-kharisma/display1.jpg"],
-      ["/images/warteg-kharisma/display2.jpg"]
+      "/images/warteg-kharisma/display1.jpg",
+      "/images/warteg-kharisma/display2.jpg"
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.2941017734106!2d107.30154599999999!3d-6.323409699999993!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6977883388001f%3A0xb40a959f07cb27b3!2sWarteg%20Kharisma%20Bahari%20UBP!5e1!3m2!1sid!2sid!4v1763237266731!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
     "lat": -6.3234097,
@@ -439,9 +439,9 @@
       "alamat": "Jl. Arif Rahman Hakim, Karawang Kulon, Kec. Karawang Bar., Karawang, Jawa Barat 41315",
       "cerita": "Toko buah langganan warga Karawang ini terkenal karena kualitas buahnya yang selalu segar. Pilihan buahnya lengkap, dari yang lokal sampai impor, dan harganya masih ramah di dompet. Cocok buat belanja harian atau stok buah sehat di rumah.",
       "foto": [
-        ["/images/elok-buah/display1.jpg"],
-        ["/images/elok-buah/display2.jpg"],
-        ["/images/elok-buah/display3.jpg"]
+        "/images/elok-buah/display1.jpg",
+        "/images/elok-buah/display2.jpg",
+        "/images/elok-buah/display3.jpg"
       ],
       "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.4657099332203!2d107.29350719999998!3d-6.30020839999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6977e10bbf44e7%3A0xa1c90be2edb09baa!2sElok%20Buah!5e1!3m2!1sid!2sid!4v1763262968190!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
       "lat": -6.300187858484759,
@@ -476,18 +476,21 @@
     },
   {
     "id": 9,
-    "nama": "Bengkel Motor Jaya Abadi",
-    "slug": "bengkel-jaya-abadi",
-    "kontak": "628834567892",
+    "nama": "Hegar Putra Motor",
+    "slug": "hegar-putra-motor",
+    "kontak": "6287876103078",
     "kategori": "Jasa",
-    "alamat": "Jl. Pahlawan No. 15, Karawang",
-    "cerita": "Bengkel langganan mahasiswa sejak 2010. Sparepart ori dan harga jasa terjangkau. Bisa servis ringan sampai berat, plus cuci motor gratis setiap servis. Mas-mas mekaniknya ramah dan berpengalaman.",
+    "alamat": "Jl. Arif Rahman Hakim No.153, Karawang Kulon, Kec. Karawang Bar., Karawang, Jawa Barat 41311",
+    "cerita": "Bengkel andalan warga Karawang untuk servis motor harian sampai perbaikan berat. Sparepart original tersedia lengkap, harga jasa ramah di kantong, dan setiap servis dapat bonus cuci motor gratis. Mekaniknya berpengalaman dan komunikatif, cocok untuk yang ingin servis cepat tanpa drama.",
     "foto": [
-      "https://images.unsplash.com/photo-1603712607846-2c9d4533757f?w=500&auto=format&fit=crop&q=60",
-      "https://images.unsplash.com/photo-1626806789293-40d839a89c86?w=500&auto=format&fit=crop&q=60"
+      "/images/hegar-putra/display1.jpg",
+      "/images/hegar-putra/display2.jpg",
+      "/images/hegar-putra/display3.jpg"
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.304018786411!2d106.8488000153525!3d-6.28014099548481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2f3e8b3b0f5%3A0x5e509c3a3b7d195a!2sBengkel%20Jaya%20Abadi!5e0!3m2!1sen!2sid!4v1730550800000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-    "jam_buka": "Senin - Minggu: 08:00 - 21:00",
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.4621910868364!2d107.29363640000001!3d-6.300685000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6977e105f3f6e1%3A0xfbe93bd744a3253e!2sHEGAR%20PUTRA%20MOTOR!5e1!3m2!1sid!2sid!4v1763264685979!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.300685,
+    "lng": 107.2936364,
+    "jam_buka": "Setiap Hari: 08:00 - 20:00",
     "rentang_harga": "$$",
     "rating": 4.8,
     "tags": ["Sparepart Ori", "Berkualitas", "Ramah"],
@@ -524,12 +527,12 @@
     "alamat": "Jl. Ekalaya No.26, Sukaluyu, Telukjambe Timur, Karawang, Jawa Barat 41361",
     "cerita": "Toko roti yang sudah terkenal sebagai langganan warga sekitar. Rotinya selalu fresh karena dipanggang setiap pagi. Varian rotinya lembut, harum, dan harganya ramah dompet. Jadi tempat favorit buat beli roti susu, donat kentang, sampai roti isi manis untuk sarapan atau bekal anak sekolah.",
     "foto": [
-      ["/images/khasanah/display1.jpg"],
-      ["/images/khasanah/display2.jpg"],
-      ["/images/khasanah/display3.jpg"],
-      ["/images/khasanah/display4.jpg"],
-      ["/images/khasanah/display5.jpg"],
-      ["/images/khasanah/display6.jpg"]
+      "/images/khasanah/display1.jpg",
+      "/images/khasanah/display2.jpg",
+      "/images/khasanah/display3.jpg",
+      "/images/khasanah/display4.jpg",
+      "/images/khasanah/display5.jpg",
+      "/images/khasanah/display6.jpg"
     ],
     "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.254374674505!2d107.28235280000003!3d-6.3287687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e699d7eef878f09%3A0x452228ff3df0507f!2skhasanah%20sari%20teluk%20Jambe!5e1!3m2!1sid!2sid!4v1763259445852!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
     "lat": -6.3287687,
