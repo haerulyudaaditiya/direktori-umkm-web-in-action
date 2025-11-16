@@ -97,7 +97,7 @@ function Navbar() {
                 {/* Badge Karawang di mobile */}
                 <div className="mt-6 p-3 bg-gradient-to-r from-green-500/10 to-amber-500/10 rounded-lg border border-green-200 dark:border-green-800">
                   <p className="text-sm text-green-700 dark:text-green-300 text-center">
-                    Platform UMKM Lumbung Padi Karawang
+                    Platform UMKM Karawang
                   </p>
                 </div>
               </SheetContent>
