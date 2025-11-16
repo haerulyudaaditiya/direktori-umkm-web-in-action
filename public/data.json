@@ -430,47 +430,50 @@
       }
     ]
   },
-  {
-    "id": 8,
-    "nama": "Warung Buah Segar Pak Joko",
-    "slug": "warung-buah-pak-joko",
-    "kontak": "628823456781",
-    "kategori": "Retail",
-    "alamat": "Jl. Mangga No. 8, Pasar Karawang",
-    "cerita": "Buah-buahan segar langsung dari petani lokal Karawang. Pak Joko sendiri yang memetik dari kebunnya setiap pagi. Dijamin fresh dan harga lebih murah dari supermarket. Cocok untuk yang suka hidup sehat atau buat oleh-oleh.",
-    "foto": [
-      "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=500&auto=format&fit=crop&q=60",
-      "https://images.unsplash.com/photo-1546540742-2bdc8754f2a9?w=500&auto=format&fit=crop&q=60"
-    ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.195047806085!2d106.8290393153525!3d-6.23594199548177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3b146a8a251%3A0x1d3f30508b8b056!2sWarung%20Buah%20Pak%20Joko!5e0!3m2!1sen!2sid!4v1730550700000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-    "jam_buka": "Setiap Hari: 06:00 - 18:00",
-    "rentang_harga": "$$",
-    "rating": 4.7,
-    "tags": ["Buah Segar", "Lokal", "Sehat"],
-    "produk": [
-      {
-        "id": 1,
-        "nama": "Pisang Cavendish",
-        "harga": 25000,
-        "deskripsi": "Pisang cavendish segar, manis dan empuk",
-        "gambar": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=200&fit=crop"
-      },
-      {
-        "id": 2,
-        "nama": "Jeruk Pontianak",
-        "harga": 20000,
-        "deskripsi": "Jeruk pontianak manis, segar, dan banyak air",
-        "gambar": "https://images.unsplash.com/photo-1547514701-42782101795e?w=300&h=200&fit=crop"
-      },
-      {
-        "id": 3,
-        "nama": "Semangka Merah",
-        "harga": 15000,
-        "deskripsi": "Semangka merah manis, segar, dan berair",
-        "gambar": "https://images.unsplash.com/photo-1582281298055-e25b84a90f26?w=300&h=200&fit=crop"
-      }
-    ]
-  },
+    {
+      "id": 8,
+      "nama": "Elok Buah",
+      "slug": "elok-buah",
+      "kontak": "628988888774",
+      "kategori": "Retail",
+      "alamat": "Jl. Arif Rahman Hakim, Karawang Kulon, Kec. Karawang Bar., Karawang, Jawa Barat 41315",
+      "cerita": "Toko buah langganan warga Karawang ini terkenal karena kualitas buahnya yang selalu segar. Pilihan buahnya lengkap, dari yang lokal sampai impor, dan harganya masih ramah di dompet. Cocok buat belanja harian atau stok buah sehat di rumah.",
+      "foto": [
+        ["/images/elok-buah/display1.jpg"],
+        ["/images/elok-buah/display2.jpg"],
+        ["/images/elok-buah/display3.jpg"]
+      ],
+      "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.4657099332203!2d107.29350719999998!3d-6.30020839999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6977e10bbf44e7%3A0xa1c90be2edb09baa!2sElok%20Buah!5e1!3m2!1sid!2sid!4v1763262968190!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+      "lat": -6.300187858484759,
+      "lng": 107.29350693364543,
+      "jam_buka": "Setiap Hari: 07:00 - 23:00",
+      "rentang_harga": "$$",
+      "rating": 4.7,
+      "tags": ["Buah Segar", "Lokal", "Sehat"],
+      "produk": [
+        {
+          "id": 1,
+          "nama": "Pisang Cavendish",
+          "harga": 25000,
+          "deskripsi": "Pisang cavendish segar, manis dan empuk",
+          "gambar": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=200&fit=crop"
+        },
+        {
+          "id": 2,
+          "nama": "Jeruk Pontianak",
+          "harga": 20000,
+          "deskripsi": "Jeruk pontianak manis, segar, dan banyak air",
+          "gambar": "https://images.unsplash.com/photo-1547514701-42782101795e?w=300&h=200&fit=crop"
+        },
+        {
+          "id": 3,
+          "nama": "Semangka Merah",
+          "harga": 15000,
+          "deskripsi": "Semangka merah manis, segar, dan berair",
+          "gambar": ["/images/elok-buah/semangka.jpg"]
+        }
+      ]
+    },
   {
     "id": 9,
     "nama": "Bengkel Motor Jaya Abadi",
