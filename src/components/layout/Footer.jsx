@@ -41,19 +41,16 @@ const Footer = () => {
                 Jelajahi UMKM
               </Link>
               <Link
-                to="/kategori"
                 className="block text-gray-300 hover:text-white transition-colors"
               >
                 Kategori
               </Link>
               <Link
-                to="/tentang"
                 className="block text-gray-300 hover:text-white transition-colors"
               >
                 Tentang Kami
               </Link>
               <Link
-                to="/bantuan"
                 className="block text-gray-300 hover:text-white transition-colors"
               >
                 Bantuan
