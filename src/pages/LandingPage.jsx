@@ -566,21 +566,25 @@ const LandingPage = () => {
             transition={{ delay: 0.6 }}
             className="mt-16 text-center"
           >
-            <div className="inline-flex items-center gap-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-lg">
+            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-4 py-4 rounded-2xl shadow-lg mx-auto w-full sm:w-auto max-w-full sm:max-w-fit">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-green-600" />
                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   <span className="text-green-600">5,000+</span> Pengguna Aktif
                 </span>
               </div>
-              <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+
+              <div className="hidden sm:block w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+
               <div className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Rating <span className="text-green-600">4.8/5</span>
                 </span>
               </div>
-              <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+
+              <div className="hidden sm:block w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-600" />
                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
