@@ -1,16 +1,44 @@
-# React + Vite
+# KarawangMart - Platform Digital untuk UMKM Karawang | TandemNgoding Web in Action 2025
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## TENTANG PROJECT INI:
+KarawangMart adalah platform direktori digital inovatif yang menghubungkan masyarakat dengan UMKM terbaik di Karawang. Dibangun dengan teknologi modern untuk mendukung pertumbuhan bisnis lokal di era digital.
 
-Currently, two official plugins are available:
+## FITUR UTAMA:
+- Direktori UMKM Terpusat - Cari dan temukan bisnis lokal dengan mudah  
+- Sistem Pemesanan Terintegrasi - Pesan langsung dari website  
+- Multiple Payment Methods - QRIS, E-Wallet, Transfer, COD  
+- Lokasi Real-time - Embed Google Maps akurat  
+- User Experience Superior - Responsive dan intuitive design  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## TEKNOLOGI YANG DIGUNAKAN:
+- React.js dengan Modern Hooks  
+- Tailwind CSS untuk Styling  
+- Framer Motion untuk Animasi  
+- Context API untuk State Management  
+- Responsive Design Mobile-First  
 
-## React Compiler
+## TIM TANDEMNGODING:
+### Frontend Developer & Project Manager:
+- Haerul Yuda Aditiya - Technical implementation dan system architecture
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### UI/UX Designer & Content Researcher:
+- Hana Safitri - Interface design dan UMKM field research
 
-## Expanding the ESLint configuration
+## HIGHLIGHT KOMPETISI:
+Project ini dikembangkan untuk mengikuti Web in Action 2025 dengan fokus membangun solusi nyata untuk masalah UMKM lokal di Karawang.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## DATA UMKM REAL:
+- 10+ UMKM terdaftar dengan data authentic  
+- Kategori beragam: Kuliner, Minuman, Jasa, Retail  
+- Lokasi real di sekitar Karawang  
+- Menu dan harga terupdate  
+
+## LINKS PENTING:
+GitHub Repository: **https://github.com/haerulyudaaditiya/direktori-umkm-web-in-action**  
+Demo Website: **https://karawangmart.netlify.app/**
+
+---
+
+**DUKUNG BISNIS LOKAL, MAJUKAN EKONOMI DIGITAL INDONESIA!**
+
+**KarawangMart by TandemNgoding - Inovasi untuk UMKM Lokal**
