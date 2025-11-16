@@ -279,21 +279,23 @@
   },
   {
     "id": 5,
-    "nama": "Print & Jilid 'Kilat' 24 Jam",
-    "slug": "print-kilat",
-    "kontak": "628559003214",
+    "nama": "Taufiq Photo Copy & Print Center",
+    "slug": "taufiq-photo-copy-print-center",
+    "kontak": "6281389576227",
     "kategori": "Jasa",
-    "alamat": "Jl. Pendidikan No. 77",
-    "cerita": "Penyelamat sejati SKS (Sistem Kebut Semalam). Mau jilid skripsi atau print laporan jam 2 pagi juga dilayani. Buka 24 jam non-stop, harganya standar mahasiswa, dan mas-masnya sangat membantu. Mesin fotokopinya tidak pernah macet.",
+    "alamat": "Ruko Mahkota Regency, Jl. HS.Ronggo Waluyo No.4 Blok A1, Sirnabaya, Telukjambe Timur, Karawang, Jawa Barat 41361",
+    "cerita": "Tempat andalan mahasiswa ketika semua serba mendadak. Mau print laporan, fotokopi bahan kuliah, sampai jilid skripsi yang kepentok deadline semua bisa selesai cepat. Pelayanannya ramah, hasilnya rapi, dan harganya tetap aman buat kantong akhir bulan.",
     "foto": [
-      "https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?w=500&auto=format&fit=crop&q=60",
-      "https://images.unsplash.com/photo-1545235617-9465d2a55698?w=500&auto=format&fit=crop&q=60"
+      ["/images/taufiq-foto-copy/display1.jpg"],
+      ["/images/taufiq-foto-copy/display2.jpg"]
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.304018786411!2d106.8488000153525!3d-6.28014099548481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2f3e8b3b0f5%3A0x5e509c3a3b7d195a!2sPercetakan%2024%20Jam!5e0!3m2!1sen!2sid!4v1730550400000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-    "jam_buka": "Setiap Hari: Buka 24 Jam",
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.290240990396!2d107.3061133!3d-6.3239307000000045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69763333b85fd5%3A0x60e0b5bfd6d6bcab!2sTaufiq%20Photo%20Copy%20%26%20Print%20Center!5e1!3m2!1sid!2sid!4v1763236153703!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.3239307,
+    "lng": 107.3061133,
+    "jam_buka": "Setiap Hari: 09:00 - 22:00",
     "rentang_harga": "$",
     "rating": 4.9,
-    "tags": ["Buka 24 Jam", "Cepat Selesai", "Murah Banget"],
+    "tags": ["Cepat Selesai", "Murah Banget"],
     "layanan": [
       {
         "id": 1,
@@ -327,41 +329,63 @@
   },
   {
     "id": 6,
-    "nama": "Nasi Padang 'Sederhana' Asli",
-    "slug": "padang-sederhana",
-    "kontak": "628771245630",
+    "nama": "Warteg Kharisma Bahari UBP",
+    "slug": "warteg-kharisma-bahari-ubp",
+    "kontak": "628128684591",
     "kategori": "Makanan Berat",
-    "alamat": "Jl. Raya Kampus No. 101",
-    "cerita": "Rendangnya adalah juara bertahan di area kampus. Kalau minta kuah dibanyakin, gratis. Pilihan lauknya paling komplit dan rasanya otentik Minang. Pilihan terbaik untuk makan siang yang 'nendang' dan memuaskan. Sambal ijonya gratis!",
+    "alamat": "Jl. HS.Ronggo Waluyo No.2, Sukaharja, Telukjambe Timur, Karawang, Jawa Barat 41361",
+    "cerita": "Warteg paling aman dan nyaman buat anak UBP yang butuh makan enak tanpa mikir dompet. Pilihan lauknya banyak, porsinya berani, dan sambalnya punya ciri khas pedes gurih yang bikin balik lagi. Tempat favorit mahasiswa buat makan cepat, murah, dan ngisi tenaga sebelum masuk kelas.",
     "foto": [
-      "https://images.unsplash.com/photo-1559620192-032c4bc4674e?w=500&auto=format&fit=crop&q=60",
-      "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=60"
+      ["/images/warteg-kharisma/display1.jpg"],
+      ["/images/warteg-kharisma/display2.jpg"]
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.195047806085!2d106.8290393153525!3d-6.23594199548177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3b146a8a251%3A0x1d3f30508b8b056!2sRM%20Sederhana!5e0!3m2!1sen!2sid!4v1730550500000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.2941017734106!2d107.30154599999999!3d-6.323409699999993!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6977883388001f%3A0xb40a959f07cb27b3!2sWarteg%20Kharisma%20Bahari%20UBP!5e1!3m2!1sid!2sid!4v1763237266731!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.3234097,
+    "lng": 107.301546,
     "jam_buka": "Setiap Hari: 09:00 - 21:00",
     "rentang_harga": "$$",
     "rating": 4.7,
-    "tags": ["Banyak Pilihan", "Rendang Enak", "Terima QRIS"],
+    "tags": ["Banyak Pilihan", "Murah Meriah", "Terima QRIS"],
     "menu": [
       {
         "id": 1,
-        "nama": "Nasi Padang Paket Komplit",
-        "harga": 25000,
+        "nama": "Nasi + Ayam Goreng",
+        "harga": 18000,
         "kategori": "paket",
-        "gambar": "https://images.unsplash.com/photo-1559620192-032c4bc4674e?w=300&h=200&fit=crop",
-        "deskripsi": "Nasi dengan rendang, daun singkong, dan gulai nangka",
+        "gambar": ["/images/warteg-kharisma/ayam.jpg"],
+        "deskripsi": "Nasi dengan ayam goreng, sambal, dan sayur.",
         "rating": 4.8,
-        "waktuMasak": 10
+        "waktuMasak": 5
       },
       {
         "id": 2,
-        "nama": "Rendang Daging Spesial",
-        "harga": 20000,
+        "nama": "Tahu Tempe Orek",
+        "harga": 5000,
         "kategori": "lauk",
-        "gambar": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop",
-        "deskripsi": "Rendang daging sapi empuk dengan bumbu rempah",
+        "gambar": ["/images/warteg-kharisma/orek.jpg"],
+        "deskripsi": "Orek tahu tempe manis pedas favorit mahasiswa.",
+        "rating": 4.7,
+        "waktuMasak": 3
+      },
+      {
+        "id": 3,
+        "nama": "Sayur Capcay",
+        "harga": 6000,
+        "kategori": "sayur",
+        "gambar": ["/images/warteg-kharisma/capcay.jpg"],
+        "deskripsi": "Capcay kuah gurih, cocok jadi pendamping lauk.",
+        "rating": 4.6,
+        "waktuMasak": 7
+      },
+      {
+        "id": 4,
+        "nama": "Sambal Pedas",
+        "harga": 0,
+        "kategori": "tambahan",
+        "gambar": ["/images/warteg-kharisma/sambal.jpg"],
+        "deskripsi": "Sambal khas warteg, gratis tapi nagih!",
         "rating": 4.9,
-        "waktuMasak": 15
+        "waktuMasak": 1
       }
     ]
   },
