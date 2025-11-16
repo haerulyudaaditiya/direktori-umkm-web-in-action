@@ -514,51 +514,67 @@
   },
   {
     "id": 10,
-    "nama": "Kedai Roti Mama Lisa",
-    "slug": "kedai-roti-mama-lisa",
-    "kontak": "628845678903",
+    "nama": "Khasanah Sari Teluk Jambe",
+    "slug": "khasanah-sari-teluk-jambe",
+    "kontak": "6281314623429",
     "kategori": "Kuliner",
-    "alamat": "Jl. Cempaka No. 30, Karawang",
-    "cerita": "Roti bakar legendaris sejak 2005. Dikenal dengan roti bakar coklat keju yang lumer dan harganya sangat terjangkau. Mama Lisa sendiri yang membuat adonan setiap pagi. Tempat nongkrong favorit anak muda Karawang.",
+    "alamat": "Jl. Ekalaya No.26, Sukaluyu, Telukjambe Timur, Karawang, Jawa Barat 41361",
+    "cerita": "Toko roti yang sudah terkenal sebagai langganan warga sekitar. Rotinya selalu fresh karena dipanggang setiap pagi. Varian rotinya lembut, harum, dan harganya ramah dompet. Jadi tempat favorit buat beli roti susu, donat kentang, sampai roti isi manis untuk sarapan atau bekal anak sekolah.",
     "foto": [
-      "https://images.unsplash.com/photo-1555507036-ab794f27d2e9?w=500&auto=format&fit=crop&q=60",
-      "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=500&auto=format&fit=crop&q=60"
+      ["/images/khasanah/display1.jpg"],
+      ["/images/khasanah/display2.jpg"],
+      ["/images/khasanah/display3.jpg"],
+      ["/images/khasanah/display4.jpg"],
+      ["/images/khasanah/display5.jpg"],
+      ["/images/khasanah/display6.jpg"]
     ],
-    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.195047806085!2d106.8290393153525!3d-6.23594199548177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3b146a8a251%3A0x1d3f30508b8b056!2sKedai%20Roti%20Mama%20Lisa!5e0!3m2!1sen!2sid!4v1730550900000!5m2!1sen!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-    "jam_buka": "Setiap Hari: 14:00 - 22:00",
+    "lokasi_map": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3831.254374674505!2d107.28235280000003!3d-6.3287687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e699d7eef878f09%3A0x452228ff3df0507f!2skhasanah%20sari%20teluk%20Jambe!5e1!3m2!1sid!2sid!4v1763259445852!5m2!1sid!2sid\" width=\"100%\" height=\"100%\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+    "lat": -6.3287687,
+    "lng": 107.2823528,
+    "jam_buka": "Setiap Hari: 07:00 - 21:30",
     "rentang_harga": "$",
     "rating": 4.9,
-    "tags": ["Roti Bakar", "Murah", "Enak"],
+    "tags": ["Fresh Setiap Hari", "Harga Terjangkau", "Banyak Varian"],
     "menu": [
       {
         "id": 1,
-        "nama": "Roti Bakar Coklat Keju",
-        "harga": 8000,
+        "nama": "Roti Keju",
+        "harga": 12000,
         "kategori": "roti",
-        "gambar": "https://images.unsplash.com/photo-1555507036-ab794f27d2e9?w=300&h=200&fit=crop",
-        "deskripsi": "Roti bakar dengan coklat dan keju yang lumer",
+        "gambar": ["/images/khasanah/display1.jpg"],
+        "deskripsi": "Roti lembut dengan isian keju.",
         "rating": 4.9,
-        "waktuMasak": 5
+        "waktuMasak": 0
       },
       {
         "id": 2,
-        "nama": "Roti Bakar Kacang Coklat",
-        "harga": 7000,
+        "nama": "Roti Abon",
+        "harga": 10000,
         "kategori": "roti",
-        "gambar": "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=300&h=200&fit=crop",
-        "deskripsi": "Roti bakar dengan selai kacang dan coklat",
+        "gambar": ["/images/khasanah/display5.jpg"],
+        "deskripsi": "Roti lembut dengan toping abon gurih.",
         "rating": 4.8,
-        "waktuMasak": 5
+        "waktuMasak": 0
       },
       {
         "id": 3,
-        "nama": "Es Jeruk",
-        "harga": 5000,
-        "kategori": "minuman",
-        "gambar": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&h=200&fit=crop",
-        "deskripsi": "Es jeruk segar untuk teman roti bakar",
+        "nama": "Roti isi Coklat",
+        "harga": 10000,
+        "kategori": "roti",
+        "gambar": ["/images/khasanah/display4.jpg"],
+        "deskripsi": "Roti lembut dengan isian coklat manis.",
         "rating": 4.7,
-        "waktuMasak": 2
+        "waktuMasak": 0
+      },
+      {
+        "id": 4,
+        "nama": "Roti Pandan Lotus Paste Roll",
+        "harga": 12000,
+        "kategori": "roti",
+        "gambar": ["/images/khasanah/display6.jpg"],
+        "deskripsi": "Roti lembut dengan isian pasta lotus pandan.",
+        "rating": 4.8,
+        "waktuMasak": 0
       }
     ]
   }
