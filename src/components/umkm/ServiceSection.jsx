@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
-import { MessageCircle, Clock, Sparkles, Wrench } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Minus, Clock, Sparkles, Tag, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useOrder } from '@/contexts/OrderContext';
 
 const ServiceSection = ({ layanan = [], umkm }) => {
+  const { state, dispatch } = useOrder();
   const [selectedCategory, setSelectedCategory] = useState('semua');
   const [imageErrors, setImageErrors] = useState({});
 
@@ -31,32 +33,46 @@ const ServiceSection = ({ layanan = [], umkm }) => {
           );
         });
 
-  const handleOrder = (service) => {
-    const phoneNumber = umkm?.kontak || '6281234567890';
-    const message = `Halo ${umkm?.nama}, saya ingin tanya layanan: ${service.nama}.`;
-    window.open(
-      `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
-      '_blank'
-    );
+  // --- CART OPERATIONS ---
+  const getQuantity = (itemId) => {
+    const itemInCart = state.cart.find((item) => item.id === itemId);
+    return itemInCart ? itemInCart.quantity : 0;
+  };
+
+  const updateCart = (item, action) => {
+    dispatch({
+      type: action === 'increment' ? 'ADD_TO_CART' : 'REMOVE_FROM_CART',
+      payload:
+        action === 'increment'
+          ? {
+              id: item.id,
+              name: item.nama,
+              price: Number(item.harga),
+              image: item.gambar,
+              umkm: umkm?.nama || 'UMKM',
+              umkm_id: umkm?.id,
+              type: 'service', // Penanda tipe item
+            }
+          : item.id,
+    });
   };
 
   return (
     <>
-      {/* TABS - SAMA PERSIS */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="flex gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide"
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide sticky top-[64px] z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2"
       >
         {categories.map((category) => (
           <button
             key={category}
             onClick={() => setSelectedCategory(category.toLowerCase())}
-            className={`px-3 sm:px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-xs sm:text-sm flex-shrink-0 ${
+            className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-sm flex-shrink-0 ${
               selectedCategory.toLowerCase() === category.toLowerCase()
-                ? 'bg-green-500 text-white shadow-lg'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+                ? 'bg-green-600 text-white shadow-md scale-105'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-100'
             }`}
           >
             {category}
@@ -64,78 +80,132 @@ const ServiceSection = ({ layanan = [], umkm }) => {
         ))}
       </motion.div>
 
-      {/* GRID - SAMA PERSIS (VERTICAL) */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        layout
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        {filteredItems.map((item, index) => {
-          const isValidUrl =
-            item.gambar &&
-            typeof item.gambar === 'string' &&
-            item.gambar.trim().length > 0;
-          const showPlaceholder = !isValidUrl || imageErrors[item.id];
+        <AnimatePresence mode="popLayout">
+          {filteredItems.map((item, index) => {
+            const quantity = getQuantity(item.id);
+            const isValidUrl =
+              item.gambar &&
+              typeof item.gambar === 'string' &&
+              item.gambar.trim().length > 0;
+            const showPlaceholder = !isValidUrl || imageErrors[item.id];
 
-          return (
-            <motion.div
-              key={item.id || index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }} // DELAY SAMA
-              className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700 flex flex-col h-full"
-            >
-              <div className="relative h-48 w-full bg-gray-100 dark:bg-gray-700">
-                {showPlaceholder ? (
-                  <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                    <Sparkles className="w-8 h-8 text-white" />
-                  </div>
-                ) : (
-                  <img
-                    src={item.gambar}
-                    alt={item.nama}
-                    onError={() =>
-                      setImageErrors((prev) => ({ ...prev, [item.id]: true }))
-                    }
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                )}
-              </div>
+            return (
+              <motion.div
+                layout
+                key={item.id || index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-green-100 dark:border-green-800 hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+              >
+                <div className="relative h-48 w-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                  {showPlaceholder ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-cyan-50 dark:from-green-900/20 dark:to-cyan-900/20 text-green-600/50 group-hover:scale-110 transition-transform duration-500">
+                      <Sparkles className="w-12 h-12" />
+                    </div>
+                  ) : (
+                    <img
+                      src={item.gambar}
+                      alt={item.nama}
+                      onError={() =>
+                        setImageErrors((prev) => ({ ...prev, [item.id]: true }))
+                      }
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  )}
 
-              <div className="flex-1 p-3 sm:p-4 flex flex-col">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white line-clamp-2">
-                    {item.nama}
-                  </h3>
-                  <div className="text-base sm:text-lg font-bold text-green-600 dark:text-green-400 whitespace-nowrap ml-2">
-                    Rp {Number(item.harga).toLocaleString('id-ID')}
-                  </div>
+                  {item.waktu_masak && (
+                    <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-1 rounded-md flex items-center gap-1 z-10">
+                      <Clock className="w-3 h-3" /> {item.waktu_masak} jam
+                    </div>
+                  )}
+
+                  {/* Quantity Badge */}
+                  {quantity > 0 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute top-3 left-3 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg z-10"
+                    >
+                      {quantity}x
+                    </motion.div>
+                  )}
                 </div>
 
-                <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mb-4 line-clamp-2 flex-1">
-                  {item.deskripsi || 'Layanan profesional.'}
-                </p>
-
-                <div className="flex justify-between items-center mt-auto">
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <Clock className="w-3 h-3" /> <span>Cepat</span>
+                <div className="p-4 flex flex-col flex-1">
+                  <div className="mb-2">
+                    <h3
+                      className="font-bold text-lg text-gray-900 dark:text-white line-clamp-1 group-hover:text-green-600 transition-colors"
+                      title={item.nama}
+                    >
+                      {item.nama}
+                    </h3>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Tag className="w-3 h-3 text-gray-400" />
+                      <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                        {item.kategori_produk || item.kategori || 'Layanan'}
+                      </span>
+                    </div>
                   </div>
 
-                  <Button
-                    size="sm"
-                    onClick={() => handleOrder(item)}
-                    className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-8 sm:h-9 text-xs"
-                  >
-                    <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />{' '}
-                    Pesan
-                  </Button>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4 flex-1">
+                    {item.deskripsi || 'Layanan profesional terpercaya.'}
+                  </p>
+
+                  <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100 dark:border-gray-700">
+                    <div className="flex flex-col">
+                      <span className="block text-lg font-bold text-green-600 dark:text-green-400">
+                        Rp {Number(item.harga).toLocaleString('id-ID')}
+                      </span>
+                      <span className="text-[10px] text-gray-400 -mt-1">
+                        / {item.satuan || 'pcs'}
+                      </span>
+                    </div>
+
+                    {/* BUTTONS (Add/Remove) - Konsisten */}
+                    {quantity > 0 ? (
+                      <div className="flex items-center bg-green-50 dark:bg-green-900/30 rounded-full border border-green-200 dark:border-green-700 p-0.5">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => updateCart(item, 'decrement')}
+                          className="h-8 w-8 rounded-full text-green-700 hover:bg-green-100 dark:text-green-300 dark:hover:bg-green-800/50"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                        <span className="font-bold text-sm w-8 text-center text-green-700 dark:text-green-300">
+                          {quantity}
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => updateCart(item, 'increment')}
+                          className="h-8 w-8 rounded-full text-green-700 hover:bg-green-100 dark:text-green-300 dark:hover:bg-green-800/50"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        size="sm"
+                        onClick={() => updateCart(item, 'increment')}
+                        className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 h-9 shadow-sm hover:shadow-md active:scale-95 transition-all"
+                      >
+                        <Plus className="w-4 h-4 mr-1.5" /> Booking
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </motion.div>
 
       {filteredItems.length === 0 && (
@@ -145,7 +215,9 @@ const ServiceSection = ({ layanan = [], umkm }) => {
           className="text-center py-12"
         >
           <Wrench className="w-10 h-10 mx-auto mb-2 text-gray-400" />
-          <p className="text-gray-500 dark:text-gray-400">Tidak ada layanan.</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            Tidak ada layanan di kategori ini.
+          </p>
         </motion.div>
       )}
     </>
