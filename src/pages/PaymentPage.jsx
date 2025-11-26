@@ -12,6 +12,7 @@ import {
   Clock,
   Shield,
   Sparkles,
+  RotateCcw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useOrder } from '@/contexts/OrderContext';
+// Import Supabase Client (Logic Profesional)
 import { supabase } from '@/lib/supabaseClient';
 
 const PaymentPage = () => {
@@ -33,11 +35,11 @@ const PaymentPage = () => {
   const [selectedMethod, setSelectedMethod] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [countdown, setCountdown] = useState(180);
+  const [countdown, setCountdown] = useState(180); // 3 minutes in seconds
   const [showQR, setShowQR] = useState(false);
 
-  // Order data from location (priority) or context
-  const order = location.state?.order || orderState.currentOrder;
+  // Get order data from location state or context
+  const order = location.state?.orderData || orderState.currentOrder;
 
   useEffect(() => {
     if (!order) {
@@ -46,6 +48,7 @@ const PaymentPage = () => {
     }
   }, [order, navigate]);
 
+  // Countdown timer for payment
   useEffect(() => {
     if (!selectedMethod || isProcessing || isSuccess) return;
 
@@ -72,37 +75,40 @@ const PaymentPage = () => {
   };
 
   const handlePaymentTimeout = () => {
+    // Reset payment process
     setSelectedMethod('');
     setCountdown(180);
     setShowQR(false);
   };
 
+  // --- LOGIC BARU: CONNECT TO SUPABASE (UPDATE STATUS) ---
   const handlePaymentSubmit = async () => {
     if (!selectedMethod) return;
 
     setIsProcessing(true);
 
     try {
-      // 1. Update Database Payment Status
+      // 1. Update status di Database (Realtime)
       const { error } = await supabase
         .from('orders')
         .update({
           payment_method: selectedMethod,
           payment_status: 'paid',
-          order_status: 'processing', // Move from 'new' to 'processing'
+          order_status: 'processing', // Pesanan mulai diproses
         })
         .eq('id', order.id);
 
       if (error) throw error;
 
-      // 2. Simulate Gateway Delay (User Experience)
+      // 2. Simulasi Payment Gateway Delay (UX)
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       setIsProcessing(false);
       setIsSuccess(true);
 
-      // 3. Navigate
+      // 3. Auto navigate after success
       setTimeout(() => {
+        // Kirim ID agar halaman konfirmasi bisa fetch data terbaru
         navigate(`/order-confirmation/${order.id}`, {
           state: {
             orderId: order.id,
@@ -111,13 +117,12 @@ const PaymentPage = () => {
         });
       }, 2000);
     } catch (error) {
-      console.error('Payment update failed:', error);
+      console.error('Payment failed:', error);
       alert('Gagal memproses pembayaran. Silakan coba lagi.');
       setIsProcessing(false);
     }
   };
 
-  // ... (Bagian paymentMethods array sama seperti sebelumnya)
   const paymentMethods = [
     {
       id: 'qris',
@@ -126,6 +131,7 @@ const PaymentPage = () => {
       icon: QrCode,
       color: 'text-purple-600 dark:text-purple-400',
       bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+      borderColor: 'border-purple-200 dark:border-purple-800',
       features: ['Semua e-wallet', 'Mobile banking', 'Instant payment'],
     },
     {
@@ -135,6 +141,7 @@ const PaymentPage = () => {
       icon: Smartphone,
       color: 'text-blue-600 dark:text-blue-400',
       bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      borderColor: 'border-blue-200 dark:border-blue-800',
       features: ['Instant', 'Cashback available', 'Easy refund'],
     },
     {
@@ -144,6 +151,7 @@ const PaymentPage = () => {
       icon: Building2,
       color: 'text-green-600 dark:text-green-400',
       bgColor: 'bg-green-50 dark:bg-green-900/20',
+      borderColor: 'border-green-200 dark:border-green-800',
       features: ['BCA, BNI, Mandiri', 'Manual transfer', 'Konfirmasi manual'],
     },
     {
@@ -153,6 +161,7 @@ const PaymentPage = () => {
       icon: CreditCard,
       color: 'text-amber-600 dark:text-amber-400',
       bgColor: 'bg-amber-50 dark:bg-amber-900/20',
+      borderColor: 'border-amber-200 dark:border-amber-800',
       features: ['Cash atau QRIS', 'Bayar saat terima', 'No upfront payment'],
     },
   ];
@@ -166,9 +175,15 @@ const PaymentPage = () => {
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
         <div className="container mx-auto max-w-2xl px-4">
           <Card className="glass-card border border-green-200 dark:border-green-800 text-center p-8">
+            <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+              <Clock className="h-8 w-8 text-red-600 dark:text-red-400" />
+            </div>
             <CardTitle className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
               Session Expired
             </CardTitle>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Silakan kembali ke checkout untuk melanjutkan pembayaran.
+            </p>
             <Button asChild className="bg-green-500 hover:bg-green-600">
               <Link to="/checkout">Kembali ke Checkout</Link>
             </Button>
@@ -181,6 +196,7 @@ const PaymentPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="container mx-auto max-w-4xl px-4">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -190,7 +206,7 @@ const PaymentPage = () => {
             asChild
             variant="outline"
             size="icon"
-            className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-600 dark:text-green-300"
+            className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
           >
             <Link to="/checkout">
               <ArrowLeft className="w-4 h-4" />
@@ -201,17 +217,19 @@ const PaymentPage = () => {
               Pembayaran
             </h1>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Pilih metode pembayaran untuk pesanan
-              <span className="font-mono font-bold ml-2">
-                #{order.order_number}
-              </span>
+              Pilih metode pembayaran untuk menyelesaikan pesanan
             </p>
+            <Badge className="mt-2 bg-green-500 hover:bg-green-600 text-white border-0 font-mono">
+              #{order.order_number || order.id.slice(0, 8)}
+            </Badge>
           </div>
+
+          {/* Timer */}
           {selectedMethod && !isSuccess && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/50 text-amber-800 px-3 py-2 rounded-lg border border-amber-200"
+              className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 px-3 py-2 rounded-lg border border-amber-200 dark:border-amber-800"
             >
               <Clock className="w-4 h-4" />
               <span className="font-mono font-bold">
@@ -222,21 +240,25 @@ const PaymentPage = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Payment Methods */}
           <div className="lg:col-span-2 space-y-6">
             {/* Security Badge */}
-            <div className="flex items-center justify-center gap-3 bg-green-50 dark:bg-green-900/30 border border-green-200 rounded-xl p-4">
-              <Shield className="w-5 h-5 text-green-600" />
+            <div className="flex items-center justify-center gap-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4">
+              <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
               <span className="text-sm font-medium text-green-700 dark:text-green-300">
                 Pembayaran 100% Aman & Terenkripsi
               </span>
             </div>
 
-            {/* Payment Methods */}
+            {/* Payment Methods Grid */}
             <Card className="glass-card border border-green-200 dark:border-green-800">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                   Pilih Metode Pembayaran
                 </CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-300">
+                  Pilih cara pembayaran yang paling nyaman untuk Anda
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -255,7 +277,11 @@ const PaymentPage = () => {
                       className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
                         selectedMethod === method.id
                           ? 'border-green-500 bg-green-50 dark:bg-green-900/30 shadow-md'
-                          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-green-300'
+                          : `border-gray-200 dark:border-gray-700 
+                             bg-white dark:bg-gray-800 
+                             hover:border-green-300 dark:hover:border-green-500
+                             hover:bg-green-50 dark:hover:bg-green-900/20
+                             hover:shadow-md`
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -269,12 +295,27 @@ const PaymentPage = () => {
                           <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                             {method.description}
                           </div>
+
+                          {/* Features */}
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {method.features.map((feature, idx) => (
+                              <Badge
+                                key={idx}
+                                variant="secondary"
+                                className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-green-100 dark:hover:bg-green-900/30 hover:border-green-300 dark:hover:border-green-600 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-200"
+                              >
+                                {feature}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
+
+                        {/* Selection Indicator */}
                         <div
                           className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                             selectedMethod === method.id
-                              ? 'border-green-500 bg-green-500'
-                              : 'border-gray-300'
+                              ? 'border-green-500 bg-green-500 dark:bg-green-600'
+                              : 'border-gray-300 dark:border-gray-600'
                           }`}
                         >
                           {selectedMethod === method.id && (
@@ -288,50 +329,146 @@ const PaymentPage = () => {
               </CardContent>
             </Card>
 
-            {/* Instructions & Actions */}
+            {/* Payment Instructions */}
             <AnimatePresence>
               {selectedMethod && selectedMethodData && !isSuccess && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <Card className="glass-card border border-green-200 dark:border-green-800">
-                    <CardContent className="p-6">
-                      <div className="text-center space-y-4">
-                        {selectedMethod === 'qris' && showQR && (
-                          <div className="bg-white p-4 inline-block rounded-xl border-2 border-dashed border-green-300">
-                            <QrCode className="w-32 h-32 text-gray-900" />
-                            <p className="text-xs text-gray-500 mt-2">
-                              Scan untuk bayar
+                    <CardHeader>
+                      <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <selectedMethodData.icon
+                          className={`w-5 h-5 ${selectedMethodData.color}`}
+                        />
+                        Instruksi {selectedMethodData.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {/* QR Code for QRIS */}
+                      {selectedMethod === 'qris' && showQR && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="flex justify-center w-full"
+                        >
+                          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-dashed border-green-300 dark:border-green-600">
+                            <div className="w-48 h-48 bg-gradient-to-br from-green-400 to-blue-500 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                              <QrCode className="w-32 h-32 text-white" />
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                              Scan QR code dengan aplikasi e-wallet atau mobile
+                              banking
                             </p>
                           </div>
-                        )}
+                        </motion.div>
+                      )}
 
-                        <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                          <span className="text-gray-600 dark:text-gray-400">
-                            Total Tagihan
-                          </span>
-                          <span className="text-xl font-bold text-green-600">
-                            Rp {order.total_amount.toLocaleString()}
-                          </span>
+                      {/* Manual Transfer Instructions */}
+                      {selectedMethod === 'transfer' && (
+                        <div className="space-y-3">
+                          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                            <div className="font-mono text-center space-y-2">
+                              <div className="text-sm text-gray-600 dark:text-gray-400">
+                                Bank BCA
+                              </div>
+                              <div className="text-lg font-bold text-gray-900 dark:text-white">
+                                123 456 7890
+                              </div>
+                              <div className="text-sm text-gray-600 dark:text-gray-400">
+                                a.n. UMKM KARAWANG
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Transfer tepat sebesar{' '}
+                            <span className="font-bold text-green-600 dark:text-green-400">
+                              Rp {order.total_amount.toLocaleString()}
+                            </span>{' '}
+                            dan konfirmasi manual ke UMKM
+                          </p>
                         </div>
+                      )}
 
+                      {/* E-Wallet Instructions */}
+                      {selectedMethod === 'ewallet' && (
+                        <div className="space-y-3">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Anda akan diarahkan ke aplikasi e-wallet untuk
+                            menyelesaikan pembayaran.
+                          </p>
+                          <div className="flex gap-2">
+                            {['GoPay', 'OVO', 'Dana', 'LinkAja'].map(
+                              (ewallet) => (
+                                <Badge
+                                  key={ewallet}
+                                  variant="outline"
+                                  className="text-xs bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
+                                >
+                                  {ewallet}
+                                </Badge>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* COD Instructions */}
+                      {selectedMethod === 'cod' && (
+                        <div className="space-y-3">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Bayar ketika pesanan sudah diterima. Siapkan uang
+                            tunai atau gunakan QRIS di tempat.
+                          </p>
+                          <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg p-3">
+                            <p className="text-sm text-amber-700 dark:text-amber-300 text-center">
+                              Total yang harus dibayar:{' '}
+                              <span className="font-bold">
+                                Rp {order.total_amount.toLocaleString()}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Button */}
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
                         <Button
                           onClick={handlePaymentSubmit}
                           disabled={isProcessing}
-                          className="w-full h-12 text-lg font-bold bg-green-500 hover:bg-green-600"
+                          className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-12 text-lg font-bold text-white mt-4"
                         >
-                          {isProcessing ? 'Memproses...' : 'Saya Sudah Bayar'}
+                          {isProcessing ? (
+                            <>
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{
+                                  duration: 1,
+                                  repeat: Infinity,
+                                  ease: 'linear',
+                                }}
+                                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
+                              />
+                              Memproses Pembayaran...
+                            </>
+                          ) : (
+                            `Bayar Rp ${order.total_amount.toLocaleString()}`
+                          )}
                         </Button>
-                      </div>
+                      </motion.div>
                     </CardContent>
                   </Card>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Success Animation */}
+            {/* Success State */}
             <AnimatePresence>
               {isSuccess && (
                 <motion.div
@@ -339,48 +476,119 @@ const PaymentPage = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-8"
                 >
-                  <div className="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                    <Sparkles className="h-10 w-10 text-green-600" />
-                  </div>
+                  <motion.div
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 10, -10, 0],
+                    }}
+                    transition={{ duration: 1 }}
+                    className="w-20 h-20 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center"
+                  >
+                    <Sparkles className="h-10 w-10 text-green-600 dark:text-green-400" />
+                  </motion.div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     Pembayaran Berhasil! 🎉
                   </h3>
-                  <p className="text-gray-600">
-                    Mengarahkan ke detail pesanan...
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Mengarahkan ke konfirmasi pesanan...
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Sidebar Summary */}
-          <div className="space-y-6">
-            <Card className="glass-card border border-green-200 dark:border-green-800">
+          {/* Order Summary */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-6"
+          >
+            <Card className="glass-card border border-green-200 dark:border-green-800 sticky top-6">
               <CardHeader>
-                <CardTitle className="text-xl font-bold">Ringkasan</CardTitle>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                  Ringkasan Pesanan
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  {order.items.map((item, i) => (
-                    <div key={i} className="flex justify-between text-sm">
-                      <span className="text-gray-600">
-                        {item.quantity}x {item.name}
-                      </span>
-                      <span className="font-medium">
+                {/* Order Items */}
+                <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                  {order.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-start pb-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 dark:text-white">
+                          {item.quantity}x {item.name}
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          {item.umkm}
+                        </div>
+                      </div>
+                      <div className="text-green-600 dark:text-green-400 font-semibold whitespace-nowrap">
                         Rp {(item.price * item.quantity).toLocaleString()}
-                      </span>
+                      </div>
                     </div>
                   ))}
                 </div>
-                <div className="border-t pt-4 flex justify-between font-bold text-lg">
-                  <span>Total</span>
-                  <span className="text-green-600">
-                    Rp {order.total_amount.toLocaleString()}
-                  </span>
+
+                {/* Price Breakdown */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Subtotal
+                    </span>
+                    <span className="text-gray-900 dark:text-white">
+                      Rp{' '}
+                      {order.items
+                        .reduce(
+                          (sum, item) => sum + item.price * item.quantity,
+                          0
+                        )
+                        .toLocaleString()}
+                    </span>
+                  </div>
+
+                  {order.delivery_method === 'delivery' && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Ongkos Kirim
+                      </span>
+                      <span className="text-gray-900 dark:text-white">
+                        Rp 5.000
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
+                    <span className="text-gray-900 dark:text-white">Total</span>
+                    <span className="text-green-600 dark:text-green-400">
+                      Rp {order.total_amount.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Security Features */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                      <Shield className="w-4 h-4 text-green-500 dark:text-green-400" />
+                      <span>Pembayaran terenkripsi</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                      <CheckCircle2 className="w-4 h-4 text-green-500 dark:text-green-400" />
+                      <span>Garansi uang kembali</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                      <Clock className="w-4 h-4 text-green-500 dark:text-green-400" />
+                      <span>Konfirmasi instan</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
