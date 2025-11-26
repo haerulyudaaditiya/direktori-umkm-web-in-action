@@ -11,6 +11,11 @@ import FoodSection from '@/components/umkm/FoodSection';
 import ServiceSection from '@/components/umkm/ServiceSection';
 import RetailSection from '@/components/umkm/RetailSection';
 import { supabase } from '@/lib/supabaseClient';
+import {
+  SERVICE_KEYWORDS,
+  RETAIL_KEYWORDS,
+  checkCategoryMatch,
+} from '@/utils/categoryConstants';
 
 const MenuPage = () => {
   const { slug } = useParams();
@@ -21,7 +26,6 @@ const MenuPage = () => {
     const fetchUMKMAndMenu = async () => {
       setIsLoading(true);
       try {
-        // 1. Fetch UMKM Data + Products (Join)
         const { data: umkmData, error: umkmError } = await supabase
           .from('umkms')
           .select('*, products(*)')
@@ -33,55 +37,42 @@ const MenuPage = () => {
         if (umkmData) {
           const products = umkmData.products || [];
 
-          // --- LOGIC PERBAIKAN KATEGORI (ROBUST) ---
+          // --- LOGIC DINAMIS (PROFESIONAL) ---
+          // Menggunakan helper dari utils/categoryConstants.js
+
           const formattedData = {
             ...umkmData,
-            // Logic: Ambil semua yang BUKAN jasa dan BUKAN retail murni
-            // atau yang secara eksplisit masuk kategori makanan/minuman
-            menu: products.filter((p) => {
-              const cat = (p.kategori_produk || '').toLowerCase();
-              // Daftar whitelist kategori kuliner yang ada di data
-              const foodCategories = [
-                'makanan',
-                'minuman',
-                'tambahan',
-                'paket',
-                'roti',
-                'seblak',
-                'teh',
-                'kopi',
-                'cemilan',
-                'lauk',
-                'sayur',
-                'soto',
-                'mie',
-              ];
-              return (
-                foodCategories.includes(cat) ||
-                foodCategories.some((c) => cat.includes(c))
-              );
-            }),
 
-            // Logic Jasa: Eksplisit cek 'jasa' atau 'layanan'
-            layanan: products.filter((p) => {
-              const cat = (p.kategori_produk || '').toLowerCase();
-              return (
-                cat === 'jasa' ||
-                cat === 'layanan' ||
-                cat === 'print' ||
-                cat === 'laundry'
-              );
-            }),
+            // 1. Layanan Jasa (Smart Filter)
+            layanan: products.filter((p) =>
+              checkCategoryMatch(p.kategori_produk, SERVICE_KEYWORDS)
+            ),
 
-            // Logic Retail: Sisanya yang biasanya dijual satuan/stok
+            // 2. Produk Retail (Smart Filter: Retail tapi BUKAN Jasa)
             produk: products.filter((p) => {
-              const cat = (p.kategori_produk || '').toLowerCase();
-              return (
-                cat === 'retail' ||
-                cat === 'umum' ||
-                cat === 'sembako' ||
-                cat === 'buah'
+              const isRetail = checkCategoryMatch(
+                p.kategori_produk,
+                RETAIL_KEYWORDS
               );
+              const isService = checkCategoryMatch(
+                p.kategori_produk,
+                SERVICE_KEYWORDS
+              );
+              return isRetail && !isService;
+            }),
+
+            // 3. Menu Makanan/Minuman (Smart Fallback)
+            // Apapun yang BUKAN Jasa dan BUKAN Retail --> Masuk Makanan.
+            menu: products.filter((p) => {
+              const isService = checkCategoryMatch(
+                p.kategori_produk,
+                SERVICE_KEYWORDS
+              );
+              const isRetail = checkCategoryMatch(
+                p.kategori_produk,
+                RETAIL_KEYWORDS
+              );
+              return !isService && !isRetail;
             }),
           };
 
@@ -137,10 +128,17 @@ const MenuPage = () => {
   const hasService = umkm.layanan && umkm.layanan.length > 0;
   const hasRetail = umkm.produk && umkm.produk.length > 0;
 
-  // Fallback: Jika tipe kuliner tapi filter menu kosong (jaga-jaga),
-  // coba tampilkan semua produk di tab menu
+  // Fallback Logic untuk Tipe Toko
+  // Jika kategori toko mengandung 'kuliner'/'makan'/'minum', anggap sebagai Food Section
+  // meskipun produknya mungkin salah input kategori.
+  const mainCategory = (umkm.kategori || '').toLowerCase();
+  const isKulinerStore =
+    mainCategory.includes('kuliner') ||
+    mainCategory.includes('makan') ||
+    mainCategory.includes('minum');
+
   const showFoodSection =
-    (umkmType === 'food' || hasFood) && (hasFood || umkm.products?.length > 0);
+    (umkmType === 'food' || hasFood) && (hasFood || isKulinerStore);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
@@ -183,7 +181,7 @@ const MenuPage = () => {
 
         {/* Sections */}
         {showFoodSection && (
-          // Jika hasFood true pakai filtered, jika tidak (tapi kuliner) pakai raw products sbg fallback
+          // Fallback: Jika menu kosong tapi ini toko kuliner, ambil semua produk sebagai menu
           <FoodSection menu={hasFood ? umkm.menu : umkm.products} umkm={umkm} />
         )}
 
