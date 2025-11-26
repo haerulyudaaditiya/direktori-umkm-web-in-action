@@ -92,16 +92,69 @@ const MenuPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
         <div className="container mx-auto max-w-4xl px-3 sm:px-4">
-          <motion.div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-            <Skeleton className="h-12 w-12 rounded-full" />
-            <div className="flex-1">
-              <Skeleton className="h-8 w-64 mb-2" />
-              <Skeleton className="h-4 w-48" />
+          {/* 1. Header Profile Skeleton (Kecil, bukan Hero Besar) */}
+          <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <Skeleton className="h-10 w-10 rounded-md flex-shrink-0" />{' '}
+            {/* Back Button */}
+            <div className="flex-1 min-w-0 space-y-2">
+              <Skeleton className="h-8 w-3/4 sm:w-1/2 rounded-lg" />{' '}
+              {/* Nama UMKM */}
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-5 w-12 rounded-md" /> {/* Rating */}
+                <Skeleton className="h-5 w-16 rounded-md" /> {/* Jam Buka */}
+                <Skeleton className="h-5 w-10 rounded-md" /> {/* Harga */}
+              </div>
             </div>
-          </motion.div>
-          <div className="grid gap-4">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-32 w-full rounded-xl" />
+          </div>
+
+          {/* 2. Tabs Category Skeleton */}
+          <div className="flex gap-2 mb-6 overflow-hidden">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Skeleton
+                key={i}
+                className="h-9 w-24 rounded-full flex-shrink-0"
+              />
+            ))}
+          </div>
+
+          {/* 3. Grid Cards Skeleton (MIMIC FoodSection Layout) */}
+          {/* Menggunakan Layout Grid yang sama dengan FoodSection */}
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Card
+                key={i}
+                // Class ini SAMA PERSIS dengan FoodSection.jsx
+                className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-green-100 dark:border-green-800 shadow-sm h-full flex flex-col"
+              >
+                {/* Image Area (h-48 Sesuai FoodSection) */}
+                <Skeleton className="h-48 w-full rounded-none" />
+
+                {/* Content Area */}
+                <div className="p-4 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-3 gap-2">
+                    <Skeleton className="h-6 w-3/4 rounded-md" />{' '}
+                    {/* Nama Menu */}
+                    <Skeleton className="h-5 w-10 rounded-md" />{' '}
+                    {/* Rating Kecil */}
+                  </div>
+
+                  {/* Deskripsi Line Clamp 2 */}
+                  <div className="space-y-2 flex-1 mb-4">
+                    <Skeleton className="h-3 w-full rounded" />
+                    <Skeleton className="h-3 w-2/3 rounded" />
+                  </div>
+
+                  {/* Footer: Harga & Tombol */}
+                  <div className="flex justify-between items-center pt-3 mt-auto border-t border-gray-100 dark:border-gray-700">
+                    <div className="space-y-1">
+                      <Skeleton className="h-6 w-24 rounded" /> {/* Harga */}
+                      <Skeleton className="h-3 w-16 rounded" /> {/* Satuan */}
+                    </div>
+                    {/* Tombol Rounded Full */}
+                    <Skeleton className="h-9 w-24 rounded-full" />
+                  </div>
+                </div>
+              </Card>
             ))}
           </div>
         </div>
