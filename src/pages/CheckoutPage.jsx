@@ -7,6 +7,7 @@ import {
   MapPin,
   Clock,
   User,
+  Phone,
   Home,
   Utensils,
   AlertCircle,
@@ -17,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useOrder } from '@/contexts/OrderContext';
+// Import Supabase Client (Profesional)
 import { supabase } from '@/lib/supabaseClient';
 
 const CheckoutPage = () => {
@@ -42,7 +44,7 @@ const CheckoutPage = () => {
   const deliveryFee = deliveryOption === 'delivery' ? 5000 : 0;
   const finalTotal = totalPrice + deliveryFee;
 
-  // --- VALIDATION LOGIC (Professional Standard) ---
+  // Validasi profesional
   const validateField = (name, value) => {
     const newErrors = { ...errors };
 
@@ -69,6 +71,8 @@ const CheckoutPage = () => {
             newErrors.phone = 'Nomor minimal 10 digit';
           } else if (cleanPhone.length > 15) {
             newErrors.phone = 'Nomor maksimal 15 digit';
+          } else if (!/^[0-9+-\s()]+$/.test(value)) {
+            newErrors.phone = 'Format nomor tidak valid';
           } else {
             delete newErrors.phone;
           }
@@ -81,6 +85,8 @@ const CheckoutPage = () => {
             newErrors.address = 'Alamat pengiriman wajib diisi';
           } else if (value.trim().length < 10) {
             newErrors.address = 'Alamat terlalu pendek, minimal 10 karakter';
+          } else if (value.trim().length > 200) {
+            newErrors.address = 'Alamat terlalu panjang, maksimal 200 karakter';
           } else {
             delete newErrors.address;
           }
@@ -104,6 +110,8 @@ const CheckoutPage = () => {
 
   const handleFieldChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Real-time validation untuk field yang sudah di-touch
     if (touched[field]) {
       setErrors(() => validateField(field, value));
     }
@@ -114,11 +122,12 @@ const CheckoutPage = () => {
     setErrors(() => validateField(field, formData[field]));
   };
 
-  // --- SUBMIT LOGIC (SUPABASE INTEGRATION) ---
+  // --- LOGIC BARU: CONNECT TO SUPABASE ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Mark semua field as touched
     const allTouched = {
       name: true,
       phone: true,
@@ -127,9 +136,11 @@ const CheckoutPage = () => {
     };
     setTouched(allTouched);
 
+    // Validasi final
     const newErrors = validateForm();
     setErrors(newErrors);
 
+    // Jika ada error, stop submission
     if (Object.keys(newErrors).length > 0) {
       const firstErrorField = Object.keys(newErrors)[0];
       document.getElementById(firstErrorField)?.scrollIntoView({
@@ -141,7 +152,7 @@ const CheckoutPage = () => {
     }
 
     try {
-      // 1. Generate Order Number (ORD-TIMESTAMP-RANDOM)
+      // 1. Generate Order Number Unik
       const timestamp = Date.now().toString().slice(-6);
       const randomStr = Math.random()
         .toString(36)
@@ -149,7 +160,7 @@ const CheckoutPage = () => {
         .toUpperCase();
       const orderNumber = `ORD-${timestamp}-${randomStr}`;
 
-      // 2. Insert into 'orders' table
+      // 2. INSERT ke Tabel 'orders' Supabase
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert([
@@ -165,7 +176,6 @@ const CheckoutPage = () => {
             delivery_method: deliveryOption,
             payment_status: 'pending',
             order_status: 'new',
-            // Estimate 25 mins from now
             estimated_ready_time: new Date(
               Date.now() + 25 * 60000
             ).toISOString(),
@@ -176,16 +186,14 @@ const CheckoutPage = () => {
 
       if (orderError) throw orderError;
 
-      // 3. Insert into 'order_items' table
+      // 3. INSERT ke Tabel 'order_items' Supabase
       const orderItems = state.cart.map((item) => ({
         order_id: orderData.id,
-        product_id: item.id, // Ensure cart items have valid UUIDs from DB
-        // Note: In a real app we might look up umkm_id from product_id relation,
-        // but for MVP migration we assume we handle it or leave it null if not critical for now.
-        // Ideally: umkm_id: item.umkm_id
-        product_name: item.name,
+        product_id: item.id, // UUID Produk
+        product_name: item.name, // Backup nama produk
         price_at_purchase: item.price,
         quantity: item.quantity,
+        // umkm_id: item.umkm_id // Opsional jika kolom ini ada di tabel order_items
       }));
 
       const { error: itemsError } = await supabase
@@ -194,12 +202,12 @@ const CheckoutPage = () => {
 
       if (itemsError) throw itemsError;
 
-      // 4. Success: Update Context & Navigate
-      // We pass the FULL order object to the next page to avoid re-fetching immediately
+      // 4. SUKSES: Update Context & Pindah Halaman
+      // Kita kirim object order lengkap agar PaymentPage tidak perlu fetch ulang
       const fullOrder = {
         ...orderData,
-        items: state.cart, // Pass cart items for display
-        customer: formData, // Pass raw form data for consistency
+        items: state.cart,
+        customer: formData,
       };
 
       dispatch({ type: 'START_ORDER', payload: fullOrder });
@@ -207,12 +215,12 @@ const CheckoutPage = () => {
 
       navigate('/payment', {
         state: {
-          order: fullOrder,
+          orderData: fullOrder, // Mengirim data order yang sudah tersimpan di DB
         },
       });
     } catch (error) {
-      console.error('Checkout failed:', error);
-      alert(`Gagal memproses pesanan: ${error.message}`);
+      console.error('Checkout Error:', error);
+      alert('Terjadi kesalahan saat memproses pesanan. Silakan coba lagi.');
     } finally {
       setIsSubmitting(false);
     }
@@ -269,7 +277,13 @@ const CheckoutPage = () => {
             asChild
             variant="outline"
             size="icon"
-            className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-800 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-200"
+            className="
+                border-green-300 text-green-700 
+                hover:bg-green-50 hover:text-green-800 
+                dark:border-green-700 dark:text-green-300 
+                dark:hover:bg-green-900/50 dark:hover:text-green-200
+                transition-colors duration-200
+            "
           >
             <Link to="/direktori">
               <ArrowLeft className="w-4 h-4" />
@@ -354,6 +368,7 @@ const CheckoutPage = () => {
                         id="phone"
                         value={formData.phone}
                         onChange={(e) => {
+                          // Auto-format: hanya allow angka dan simbol telepon
                           const value = e.target.value.replace(
                             /[^\d+-\s()]/g,
                             ''
@@ -361,7 +376,7 @@ const CheckoutPage = () => {
                           handleFieldChange('phone', value);
                         }}
                         onBlur={() => handleFieldBlur('phone')}
-                        placeholder="Contoh: 081234567890"
+                        placeholder="Contoh: 081234567890 atau +6281234567890"
                         className={`pr-10 transition-all duration-200 ${
                           errors.phone
                             ? 'border-red-500 focus-visible:ring-red-500'
@@ -407,6 +422,7 @@ const CheckoutPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
+                    {/* Pickup Option */}
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -425,6 +441,7 @@ const CheckoutPage = () => {
                       </div>
                     </motion.button>
 
+                    {/* Delivery Option */}
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -444,6 +461,7 @@ const CheckoutPage = () => {
                     </motion.button>
                   </div>
 
+                  {/* Address Field (hanya untuk delivery) */}
                   {deliveryOption === 'delivery' && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
@@ -499,7 +517,7 @@ const CheckoutPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="glass-card border border-green-200 dark:border-green-800">
+              <Card className="glas-scard border border-green-200 dark:border-green-800">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                     Catatan Tambahan
@@ -509,11 +527,11 @@ const CheckoutPage = () => {
                   <Textarea
                     value={formData.notes}
                     onChange={(e) => handleFieldChange('notes', e.target.value)}
-                    placeholder="Contoh: Jangan pakai micin, pedas level 3, dll."
+                    placeholder="Contoh: Jangan pakai micin, pedas level 3, tanpa acar, dll."
                     className="focus-visible:ring-green-500 min-h-[100px] resize-y"
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Opsional - untuk permintaan khusus
+                    Opsional - untuk permintaan khusus pada pesanan
                   </p>
                 </CardContent>
               </Card>
@@ -534,6 +552,7 @@ const CheckoutPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Order Items */}
                 <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
                   {state.cart.map((item) => (
                     <div
@@ -555,6 +574,7 @@ const CheckoutPage = () => {
                   ))}
                 </div>
 
+                {/* Price Breakdown */}
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">
@@ -584,6 +604,7 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
+                {/* Checkout Button */}
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -604,7 +625,7 @@ const CheckoutPage = () => {
                           }}
                           className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
                         />
-                        Menyimpan...
+                        Memproses...
                       </>
                     ) : (
                       'Konfirmasi Pesanan'
@@ -617,6 +638,7 @@ const CheckoutPage = () => {
                   berlaku
                 </p>
 
+                {/* Validation Summary */}
                 {Object.keys(errors).length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -626,6 +648,7 @@ const CheckoutPage = () => {
                     <p className="text-red-800 dark:text-red-200 text-sm font-medium flex items-center gap-2">
                       <AlertCircle className="w-4 h-4" />
                       Harap perbaiki {Object.keys(errors).length} kesalahan
+                      sebelum melanjutkan
                     </p>
                   </motion.div>
                 )}
