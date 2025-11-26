@@ -1,47 +1,48 @@
 import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import {
-  Phone,
-  Star,
-  Clock,
-  WashingMachine,
-  Printer,
-  BookOpen,
-  Wrench,
-  Settings,
-  Sparkles,
-} from 'lucide-react';
+import { MessageCircle, Clock, Sparkles, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getCategoryFallback } from '@/utils/categoryFallback';
 
-const ServiceSection = ({ layanan, umkm }) => {
+const ServiceSection = ({ layanan = [], umkm }) => {
   const [selectedCategory, setSelectedCategory] = useState('semua');
+  const [imageErrors, setImageErrors] = useState({});
+
+  const safeLayanan = Array.isArray(layanan) ? layanan : [];
 
   const categories = [
     'semua',
-    ...new Set(layanan.map((item) => item.nama.split(' ')[0])),
+    ...new Set(
+      safeLayanan.map((item) => {
+        const rawCat = item.kategori_produk || item.kategori || 'Jasa';
+        const catStr = String(rawCat);
+        return catStr.charAt(0).toUpperCase() + catStr.slice(1).toLowerCase();
+      })
+    ),
   ];
+
   const filteredItems =
     selectedCategory === 'semua'
-      ? layanan
-      : layanan.filter((item) => item.nama.startsWith(selectedCategory));
+      ? safeLayanan
+      : safeLayanan.filter((item) => {
+          const rawCat = item.kategori_produk || item.kategori || 'Jasa';
+          return (
+            String(rawCat).toLowerCase() === selectedCategory.toLowerCase()
+          );
+        });
 
   const handleOrder = (service) => {
-    const message = `Halo ${umkm.nama}, saya ingin memesan layanan:\n\n*${
-      service.nama
-    }*\nHarga: Rp ${service.harga.toLocaleString()}/${
-      service.satuan
-    }\nDeskripsi: ${service.deskripsi}\n\nBisa info lebih lanjut?`;
-    const whatsappUrl = `https://wa.me/${umkm.kontak}?text=${encodeURIComponent(
-      message
-    )}`;
-    window.open(whatsappUrl, '_blank');
+    const phoneNumber = umkm?.kontak || '6281234567890';
+    const message = `Halo ${umkm?.nama}, saya ingin tanya layanan: ${service.nama}.`;
+    window.open(
+      `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
+      '_blank'
+    );
   };
 
   return (
     <>
-      {/* CATEGORY FILTER - SAMA PERSIS */}
+      {/* TABS - SAMA PERSIS */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -51,91 +52,100 @@ const ServiceSection = ({ layanan, umkm }) => {
         {categories.map((category) => (
           <button
             key={category}
-            onClick={() => setSelectedCategory(category)}
+            onClick={() => setSelectedCategory(category.toLowerCase())}
             className={`px-3 sm:px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-xs sm:text-sm flex-shrink-0 ${
-              selectedCategory === category
+              selectedCategory.toLowerCase() === category.toLowerCase()
                 ? 'bg-green-500 text-white shadow-lg'
                 : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
             }`}
           >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+            {category}
           </button>
         ))}
       </motion.div>
 
-      {/* SERVICE ITEMS - SEMUA HIJAU */}
+      {/* GRID - SAMA PERSIS (VERTICAL) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="grid gap-4 sm:gap-6"
+        className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {filteredItems.map((service, index) => (
-          <motion.div
-            key={service.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700"
-          >
-            <div className="flex flex-col sm:flex-row">
-              <div className="w-full h-40 sm:w-32 sm:h-32 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                {(() => {
-                  const fallbackConfig = getCategoryFallback('jasa');
-                  const IconComponent = fallbackConfig.icon;
-                  return <IconComponent className="w-10 h-10 text-white" />;
-                })()}
+        {filteredItems.map((item, index) => {
+          const isValidUrl =
+            item.gambar &&
+            typeof item.gambar === 'string' &&
+            item.gambar.trim().length > 0;
+          const showPlaceholder = !isValidUrl || imageErrors[item.id];
+
+          return (
+            <motion.div
+              key={item.id || index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }} // DELAY SAMA
+              className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-green-200 dark:border-green-700 flex flex-col h-full"
+            >
+              <div className="relative h-48 w-full bg-gray-100 dark:bg-gray-700">
+                {showPlaceholder ? (
+                  <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                ) : (
+                  <img
+                    src={item.gambar}
+                    alt={item.nama}
+                    onError={() =>
+                      setImageErrors((prev) => ({ ...prev, [item.id]: true }))
+                    }
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )}
               </div>
 
-              <div className="flex-1 p-3 sm:p-4">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white truncate">
-                      {service.nama}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mt-1 line-clamp-2">
-                      {service.deskripsi}
-                    </p>
-                  </div>
-                  <div className="text-left sm:text-right sm:ml-4">
-                    <div className="text-base sm:text-lg font-bold text-green-600 dark:text-green-400">
-                      Rp {service.harga.toLocaleString()}
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      <Clock className="w-3 h-3" />
-                      <span>Cepat</span>
-                    </div>
+              <div className="flex-1 p-3 sm:p-4 flex flex-col">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white line-clamp-2">
+                    {item.nama}
+                  </h3>
+                  <div className="text-base sm:text-lg font-bold text-green-600 dark:text-green-400 whitespace-nowrap ml-2">
+                    Rp {Number(item.harga).toLocaleString('id-ID')}
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center mt-3 sm:mt-0">
-                  <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mb-4 line-clamp-2 flex-1">
+                  {item.deskripsi || 'Layanan profesional.'}
+                </p>
+
+                <div className="flex justify-between items-center mt-auto">
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Clock className="w-3 h-3" /> <span>Cepat</span>
                   </div>
 
                   <Button
-                    onClick={() => handleOrder(service)}
-                    className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-8 sm:h-9 text-xs"
                     size="sm"
+                    onClick={() => handleOrder(item)}
+                    className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 h-8 sm:h-9 text-xs"
                   >
-                    <Phone className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                    <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />{' '}
                     Pesan
                   </Button>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </motion.div>
 
       {filteredItems.length === 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center py-8 sm:py-12"
+          className="text-center py-12"
         >
-          <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
-            Tidak ada layanan dalam kategori ini.
-          </p>
+          <Wrench className="w-10 h-10 mx-auto mb-2 text-gray-400" />
+          <p className="text-gray-500 dark:text-gray-400">Tidak ada layanan.</p>
         </motion.div>
       )}
     </>
