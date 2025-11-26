@@ -31,6 +31,7 @@ import {
   Store,
 } from 'lucide-react';
 import { getCategoryFallback } from '@/utils/categoryFallback';
+import { supabase } from '@/lib/supabaseClient';
 
 function DirectoryPage() {
   const [searchParams] = useSearchParams();
@@ -46,16 +47,25 @@ function DirectoryPage() {
   const [imageErrors, setImageErrors] = useState({});
 
   useEffect(() => {
-    fetch('/data.json')
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchUMKMs = async () => {
+      setIsLoading(true);
+
+      // Query ke Supabase: Ambil semua kolom dari tabel 'umkms'
+      const { data, error } = await supabase
+        .from('umkms')
+        .select('*')
+        .order('rating', { ascending: false }); // Sort by rating tertinggi
+
+      if (error) {
+        console.error('Error fetching data:', error);
+      } else {
         setUmkmList(data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error('Gagal mengambil data:', err);
-        setIsLoading(false);
-      });
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchUMKMs();
   }, []);
 
   const { allCategories, allTags } = useMemo(() => {

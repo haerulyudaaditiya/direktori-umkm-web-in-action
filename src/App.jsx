@@ -8,6 +8,7 @@ import MenuPage from './pages/MenuPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderConfirmation from './pages/OrderConfirmation';
 import PaymentPage from './pages/PaymentPage';
+import MigrateData from './components/MigrateData';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           element={<OrderConfirmation />}
         />
       </Route>
+      <Route path="/migrate" element={<MigrateData />} />
     </Routes>
   );
 }
