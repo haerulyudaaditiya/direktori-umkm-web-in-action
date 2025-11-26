@@ -23,11 +23,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { useOrder } from '@/contexts/OrderContext';
+import { supabase } from '@/lib/supabaseClient'; // IMPORT SUPABASE
 
 const OrderConfirmation = () => {
   const { orderId } = useParams();
+  // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
   const location = useLocation();
   const { state: orderState } = useOrder();
@@ -38,135 +39,155 @@ const OrderConfirmation = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [imageErrors, setImageErrors] = useState({});
 
-  // Generate order number yang konsisten
   const generateOrderNumber = (id) => {
-    return `ORD-${id?.slice(-6) || '000000'}`.toUpperCase();
+    return `ORD-${id?.slice(0, 8).toUpperCase() || '000000'}`;
   };
 
-  // Load order dari localStorage, context, atau location state
+  // --- LOGIC BARU: REALTIME FETCHING ---
   useEffect(() => {
-    const loadOrder = () => {
+    const fetchOrder = async () => {
       try {
-        // Priority 1: Data dari location state (baru saja checkout)
-        if (location.state?.orderData) {
-          const orderData = {
-            ...location.state.orderData,
-            id: orderId,
-            status: 'ordered',
-            paymentStatus: 'paid',
-            estimatedReady: new Date(Date.now() + 25 * 60000),
-            orderNumber: generateOrderNumber(orderId),
-            createdAt: new Date(),
-          };
-          setOrder(orderData);
+        // 1. Cek apakah data sudah ada di location state (biar cepat)
+        if (
+          location.state?.orderData &&
+          location.state.orderData.id === orderId
+        ) {
+          // Merge dengan items dari state jika ada
+          const initialData = location.state.orderData;
+          if (!initialData.items && orderState.cart.length > 0) {
+            initialData.items = orderState.cart;
+          }
+          setOrder(initialData);
+        } else {
+          // 2. Jika tidak ada/refresh, Fetch dari Supabase (Join items)
+          const { data, error } = await supabase
+            .from('orders')
+            .select('*, order_items(*)')
+            .eq('id', orderId)
+            .single();
 
-          // Simpan ke localStorage
-          const savedOrders = JSON.parse(
-            localStorage.getItem('karawangMart_orders') || '[]'
-          );
-          const updatedOrders = [
-            ...savedOrders.filter((o) => o.id !== orderId),
-            orderData,
-          ];
-          localStorage.setItem(
-            'karawangMart_orders',
-            JSON.stringify(updatedOrders)
-          );
-          return;
+          if (error) throw error;
+
+          // Map order_items agar struktur sama dengan cart (untuk display)
+          if (data) {
+            const mappedItems = data.order_items.map((item) => ({
+              id: item.product_id,
+              name: item.product_name,
+              price: item.price_at_purchase,
+              quantity: item.quantity,
+              // Image dan UMKM name mungkin null kalau join-nya belum dalam (kita handle di UI)
+              umkm: 'UMKM',
+            }));
+            setOrder({
+              ...data,
+              items: mappedItems,
+              customer: {
+                name: data.customer_name,
+                phone: data.customer_phone,
+                address: data.customer_address,
+                notes: data.customer_notes,
+              },
+            });
+          }
         }
-
-        // Priority 2: Dari OrderContext (currentOrder)
-        if (orderState.currentOrder && orderState.currentOrder.id === orderId) {
-          const contextOrder = {
-            ...orderState.currentOrder,
-            orderNumber: generateOrderNumber(orderId),
-          };
-          setOrder(contextOrder);
-          return;
-        }
-
-        // Priority 3: Dari localStorage
-        const savedOrders = JSON.parse(
-          localStorage.getItem('karawangMart_orders') || '[]'
-        );
-        const savedOrder = savedOrders.find((o) => o.id === orderId);
-
-        if (savedOrder) {
-          setOrder(savedOrder);
-          return;
-        }
-
-        // Jika tidak ditemukan, redirect ke direktori
-        navigate('/direktori', {
-          replace: true,
-          state: { error: 'Pesanan tidak ditemukan' },
-        });
-      } catch (error) {
-        console.error('Error loading order:', error);
-        navigate('/direktori', {
-          replace: true,
-          state: { error: 'Terjadi kesalahan saat memuat pesanan' },
-        });
+      } catch (err) {
+        console.error('Gagal memuat pesanan:', err);
+        // Jangan redirect dulu, biarkan loading state atau error message
       }
     };
 
-    if (orderId) {
-      loadOrder();
-    }
-  }, [orderId, orderState.currentOrder, location.state, navigate]);
+    fetchOrder();
 
-  // Progress animation dan countdown
+    // --- REALTIME SUBSCRIPTION ---
+    // Dengarkan perubahan pada baris order ini
+    const subscription = supabase
+      .channel(`order-${orderId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'orders',
+          filter: `id=eq.${orderId}`,
+        },
+        (payload) => {
+          console.log('Order Updated:', payload.new);
+          // Update local state dengan data baru
+          setOrder((prev) => ({ ...prev, ...payload.new }));
+
+          // Cek status selesai
+          if (
+            payload.new.order_status === 'ready' ||
+            payload.new.order_status === 'completed'
+          ) {
+            setIsReady(true);
+            setShowConfetti(true);
+            setCurrentStep(3);
+            setProgress(100);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [orderId, location.state, orderState.cart]);
+
+  // --- LOGIC PROGRESS BAR & TIMER ---
+  // Tetap jalan sebagai estimasi, tapi bisa di-override oleh Realtime status
   useEffect(() => {
     if (!order) return;
 
+    // Jika status dari DB sudah 'ready', langsung set selesai
+    if (order.order_status === 'ready' || order.order_status === 'completed') {
+      setIsReady(true);
+      setCurrentStep(3);
+      setProgress(100);
+      setTimeLeft({ minutes: 0, seconds: 0 });
+      return;
+    }
+
     const timer = setInterval(() => {
       const now = new Date();
-      const estimatedTime = new Date(order.estimatedReady);
+      // Gunakan estimated_ready_time dari DB jika ada, kalau tidak pakai +25 menit manual
+      const estimatedTime = order.estimated_ready_time
+        ? new Date(order.estimated_ready_time)
+        : new Date(new Date(order.created_at).getTime() + 25 * 60000);
+
       const difference = estimatedTime - now;
-      const totalTime = 25 * 60000;
+      const totalTime = 25 * 60000; // Asumsi durasi standar 25 menit
       const elapsed = totalTime - difference;
 
-      // Update progress (0-100)
-      const newProgress = Math.min((elapsed / totalTime) * 100, 100);
-      setProgress(newProgress);
+      // Update progress (max 95% sampai benar-benar 'ready' dari DB)
+      const newProgress = Math.min((elapsed / totalTime) * 100, 95);
 
-      // Update steps berdasarkan progress
-      if (newProgress < 33) setCurrentStep(0);
-      else if (newProgress < 66) setCurrentStep(1);
-      else setCurrentStep(2);
+      if (!isReady) {
+        setProgress(newProgress);
+        // Map progress to steps
+        if (newProgress < 33) setCurrentStep(0); // Diproses
+        else if (newProgress < 66) setCurrentStep(1); // Disiapkan
+        else setCurrentStep(2); // Siap Diambil (Hampir)
+      }
 
       if (difference <= 0) {
         setTimeLeft({ minutes: 0, seconds: 0 });
-        setIsReady(true);
-        setShowConfetti(true);
-        setCurrentStep(3);
+        // Kita tidak set IsReady=true di sini, tunggu konfirmasi DB Realtime
         clearInterval(timer);
-
-        // Update status order di localStorage
-        const savedOrders = JSON.parse(
-          localStorage.getItem('karawangMart_orders') || '[]'
+      } else {
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60)
         );
-        const updatedOrders = savedOrders.map((o) =>
-          o.id === order.id ? { ...o, status: 'ready' } : o
-        );
-        localStorage.setItem(
-          'karawangMart_orders',
-          JSON.stringify(updatedOrders)
-        );
-
-        setTimeout(() => setShowConfetti(false), 3000);
-        return;
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        setTimeLeft({ minutes, seconds });
       }
-
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-      setTimeLeft({ minutes, seconds });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [order]);
+  }, [order, isReady]);
 
   const steps = [
     {
@@ -198,16 +219,11 @@ const OrderConfirmation = () => {
   const handleShare = useCallback(async () => {
     if (!order) return;
 
-    const orderNumber = order.orderNumber || generateOrderNumber(order.id);
+    const orderNumber = order.order_number || generateOrderNumber(order.id);
     const shareText = `Saya baru saja memesan dari UMKM Karawang! 🍽️\n
 📦 Pesanan: #${orderNumber}
-💰 Total: Rp ${order.total?.toLocaleString()}
-⏰ Estimasi: ${timeLeft.minutes} menit ${timeLeft.seconds} detik
-📍 ${
-      order.deliveryOption === 'delivery'
-        ? 'Diantar ke: ' + (order.customer?.address || 'Alamat pengiriman')
-        : 'Ambil di lokasi UMKM'
-    }
+💰 Total: Rp ${Number(order.total_amount || order.total).toLocaleString()}
+📍 Status: ${isReady ? 'Siap Diambil' : 'Sedang Disiapkan'}
 
 Dukung UMKM lokal dengan #KarawangMart!`;
 
@@ -228,17 +244,16 @@ Dukung UMKM lokal dengan #KarawangMart!`;
       await navigator.clipboard.writeText(shareText);
       alert('Detail pesanan disalin ke clipboard! 📋');
     }
-  }, [order, timeLeft]);
+  }, [order, isReady]);
 
   const handleContactUMKM = useCallback(() => {
     if (!order) return;
 
-    const orderNumber = order.orderNumber || generateOrderNumber(order.id);
-    const umkmName = order.items[0]?.umkm || 'UMKM';
-    const phoneNumber = '6281234567890';
+    const orderNumber = order.order_number || generateOrderNumber(order.id);
+    const phoneNumber = '6281234567890'; // Nanti bisa ambil dari relation umkm
 
-    const message = `Halo ${umkmName}, saya ingin bertanya tentang pesanan #${orderNumber} - ${
-      order.customer?.name || 'Pelanggan'
+    const message = `Halo, saya ingin bertanya tentang pesanan #${orderNumber} atas nama ${
+      order.customer_name || order.customer?.name
     }`;
 
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
@@ -247,7 +262,7 @@ Dukung UMKM lokal dengan #KarawangMart!`;
     window.open(whatsappUrl, '_blank');
   }, [order]);
 
-  // Confetti component
+  // Confetti component (Sama Persis)
   const Confetti = () => (
     <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
       {[...Array(100)].map((_, i) => (
@@ -296,7 +311,7 @@ Dukung UMKM lokal dengan #KarawangMart!`;
               Memuat Pesanan...
             </CardTitle>
             <p className="text-gray-600 dark:text-gray-300 text-lg">
-              Sedang menyiapkan konfirmasi pesanan Anda
+              Sedang sinkronisasi data pesanan Anda...
             </p>
           </Card>
         </div>
@@ -304,7 +319,14 @@ Dukung UMKM lokal dengan #KarawangMart!`;
     );
   }
 
-  const orderNumber = order.orderNumber || generateOrderNumber(order.id);
+  const orderNumber = order.order_number || generateOrderNumber(order.id);
+  // Map DB fields to UI if needed
+  const displayTotal = order.total_amount || order.total;
+  const displayAddress = order.customer_address || order.customer?.address;
+  const displayPhone = order.customer_phone || order.customer?.phone;
+  const displayName = order.customer_name || order.customer?.name;
+  const displayNotes = order.customer_notes || order.customer?.notes;
+  const displayMethod = order.delivery_method || order.deliveryOption;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
@@ -393,8 +415,10 @@ Dukung UMKM lokal dengan #KarawangMart!`;
               className="border-green-300 text-green-700 dark:border-green-600 dark:text-green-300"
             >
               <CreditCard className="w-3 h-3 mr-1" />
-              {order.paymentMethod || 'QRIS'} •{' '}
-              {order.paymentStatus === 'paid' ? 'LUNAS' : 'MENUNGGU'}
+              {order.paymentMethod || order.payment_method || 'QRIS'} •{' '}
+              {(order.paymentStatus || order.payment_status) === 'paid'
+                ? 'LUNAS'
+                : 'MENUNGGU'}
             </Badge>
           </motion.div>
         </motion.div>
@@ -538,29 +562,12 @@ Dukung UMKM lokal dengan #KarawangMart!`;
                   <div className="space-y-3">
                     {order.items?.map((item, index) => (
                       <motion.div
-                        key={item.id}
+                        key={item.id || index}
                         initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 + index * 0.1 }}
                         className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700"
                       >
-                        {imageErrors[item.id] ? (
-                          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                            <Utensils className="w-6 h-6 text-white" />
-                          </div>
-                        ) : (
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            onError={() =>
-                              setImageErrors((prev) => ({
-                                ...prev,
-                                [item.id]: true,
-                              }))
-                            }
-                            className="w-16 h-16 rounded-lg object-cover"
-                          />
-                        )}
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
@@ -568,7 +575,7 @@ Dukung UMKM lokal dengan #KarawangMart!`;
                                 {item.quantity}x {item.name}
                               </h4>
                               <p className="text-green-600 dark:text-green-400 text-sm">
-                                {item.umkm}
+                                {item.umkm || 'Menu'}
                               </p>
                             </div>
                             <div className="text-right">
@@ -586,12 +593,23 @@ Dukung UMKM lokal dengan #KarawangMart!`;
                   <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
                     <div className="flex justify-between text-gray-600 dark:text-gray-300">
                       <span>Subtotal</span>
-                      <span>Rp {order.subtotal?.toLocaleString()}</span>
+                      <span>
+                        Rp{' '}
+                        {Number(
+                          displayTotal -
+                            (order.delivery_fee || order.deliveryFee || 0)
+                        ).toLocaleString()}
+                      </span>
                     </div>
-                    {order.deliveryFee > 0 && (
+                    {(order.delivery_fee || order.deliveryFee) > 0 && (
                       <div className="flex justify-between text-gray-600 dark:text-gray-300">
                         <span>Biaya Kirim</span>
-                        <span>Rp {order.deliveryFee?.toLocaleString()}</span>
+                        <span>
+                          Rp{' '}
+                          {Number(
+                            order.delivery_fee || order.deliveryFee
+                          ).toLocaleString()}
+                        </span>
                       </div>
                     )}
                     <div className="flex justify-between font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
@@ -599,7 +617,7 @@ Dukung UMKM lokal dengan #KarawangMart!`;
                         Total
                       </span>
                       <span className="text-green-600 dark:text-green-400">
-                        Rp {order.total?.toLocaleString()}
+                        Rp {Number(displayTotal).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -628,35 +646,35 @@ Dukung UMKM lokal dengan #KarawangMart!`;
                     <User className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5" />
                     <div>
                       <div className="font-semibold text-gray-900 dark:text-white">
-                        {order.customer?.name || 'Pelanggan'}
+                        {displayName || 'Pelanggan'}
                       </div>
                       <div className="text-gray-600 dark:text-gray-300 text-sm">
-                        {order.customer?.phone}
+                        {displayPhone}
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3 p-2 rounded-lg">
-                    {order.deliveryOption === 'delivery' ? (
+                    {displayMethod === 'delivery' ? (
                       <Truck className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
                     ) : (
                       <MapPin className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
                     )}
                     <div className="flex-1">
                       <div className="font-semibold text-gray-900 dark:text-white">
-                        {order.deliveryOption === 'delivery'
+                        {displayMethod === 'delivery'
                           ? 'Diantar ke:'
                           : 'Ambil di:'}
                       </div>
                       <div className="text-gray-600 dark:text-gray-300 text-sm">
-                        {order.deliveryOption === 'delivery'
-                          ? order.customer?.address
+                        {displayMethod === 'delivery'
+                          ? displayAddress
                           : 'Lokasi UMKM'}
                       </div>
                     </div>
                   </div>
 
-                  {order.customer?.notes && (
+                  {displayNotes && (
                     <div className="flex items-start gap-3 p-2 rounded-lg">
                       <MessageCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5" />
                       <div>
@@ -664,7 +682,7 @@ Dukung UMKM lokal dengan #KarawangMart!`;
                           Catatan:
                         </div>
                         <div className="text-gray-600 dark:text-gray-300 text-sm">
-                          {order.customer.notes}
+                          {displayNotes}
                         </div>
                       </div>
                     </div>
