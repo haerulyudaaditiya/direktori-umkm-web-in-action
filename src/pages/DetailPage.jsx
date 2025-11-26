@@ -31,6 +31,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { getCategoryFallback } from '@/utils/categoryFallback';
+import { supabase } from '@/lib/supabaseClient';
 
 function DetailPage() {
   const { slug } = useParams();
@@ -41,20 +42,32 @@ function DetailPage() {
   const [imageErrors, setImageErrors] = useState({});
 
   useEffect(() => {
-    fetch('/data.json')
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((item) => item.slug === slug);
-        setUmkm(found);
+    const fetchUMKMDetail = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch UMKM data by slug
+        const { data, error } = await supabase
+          .from('umkms')
+          .select('*')
+          .eq('slug', slug)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          setUmkm(data);
+        }
+      } catch (error) {
+        console.error('Error fetching UMKM detail:', error.message);
+      } finally {
         setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error('Gagal mengambil data:', err);
-        setIsLoading(false);
-      });
+      }
+    };
+
+    fetchUMKMDetail();
   }, [slug]);
 
-  // Effect untuk sinkronisasi carousel dengan thumbnail
+  // Effect for carousel sync
   useEffect(() => {
     if (!carouselApi) return;
 
@@ -69,7 +82,7 @@ function DetailPage() {
     };
   }, [carouselApi]);
 
-  // Effect untuk mengubah carousel ketika thumbnail diklik
+  // Effect to control carousel from thumbnails
   useEffect(() => {
     if (!carouselApi) return;
 
@@ -158,6 +171,10 @@ function DetailPage() {
     );
   }
 
+  // Ensure arrays exist
+  const fotoList = Array.isArray(umkm.foto) ? umkm.foto : [];
+  const tagsList = Array.isArray(umkm.tags) ? umkm.tags : [];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="container mx-auto max-w-6xl px-4 md:px-8">
@@ -201,85 +218,83 @@ function DetailPage() {
             setApi={setCarouselApi}
           >
             <CarouselContent>
-              {umkm.foto.map((foto, i) => (
-                <CarouselItem key={i}>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full h-80 md:h-[480px] relative"
-                  >
-                    {imageErrors[i] ? (
-                      <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                        {(() => {
-                          const fallbackConfig = getCategoryFallback(
-                            umkm.kategori
-                          );
-                          const IconComponent = fallbackConfig.icon;
-                          return (
-                            <IconComponent className="w-16 h-16 text-white" />
-                          );
-                        })()}
-                      </div>
-                    ) : (
-                      <img
-                        src={foto}
-                        alt={`${umkm.nama} ${i + 1}`}
-                        onError={() =>
-                          setImageErrors((prev) => ({ ...prev, [i]: true }))
-                        }
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                    {i === 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 }}
-                      >
-                        <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-sm font-semibold">
-                          {umkm.kategori}
-                        </Badge>
-                      </motion.div>
-                    )}
+              {fotoList.length > 0 ? (
+                fotoList.map((foto, i) => (
+                  <CarouselItem key={i}>
                     <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                      className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm"
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-80 md:h-[480px] relative"
                     >
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-bold">{umkm.rating}</span>
-                      <span className="text-green-300">•</span>
-                      <span>{umkm.rentang_harga}</span>
+                      {imageErrors[i] ? (
+                        <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                          {(() => {
+                            const fallbackConfig = getCategoryFallback(
+                              umkm.kategori
+                            );
+                            const IconComponent = fallbackConfig.icon;
+                            return (
+                              <IconComponent className="w-16 h-16 text-white" />
+                            );
+                          })()}
+                        </div>
+                      ) : (
+                        <img
+                          src={foto}
+                          alt={`${umkm.nama} ${i + 1}`}
+                          onError={() =>
+                            setImageErrors((prev) => ({ ...prev, [i]: true }))
+                          }
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {i === 0 && (
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.4 }}
+                        >
+                          <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-sm font-semibold">
+                            {umkm.kategori}
+                          </Badge>
+                        </motion.div>
+                      )}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm"
+                      >
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-bold">{umkm.rating}</span>
+                        <span className="text-green-300">•</span>
+                        <span>{umkm.rentang_harga}</span>
+                      </motion.div>
                     </motion.div>
-                  </motion.div>
+                  </CarouselItem>
+                ))
+              ) : (
+                <CarouselItem>
+                  <div className="w-full h-80 md:h-[480px] bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500">Tidak ada foto</span>
+                  </div>
                 </CarouselItem>
-              ))}
+              )}
             </CarouselContent>
-            <CarouselPrevious
-              className="
-                left-4 bg-white/90 hover:bg-white border-green-200 text-green-700 hover:text-green-700
-                dark:bg-gray-900/80 dark:hover:bg-gray-800 dark:border-green-700 dark:text-green-300 dark:hover:text-green-300
-              "
-            />
-            <CarouselNext
-              className="
-                right-4 bg-white/90 hover:bg-white border-green-200 text-green-700 hover:text-green-700
-                dark:bg-gray-900/80 dark:hover:bg-gray-800 dark:border-green-700 dark:text-green-300 dark:hover:text-green-300
-              "
-            />
+            <CarouselPrevious className="left-4 bg-white/90 hover:bg-white border-green-200 text-green-700 hover:text-green-700 dark:bg-gray-900/80 dark:hover:bg-gray-800 dark:border-green-700 dark:text-green-300 dark:hover:text-green-300" />
+            <CarouselNext className="right-4 bg-white/90 hover:bg-white border-green-200 text-green-700 hover:text-green-700 dark:bg-gray-900/80 dark:hover:bg-gray-800 dark:border-green-700 dark:text-green-300 dark:hover:text-green-300" />
           </Carousel>
 
           {/* Thumbnail Navigation */}
-          {umkm.foto.length > 1 && (
+          {fotoList.length > 1 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               className="flex gap-3 mt-4 overflow-x-auto py-2"
             >
-              {umkm.foto.map((foto, i) => (
+              {fotoList.map((foto, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveImageIndex(i)}
@@ -290,7 +305,6 @@ function DetailPage() {
                   }`}
                 >
                   {imageErrors[`thumb_${i}`] ? (
-                    // FALLBACK untuk thumbnail
                     <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                       {(() => {
                         const fallbackConfig = getCategoryFallback(
@@ -301,7 +315,6 @@ function DetailPage() {
                       })()}
                     </div>
                   ) : (
-                    // Thumbnail asli
                     <img
                       src={foto}
                       alt={`Thumbnail ${i + 1}`}
@@ -368,7 +381,7 @@ function DetailPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
-                {umkm.tags.map((tag) => (
+                {tagsList.map((tag) => (
                   <Badge
                     key={tag}
                     variant="outline"
@@ -459,7 +472,7 @@ function DetailPage() {
                   className="w-full bg-green-600 hover:bg-green-700 h-12"
                 >
                   <a
-                    href={`https://maps.google.com/?q=${umkm.lat},${umkm.lng}`}
+                    href={`https://www.google.com/maps/search/?api=1&query=${umkm.lat},${umkm.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2"
@@ -470,7 +483,6 @@ function DetailPage() {
                   </a>
                 </Button>
 
-                {/* Tombol untuk SEMUA UMKM - tidak conditional */}
                 <Button
                   asChild
                   className="w-full bg-amber-500 hover:bg-amber-600 h-12"
@@ -480,7 +492,6 @@ function DetailPage() {
                     className="flex items-center gap-2"
                   >
                     <Utensils className="h-4 w-4" />
-                    {/* Text menyesuaikan jenis UMKM */}
                     {umkm.kategori === 'Jasa'
                       ? 'Pesan Layanan'
                       : umkm.kategori === 'Retail'
@@ -492,7 +503,7 @@ function DetailPage() {
                 <Button
                   onClick={() => {
                     const message = `Halo KarawangMart, saya tertarik dengan ${umkm.nama}. Bisa info lebih lanjut?`;
-                    const phoneNumber = '6281234567890';
+                    const phoneNumber = umkm.kontak;
                     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
                       message
                     )}`;
@@ -502,7 +513,7 @@ function DetailPage() {
                   className="w-full border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300 h-12"
                 >
                   <Phone className="h-4 w-4" />
-                  Hubungi Support
+                  Hubungi Mitra
                 </Button>
               </CardContent>
             </Card>
@@ -521,6 +532,7 @@ function DetailPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.8 }}
                 >
+                  {/* Note: iframe src in DB should be trusted or sanitized. For this MVP assuming trusted inputs */}
                   <div
                     className="w-full h-full"
                     dangerouslySetInnerHTML={{ __html: umkm.lokasi_map }}

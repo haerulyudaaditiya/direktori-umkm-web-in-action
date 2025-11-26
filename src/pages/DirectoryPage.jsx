@@ -50,19 +50,23 @@ function DirectoryPage() {
     const fetchUMKMs = async () => {
       setIsLoading(true);
 
-      // Query ke Supabase: Ambil semua kolom dari tabel 'umkms'
-      const { data, error } = await supabase
-        .from('umkms')
-        .select('*')
-        .order('rating', { ascending: false }); // Sort by rating tertinggi
+      try {
+        // Fetch data from Supabase ordered by rating
+        const { data, error } = await supabase
+          .from('umkms')
+          .select('*')
+          .order('rating', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching data:', error);
-      } else {
-        setUmkmList(data);
+        if (error) throw error;
+
+        if (data) {
+          setUmkmList(data);
+        }
+      } catch (error) {
+        console.error('Error fetching UMKM data:', error.message);
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     };
 
     fetchUMKMs();
@@ -73,7 +77,10 @@ function DirectoryPage() {
     const tags = new Set();
     umkmList.forEach((item) => {
       categories.add(item.kategori);
-      item.tags.forEach((tag) => tags.add(tag));
+      // Check if tags exist and is an array before iterating
+      if (Array.isArray(item.tags)) {
+        item.tags.forEach((tag) => tags.add(tag));
+      }
     });
     return {
       allCategories: Array.from(categories),
@@ -101,17 +108,21 @@ function DirectoryPage() {
       const matchSearch = umkm.nama
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
+
+      // Safe check for tags array
+      const currentTags = Array.isArray(umkm.tags) ? umkm.tags : [];
       const matchTags =
         selectedTags.length === 0 ||
-        selectedTags.every((tag) => umkm.tags.includes(tag));
+        selectedTags.every((tag) => currentTags.includes(tag));
+
       return matchCategory && matchSearch && matchTags;
     });
 
-    // Sorting
+    // Sorting logic
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'rating':
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case 'name':
           return a.nama.localeCompare(b.nama);
         default:
@@ -131,7 +142,6 @@ function DirectoryPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
         <div className="container mx-auto px-4 md:px-8">
-          {/* Header Skeleton */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,7 +151,6 @@ function DirectoryPage() {
             <Skeleton className="h-6 w-96 mx-auto rounded" />
           </motion.div>
 
-          {/* Filter Section Skeleton */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -163,7 +172,6 @@ function DirectoryPage() {
             </Card>
           </motion.div>
 
-          {/* UMKM Cards Skeleton */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -353,7 +361,7 @@ function DirectoryPage() {
           )}
         </motion.div>
 
-        {/* HASIL UMKM */}
+        {/* UMKM LIST */}
         {filteredUMKM.length > 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -361,92 +369,101 @@ function DirectoryPage() {
             transition={{ delay: 0.6 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {filteredUMKM.map((umkm, index) => (
-              <motion.div
-                key={umkm.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + index * 0.1 }}
-              >
-                <Link to={`/umkm/${umkm.slug}`} className="group">
-                  <Card className="glass-card overflow-hidden rounded-2xl border border-green-200 dark:border-green-800 transition-all">
-                    <div className="relative h-48 w-full overflow-hidden">
-                      {imageErrors[umkm.id] ? (
-                        <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                          {(() => {
-                            const fallbackConfig = getCategoryFallback(
-                              umkm.kategori
-                            );
-                            const IconComponent = fallbackConfig.icon;
-                            return (
-                              <IconComponent className="w-10 h-10 text-white" />
-                            );
-                          })()}
-                        </div>
-                      ) : (
-                        <img
-                          src={umkm.foto[0]}
-                          alt={umkm.nama}
-                          onError={() =>
-                            setImageErrors((prev) => ({
-                              ...prev,
-                              [umkm.id]: true,
-                            }))
-                          }
-                          className="w-full h-full object-cover"
-                        />
-                      )}
-                      <Badge className="absolute top-3 right-3 bg-green-500 text-white shadow-lg border-0">
-                        {umkm.kategori}
-                      </Badge>
-                      <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span className="font-semibold">{umkm.rating}</span>
-                      </div>
-                    </div>
-                    <CardHeader className="p-5 pb-3">
-                      <CardTitle className="text-xl font-bold line-clamp-1 text-gray-900 dark:text-white">
-                        {umkm.nama}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-4 text-sm pt-2">
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {umkm.rentang_harga}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          Buka
-                        </span>
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-5 pt-0">
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2 min-h-[2.5rem]">
-                        {umkm.alamat}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {umkm.tags.slice(0, 3).map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/30 dark:hover:text-green-300"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                        {umkm.tags.length > 3 && (
-                          <Badge
-                            variant="outline"
-                            className="text-gray-500 dark:text-gray-400 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-transparent dark:hover:bg-transparent"
-                          >
-                            +{umkm.tags.length - 3} lainnya
-                          </Badge>
+            {filteredUMKM.map((umkm, index) => {
+              // Ensure foto array is valid
+              const displayImage =
+                Array.isArray(umkm.foto) && umkm.foto.length > 0
+                  ? umkm.foto[0]
+                  : null;
+
+              return (
+                <motion.div
+                  key={umkm.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 + index * 0.1 }}
+                >
+                  <Link to={`/umkm/${umkm.slug}`} className="group">
+                    <Card className="glass-card overflow-hidden rounded-2xl border border-green-200 dark:border-green-800 transition-all">
+                      <div className="relative h-48 w-full overflow-hidden">
+                        {!displayImage || imageErrors[umkm.id] ? (
+                          <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                            {(() => {
+                              const fallbackConfig = getCategoryFallback(
+                                umkm.kategori
+                              );
+                              const IconComponent = fallbackConfig.icon;
+                              return (
+                                <IconComponent className="w-10 h-10 text-white" />
+                              );
+                            })()}
+                          </div>
+                        ) : (
+                          <img
+                            src={displayImage}
+                            alt={umkm.nama}
+                            onError={() =>
+                              setImageErrors((prev) => ({
+                                ...prev,
+                                [umkm.id]: true,
+                              }))
+                            }
+                            className="w-full h-full object-cover"
+                          />
                         )}
+                        <Badge className="absolute top-3 right-3 bg-green-500 text-white shadow-lg border-0">
+                          {umkm.kategori}
+                        </Badge>
+                        <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-black/70 text-white px-2 py-1 rounded-full text-sm">
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          <span className="font-semibold">{umkm.rating}</span>
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+                      <CardHeader className="p-5 pb-3">
+                        <CardTitle className="text-xl font-bold line-clamp-1 text-gray-900 dark:text-white">
+                          {umkm.nama}
+                        </CardTitle>
+                        <CardDescription className="flex items-center gap-4 text-sm pt-2">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-4 w-4" />
+                            {umkm.rentang_harga}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            Buka
+                          </span>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-5 pt-0">
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2 min-h-[2.5rem]">
+                          {umkm.alamat}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {Array.isArray(umkm.tags) &&
+                            umkm.tags.slice(0, 3).map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="secondary"
+                                className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/30 dark:hover:text-green-300"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          {Array.isArray(umkm.tags) && umkm.tags.length > 3 && (
+                            <Badge
+                              variant="outline"
+                              className="text-gray-500 dark:text-gray-400 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-transparent dark:hover:bg-transparent"
+                            >
+                              +{umkm.tags.length - 3} lainnya
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
         ) : (
           <motion.div

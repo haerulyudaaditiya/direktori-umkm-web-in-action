@@ -4,12 +4,13 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Star, Clock, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getUMKMType, hasMenu, hasLayanan, hasProduk } from '@/utils/umkmTypes';
+import { getUMKMType } from '@/utils/umkmTypes';
 import FoodSection from '@/components/umkm/FoodSection';
 import ServiceSection from '@/components/umkm/ServiceSection';
 import RetailSection from '@/components/umkm/RetailSection';
+import { supabase } from '@/lib/supabaseClient';
 
 const MenuPage = () => {
   const { slug } = useParams();
@@ -17,23 +18,62 @@ const MenuPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data.json')
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((item) => item.slug === slug);
-        setUmkm(found);
+    const fetchUMKMAndMenu = async () => {
+      setIsLoading(true);
+      try {
+        // 1. Fetch UMKM Data + Products (Join)
+        // We use the slug to find the UMKM, and load related products
+        const { data: umkmData, error: umkmError } = await supabase
+          .from('umkms')
+          .select('*, products(*)')
+          .eq('slug', slug)
+          .single();
+
+        if (umkmError) throw umkmError;
+
+        if (umkmData) {
+          // 2. Transformation Logic
+          // Mapping flat product list to structure expected by UI Components
+          const products = umkmData.products || [];
+
+          const formattedData = {
+            ...umkmData,
+            // Food Section Logic
+            menu: products.filter(
+              (p) =>
+                p.kategori_produk === 'makanan' ||
+                p.kategori_produk === 'minuman' ||
+                p.kategori_produk === 'tambahan' ||
+                p.kategori_produk === 'paket'
+            ),
+            // Service Section Logic
+            layanan: products.filter((p) => p.kategori_produk === 'jasa'),
+            // Retail Section Logic
+            produk: products.filter(
+              (p) =>
+                p.kategori_produk === 'retail' ||
+                p.kategori_produk === 'umum' ||
+                !p.kategori_produk // Fallback for undefined
+            ),
+          };
+
+          setUmkm(formattedData);
+        }
+      } catch (error) {
+        console.error('Error fetching menu data:', error.message);
+      } finally {
         setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error('Gagal mengambil data:', err);
-        setIsLoading(false);
-      });
+      }
+    };
+
+    fetchUMKMAndMenu();
   }, [slug]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
         <div className="container mx-auto max-w-4xl px-3 sm:px-4">
+          {/* Skeleton Loaders */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -45,43 +85,9 @@ const MenuPage = () => {
               <Skeleton className="h-3 sm:h-4 w-36 sm:w-48" />
             </div>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="flex gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2"
-          >
-            {[...Array(5)].map((_, i) => (
-              <Skeleton
-                key={i}
-                className="h-8 sm:h-10 w-16 sm:w-20 rounded-full"
-              />
-            ))}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid gap-4 sm:gap-6"
-          >
+          <motion.div className="grid gap-4 sm:gap-6">
             {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="flex gap-3 sm:gap-4 bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4"
-              >
-                <Skeleton className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg sm:rounded-xl" />
-                <div className="flex-1 space-y-2 sm:space-y-3">
-                  <Skeleton className="h-5 sm:h-6 w-3/4" />
-                  <Skeleton className="h-3 sm:h-4 w-full" />
-                  <Skeleton className="h-3 sm:h-4 w-2/3" />
-                  <div className="flex justify-between items-center">
-                    <Skeleton className="h-3 sm:h-4 w-16 sm:w-20" />
-                    <Skeleton className="h-8 sm:h-10 w-20 sm:w-24 rounded-lg" />
-                  </div>
-                </div>
-              </div>
+              <Skeleton key={i} className="h-32 w-full rounded-xl" />
             ))}
           </motion.div>
         </div>
@@ -108,9 +114,6 @@ const MenuPage = () => {
             <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">
               UMKM Tidak Ditemukan
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base">
-              UMKM yang Anda cari tidak ditemukan.
-            </p>
             <Button asChild className="w-full sm:w-auto">
               <Link to="/direktori">Kembali ke Direktori</Link>
             </Button>
@@ -121,7 +124,13 @@ const MenuPage = () => {
   }
 
   const umkmType = getUMKMType(umkm.kategori);
-  const hasData = hasMenu(umkm) || hasLayanan(umkm) || hasProduk(umkm);
+
+  // Logic to determine if we have content to show
+  const hasFood = umkm.menu && umkm.menu.length > 0;
+  const hasService = umkm.layanan && umkm.layanan.length > 0;
+  const hasRetail = umkm.produk && umkm.produk.length > 0;
+
+  const hasData = hasFood || hasService || hasRetail;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
@@ -162,7 +171,13 @@ const MenuPage = () => {
               </div>
               <div className="flex items-center gap-1 text-xs sm:text-sm">
                 <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span>{umkm.jam_buka.split(': ')[1]}</span>
+                <span>
+                  {umkm.jam_buka
+                    ? umkm.jam_buka.split(':')[0] +
+                      ':' +
+                      umkm.jam_buka.split(':')[1]
+                    : 'Open'}
+                </span>
               </div>
               <span className="text-green-600 dark:text-green-400 font-semibold text-xs sm:text-sm">
                 {umkm.rentang_harga}
@@ -171,15 +186,20 @@ const MenuPage = () => {
           </div>
         </motion.div>
 
-        {umkmType === 'food' && hasMenu(umkm) && (
+        {/* Render sections based on data availability and category */}
+
+        {/* Priority 1: Food Category */}
+        {(umkmType === 'food' || hasFood) && hasFood && (
           <FoodSection menu={umkm.menu} umkm={umkm} />
         )}
 
-        {umkmType === 'service' && hasLayanan(umkm) && (
+        {/* Priority 2: Service Category */}
+        {(umkmType === 'service' || hasService) && hasService && (
           <ServiceSection layanan={umkm.layanan} umkm={umkm} />
         )}
 
-        {umkmType === 'retail' && hasProduk(umkm) && (
+        {/* Priority 3: Retail Category */}
+        {(umkmType === 'retail' || hasRetail) && hasRetail && (
           <RetailSection produk={umkm.produk} umkm={umkm} />
         )}
 

@@ -1,4 +1,3 @@
-// src/components/MigrateData.jsx
 import React, { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -10,16 +9,17 @@ const MigrateData = () => {
 
   const handleMigrate = async () => {
     setStatus('Processing...');
-    addLog('Memulai migrasi...');
+    addLog('Starting data migration sequence...');
 
     try {
-      // 1. Fetch data JSON lokal
+      // 1. Fetch local JSON data
       const response = await fetch('/data.json');
       const rawData = await response.json();
-      addLog(`Ditemukan ${rawData.length} data UMKM di JSON.`);
+      addLog(`Found ${rawData.length} records in source file.`);
 
       for (const umkm of rawData) {
-        // 2. Insert ke tabel UMKM
+        // 2. Insert into 'umkms' table
+        // Note: ID will be auto-generated as UUID by Supabase
         const { data: umkmData, error: umkmError } = await supabase
           .from('umkms')
           .insert([
@@ -41,17 +41,18 @@ const MigrateData = () => {
             },
           ])
           .select()
-          .single(); // Ambil data balik untuk dapat ID baru
+          .single();
 
         if (umkmError) {
-          addLog(`Gagal insert UMKM ${umkm.nama}: ${umkmError.message}`);
+          addLog(
+            `[ERROR] Failed to insert UMKM ${umkm.nama}: ${umkmError.message}`
+          );
           continue;
         }
 
-        addLog(`Sukses insert UMKM: ${umkm.nama} (ID: ${umkmData.id})`);
+        addLog(`[SUCCESS] Inserted UMKM: ${umkm.nama} (UUID: ${umkmData.id})`);
 
-        // 3. Siapkan data Produk/Menu/Layanan
-        // Kita gabungkan array menu, produk, dan layanan dari JSON jadi satu array
+        // 3. Prepare Products/Services data
         const rawProducts = [
           ...(umkm.menu || []),
           ...(umkm.produk || []),
@@ -60,11 +61,11 @@ const MigrateData = () => {
 
         if (rawProducts.length > 0) {
           const productsToInsert = rawProducts.map((item) => ({
-            umkm_id: umkmData.id, // Relasi Foreign Key ke ID UMKM yang baru dibuat
+            umkm_id: umkmData.id, // References the new UUID
             nama: item.nama,
             harga: item.harga,
             deskripsi: item.deskripsi,
-            gambar: Array.isArray(item.gambar) ? item.gambar[0] : item.gambar, // Ambil string URL saja
+            gambar: Array.isArray(item.gambar) ? item.gambar[0] : item.gambar,
             rating: item.rating || 0,
             waktu_masak: item.waktuMasak || null,
             satuan: item.satuan || 'pcs',
@@ -77,31 +78,30 @@ const MigrateData = () => {
 
           if (prodError) {
             addLog(
-              `Gagal insert produk untuk ${umkm.nama}: ${prodError.message}`
+              `[ERROR] Failed to insert products for ${umkm.nama}: ${prodError.message}`
             );
           } else {
             addLog(
-              `Sukses insert ${productsToInsert.length} produk/menu.`
+              `[INFO] Successfully inserted ${productsToInsert.length} related items.`
             );
           }
         }
       }
 
       setStatus('Completed');
-      addLog('Migrasi Selesai!');
+      addLog('Migration sequence completed successfully.');
     } catch (error) {
       console.error(error);
-      addLog(`Critical Error: ${error.message}`);
+      addLog(`[CRITICAL] Execution failed: ${error.message}`);
       setStatus('Error');
     }
   };
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen font-mono text-sm">
-      <h1 className="text-2xl font-bold mb-4">Database Migration Tool</h1>
+      <h1 className="text-2xl font-bold mb-4">System Database Migration</h1>
       <p className="mb-4 text-gray-600">
-        Tools ini akan memindahkan data dari <code>/public/data.json</code> ke
-        Supabase PostgreSQL.
+        Transferring data from local JSON to Supabase PostgreSQL (UUID Schema).
       </p>
 
       <button
@@ -109,9 +109,7 @@ const MigrateData = () => {
         disabled={status === 'Processing...'}
         className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
       >
-        {status === 'Processing...'
-          ? 'Sedang Memproses...'
-          : 'Mulai Migrasi Data'}
+        {status === 'Processing...' ? 'Processing...' : 'Execute Migration'}
       </button>
 
       <div className="mt-6 bg-black text-green-400 p-4 rounded h-96 overflow-y-auto">
@@ -119,7 +117,7 @@ const MigrateData = () => {
           <div key={i}>{l}</div>
         ))}
         {log.length === 0 && (
-          <div className="text-gray-500">Menunggu perintah...</div>
+          <div className="text-gray-500">Ready to start...</div>
         )}
       </div>
     </div>
