@@ -27,6 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { supabase } from '@/lib/supabaseClient';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -59,6 +60,25 @@ const AuthPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setFormTouched((prev) => ({ ...prev, [name]: true }));
     setError('');
+  };
+  
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          // Redirect kembali ke halaman website ini setelah login di Google sukses
+          redirectTo: `${window.location.origin}/direktori`,
+        },
+      });
+      if (error) throw error;
+      // Catatan: User akan diarahkan keluar ke halaman Google, jadi tidak perlu navigate manual di sini.
+    } catch (err) {
+      console.error('Google Login Error:', err);
+      setError('Gagal login dengan Google. Silakan coba lagi.');
+      setLoading(false);
+    }
   };
 
   const validateForm = () => {
@@ -95,6 +115,7 @@ const AuthPage = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMessage('');
 
     setFormTouched({
       email: true,
@@ -119,7 +140,7 @@ const AuthPage = () => {
         if (error) throw error;
         navigate(from, { replace: true });
       } else {
-        const { error } = await signUp({
+        const { data, error } = await signUp({
           email: formData.email,
           password: formData.password,
           options: {
@@ -128,9 +149,16 @@ const AuthPage = () => {
               phone: formData.phone,
               role: 'customer',
             },
+            emailRedirectTo: `${window.location.origin}/auth`,
           },
         });
+
         if (error) throw error;
+
+        if (data?.user?.identities?.length === 0) {
+          throw new Error('User already registered');
+        }
+
         setSuccessMessage(
           'Registrasi berhasil! Silakan cek email untuk verifikasi.'
         );
@@ -145,13 +173,21 @@ const AuthPage = () => {
       }
     } catch (err) {
       console.error('Auth error:', err);
-      setError(
-        err.message === 'Invalid login credentials'
-          ? 'Email atau password salah.'
-          : err.message === 'User already registered'
-          ? 'Email sudah terdaftar. Silakan login.'
-          : 'Terjadi kesalahan. Silakan coba lagi.'
-      );
+      let msg = 'Terjadi kesalahan. Silakan coba lagi.';
+
+      if (err.message.includes('Invalid login credentials')) {
+        msg = 'Email atau password salah.';
+      } else if (
+        err.message.includes('User already registered') ||
+        err.message.includes('already registered')
+      ) {
+        msg = 'Email ini sudah terdaftar. Silakan Login dengan Google.';
+        setIsLogin(true);
+      } else if (err.message.includes('rate limit')) {
+        msg = 'Terlalu banyak percobaan. Tunggu sebentar.';
+      }
+
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -246,7 +282,7 @@ const AuthPage = () => {
           </motion.div>
         </motion.div>
       </div>
-      
+
       {/* RIGHT SIDE: Auth Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12">
         <motion.div
@@ -523,6 +559,51 @@ const AuthPage = () => {
                   </Button>
                 </motion.div>
               </form>
+
+              {/* Social Login Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-200 dark:border-gray-700" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white dark:bg-gray-900 px-3 text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    Atau lanjutkan dengan
+                  </span>
+                </div>
+              </div>
+
+              {/* Google Login Button */}
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full h-12 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800/50 font-semibold text-gray-700 dark:text-gray-200 transition-all duration-200 group"
+                onClick={handleGoogleLogin}
+                disabled={loading}
+              >
+                <div className="flex items-center justify-center gap-3">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    />
+                  </svg>
+                  <span className="text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                    {loading ? 'Memproses...' : 'Lanjutkan dengan Google'}
+                  </span>
+                </div>
+              </Button>
 
               {/* Toggle Auth Mode */}
               <div className="mt-8 text-center border-t border-gray-100 dark:border-gray-700 pt-6">
