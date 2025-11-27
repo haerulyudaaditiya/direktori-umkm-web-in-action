@@ -168,16 +168,16 @@ const AuthPage = () => {
     );
   };
 
-  const stats = [
-    { number: '500+', label: 'UMKM Terdaftar', icon: Store },
-    { number: '4.8', label: 'Rating Pengguna', icon: Star },
-    { number: '98%', label: 'Kepuasan Pelanggan', icon: CheckCircle },
-  ];
+//   const stats = [
+//     { number: '500+', label: 'UMKM Terdaftar', icon: Store },
+//     { number: '4.8', label: 'Rating Pengguna', icon: Star },
+//     { number: '98%', label: 'Kepuasan Pelanggan', icon: CheckCircle },
+//   ];
 
   return (
     <div className="min-h-screen w-full flex bg-white dark:bg-gray-950">
       {/* LEFT SIDE: Branding Section */}
-      <div className="hidden lg:flex w-1/2 bg-green-600 relative overflow-hidden items-center justify-center p-12">
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-green-600 via-emerald-600 to-yellow-500 relative overflow-hidden items-center justify-center p-12">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.15)_1px,transparent_0)] bg-[length:40px_40px]"></div>
@@ -185,66 +185,68 @@ const AuthPage = () => {
 
         {/* Floating Elements */}
         <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-10 right-10 w-32 h-32 bg-amber-400/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-10 right-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-emerald-400/30 rounded-full blur-lg animate-bounce"></div>
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="relative z-10 text-center text-white max-w-lg"
+          className="relative z-10 text-center text-white max-w-2xl"
         >
-          {/* Logo & Brand */}
+          {/* Badge */}
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring' }}
-            className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/30"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-8 border border-white/30"
           >
-            <Wheat className="w-10 h-10 text-white" />
+            <Wheat className="h-4 w-4" />
+            <span>Platform Resmi UMKM Karawang</span>
           </motion.div>
 
-          <h1 className="text-4xl font-bold mb-4">KarawangMart</h1>
+          {/* Main Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6"
+          >
+            <span className="block leading-[1.1]">Temukan Keberagaman</span>
+            <span className="block text-amber-200 leading-[1.2]">
+              UMKM Karawang
+            </span>
+          </motion.h1>
 
-          <p className="text-lg text-green-100 mb-8 leading-relaxed">
-            Platform terpercaya untuk menjelajahi dan mendukung UMKM lokal
-            Karawang. Dari kuliner autentik hingga jasa terbaik, semua dalam
-            genggaman Anda.
-          </p>
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-xl text-green-100 max-w-2xl mx-auto mb-8 leading-relaxed"
+          >
+            Jelajahi 500+ usaha lokal terbaik di jantung lumbung padi Indonesia
+          </motion.p>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-6 mb-8">
-            {stats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                  className="text-center"
-                >
-                  <div className="text-2xl font-bold mb-1">{stat.number}</div>
-                  <div className="text-green-100 text-sm">{stat.label}</div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Trust Badge */}
+          {/* Quick Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/30"
+            className="flex flex-wrap justify-center gap-6 text-sm text-green-100"
           >
-            <Shield className="w-4 h-4 text-white" />
-            <span className="text-sm font-medium text-white">
-              100% Aman & Terpercaya
-            </span>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" />
+              <span>100% UMKM Terverifikasi</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              <span>Aman & Terpercaya</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Store className="h-4 w-4" />
+              <span>Update Real-time</span>
+            </div>
           </motion.div>
         </motion.div>
       </div>
-
+      
       {/* RIGHT SIDE: Auth Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12">
         <motion.div
