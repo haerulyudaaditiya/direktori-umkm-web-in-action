@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
@@ -20,10 +20,23 @@ import { Textarea } from '@/components/ui/textarea';
 import { useOrder } from '@/contexts/OrderContext';
 // Import Supabase Client (Profesional)
 import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/contexts/AuthContext';
 
 const CheckoutPage = () => {
   const { state, dispatch } = useOrder();
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user.user_metadata) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.user_metadata.full_name || '',
+        phone: user.user_metadata.phone || '',
+        // Alamat nanti bisa diambil dari tabel 'profiles' jika sudah ada
+      }));
+    }
+  }, [user]);
 
   const [formData, setFormData] = useState({
     name: '',

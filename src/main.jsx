@@ -5,14 +5,17 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from './components/theme-provider';
 import { OrderProvider } from './contexts/OrderContext';
+import { AuthProvider } from './contexts/AuthContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        <OrderProvider>
-          <App />
-        </OrderProvider>
+        <AuthProvider>
+          <OrderProvider>
+            <App />
+          </OrderProvider>
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>{' '}
   </React.StrictMode>
