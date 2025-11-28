@@ -120,9 +120,11 @@ function Navbar() {
               <DropdownMenuContent align="end" className="w-56 mt-2">
                 <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profil</span>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/profile" className="flex items-center w-full">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profil Saya</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="cursor-pointer">
                   <Link to="/history" className="flex items-center w-full">

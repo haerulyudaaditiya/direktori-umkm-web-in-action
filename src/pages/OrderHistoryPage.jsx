@@ -106,7 +106,7 @@ const OrderHistoryPage = () => {
             asChild
             variant="outline"
             size="icon"
-            className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300"
+            className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-800 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-200 transition-colors"
           >
             <Link to="/direktori">
               <ArrowLeft className="w-4 h-4" />
