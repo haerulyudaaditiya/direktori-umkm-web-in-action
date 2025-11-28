@@ -8,7 +8,6 @@ import MenuPage from './pages/MenuPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderConfirmation from './pages/OrderConfirmation';
 import PaymentPage from './pages/PaymentPage';
-import MigrateData from './components/MigrateData';
 import AuthPage from './pages/AuthPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -60,7 +59,6 @@ function App() {
           element={<OrderConfirmation />}
         />
       </Route>
-      <Route path="/migrate" element={<MigrateData />} />
     </Routes>
   );
 }
