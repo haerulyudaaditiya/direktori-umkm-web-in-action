@@ -59,31 +59,46 @@ const ProfilePage = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setSuccessMsg('');
+
+    if (formData.phone.length < 10) {
+      alert('Nomor WhatsApp tidak valid (minimal 10 digit).');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.full_name.trim().length < 3) {
+      alert('Nama lengkap terlalu pendek.');
+      setLoading(false);
+      return;
+    }
 
     try {
-      const { error } = await supabase
+      const { error: profileError } = await supabase
         .from('profiles')
         .update({
           full_name: formData.full_name,
           phone: formData.phone,
-          updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
 
-      await supabase.auth.updateUser({
+      const { error: authError } = await supabase.auth.updateUser({
         data: {
           full_name: formData.full_name,
           phone: formData.phone,
         },
       });
 
+      if (authError) throw authError;
+
       setSuccessMsg('Profil berhasil diperbarui!');
-      setTimeout(() => window.location.reload(), 1500);
+
+      setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
-      console.error('Update error:', error);
-      setSuccessMsg('Gagal memperbarui profil. Silakan coba lagi.');
+      console.error('Update error:', error.message);
+      alert('Gagal memperbarui profil. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
