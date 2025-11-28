@@ -6,91 +6,121 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
-  const [profile, setProfile] = useState(null); // State baru untuk menyimpan data role
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const initAuthFlow = async () => {
-    // Fungsi helper untuk mengambil data profil dari tabel 'profiles'
+    let isMounted = true;
+    let authSubscription;
+
     const fetchProfile = async (userId) => {
+      if (!isMounted) return null;
+
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, role, full_name, phone')
           .eq('id', userId)
           .single();
-        
+
         if (error) {
-          console.error('Gagal mengambil profil:', error.message);
-          // Fallback jika profil belum terbuat (walaupun harusnya otomatis via trigger)
+          if (error.code !== 'PGRST116') {
+            // Skip "not found" errors
+            console.error('Failed to fetch profile:', error.message);
+          }
           return null;
         }
-        setProfile(data);
+        return data;
       } catch (err) {
         console.error('Profile fetch error:', err);
+        return null;
       }
     };
 
     const initAuth = async () => {
+      if (!isMounted) return;
+
       try {
-        // 1. Cek sesi saat aplikasi dimuat
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        if (error) {
+          setError(error.message);
+          return;
+        }
+
+        if (session?.user) {
+          setSession(session);
+          setUser(session.user);
+
+          // Fetch profile in background without blocking
+          fetchProfile(session.user.id).then((profileData) => {
+            if (isMounted && profileData) {
+              setProfile(profileData);
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setError(error.message);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    initAuth();
+
+    // Listen for auth changes
+    authSubscription = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!isMounted) return;
+
         setSession(session);
         setUser(session?.user ?? null);
 
-        // 2. Jika user login, ambil profil lengkap (termasuk role)
         if (session?.user) {
-          await fetchProfile(session.user.id);
+          fetchProfile(session.user.id).then((profileData) => {
+            if (isMounted) {
+              setProfile(profileData);
+            }
+          });
+        } else {
+          setProfile(null);
         }
-      } catch (error) {
-        console.error("Auth initialization error:", error);
-      } finally {
+
         setLoading(false);
       }
+    );
+
+    return () => {
+      isMounted = false;
+      authSubscription?.subscription?.unsubscribe();
     };
-    initAuth();
-
-    // 3. Dengarkan perubahan status (Login/Logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        // User baru login, ambil profilnya
-        await fetchProfile(session.user.id);
-      } else {
-        // User logout, bersihkan profil
-        setProfile(null);
-      }
-      
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-    };
-
-    initAuthFlow();
   }, []);
 
   const value = {
     session,
     user,
-    profile, // Data lengkap dari tabel profiles (nama, hp, role)
-    role: profile?.role || 'guest', // Helper cepat untuk cek role
+    profile,
+    role: profile?.role || 'guest',
     loading,
+    error,
     signIn: (data) => supabase.auth.signInWithPassword(data),
     signUp: (data) => supabase.auth.signUp(data),
     signOut: async () => {
-        setProfile(null); // Bersihkan state lokal agar UI langsung update
-        return await supabase.auth.signOut();
+      setProfile(null);
+      setUser(null);
+      setSession(null);
+      return await supabase.auth.signOut();
     },
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
