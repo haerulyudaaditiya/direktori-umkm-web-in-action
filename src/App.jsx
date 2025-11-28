@@ -10,6 +10,7 @@ import OrderConfirmation from './pages/OrderConfirmation';
 import PaymentPage from './pages/PaymentPage';
 import MigrateData from './components/MigrateData';
 import AuthPage from './pages/AuthPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
@@ -34,6 +35,14 @@ function App() {
           element={
             <ProtectedRoute>
               <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="history"
+          element={
+            <ProtectedRoute>
+              <OrderHistoryPage />
             </ProtectedRoute>
           }
         />

@@ -124,9 +124,11 @@ function Navbar() {
                   <User className="mr-2 h-4 w-4" />
                   <span>Profil</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <ShoppingBag className="mr-2 h-4 w-4" />
-                  <span>Pesanan Saya</span>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/history" className="flex items-center w-full">
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    <span>Pesanan Saya</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

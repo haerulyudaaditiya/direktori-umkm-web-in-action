@@ -179,6 +179,7 @@ const CheckoutPage = () => {
         .insert([
           {
             order_number: orderNumber,
+            user_id: user?.id || null,
             customer_name: formData.name,
             customer_phone: formData.phone,
             customer_address:
