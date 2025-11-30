@@ -27,6 +27,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
+import AddressBook from '@/components/profile/AddressBook';
 import { supabase } from '@/lib/supabaseClient';
 
 const ProfilePage = () => {
@@ -406,6 +407,11 @@ const ProfilePage = () => {
                 </form>
               </CardContent>
             </Card>
+
+            <div className="mt-8">
+              <AddressBook userId={user.id} />
+            </div>
+            
           </motion.div>
         </div>
       </div>

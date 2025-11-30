@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
   MapPin,
@@ -12,13 +12,20 @@ import {
   Utensils,
   AlertCircle,
   CheckCircle2,
+  BookOpen, // Icon Baru
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useOrder } from '@/contexts/OrderContext';
-// Import Supabase Client (Profesional)
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -26,18 +33,8 @@ const CheckoutPage = () => {
   const { state, dispatch } = useOrder();
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user && user.user_metadata) {
-      setFormData((prev) => ({
-        ...prev,
-        name: user.user_metadata.full_name || '',
-        phone: user.user_metadata.phone || '',
-        // Alamat nanti bisa diambil dari tabel 'profiles' jika sudah ada
-      }));
-    }
-  }, [user]);
-
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState('manual');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -49,6 +46,73 @@ const CheckoutPage = () => {
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deliveryOption, setDeliveryOption] = useState('pickup');
+  const [originalFormData, setOriginalFormData] = useState({
+    name: '',
+    phone: '',
+  });
+
+  useEffect(() => {
+    const initData = async () => {
+      if (user) {
+        if (user.user_metadata) {
+          const originalData = {
+            name: user.user_metadata.full_name || '',
+            phone: user.user_metadata.phone || '',
+          };
+          setFormData((prev) => ({
+            ...prev,
+            ...originalData,
+          }));
+          setOriginalFormData(originalData); 
+        }
+
+        const { data } = await supabase
+          .from('addresses')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('is_default', { ascending: false });
+
+        if (data && data.length > 0) {
+          setSavedAddresses(data);
+        }
+      }
+    };
+    initData();
+  }, [user]);
+
+  useEffect(() => {
+    if (deliveryOption !== 'delivery' && errors.address) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.address;
+        return newErrors;
+      });
+    }
+  }, [deliveryOption, errors.address]);
+
+  const handleAddressSelect = (value) => {
+    setSelectedAddressId(value);
+
+    if (value === 'manual') {
+      setFormData((prev) => ({
+        ...prev,
+        name: originalFormData.name,
+        phone: originalFormData.phone,
+        address: '', 
+      }));
+    } else {
+      const addr = savedAddresses.find((a) => a.id === value);
+      if (addr) {
+        setFormData((prev) => ({
+          ...prev,
+          name: addr.recipient_name, 
+          phone: addr.phone, 
+          address: addr.full_address, 
+        }));
+        setErrors({});
+      }
+    }
+  };
 
   const totalPrice = state.cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -57,90 +121,109 @@ const CheckoutPage = () => {
   const deliveryFee = deliveryOption === 'delivery' ? 5000 : 0;
   const finalTotal = totalPrice + deliveryFee;
 
-  // Validasi profesional
   const validateField = (name, value) => {
-    const newErrors = { ...errors };
-
     switch (name) {
       case 'name':
         if (!value.trim()) {
-          newErrors.name = 'Nama lengkap wajib diisi';
+          return 'Nama lengkap wajib diisi';
         } else if (value.trim().length < 2) {
-          newErrors.name = 'Nama minimal 2 karakter';
+          return 'Nama minimal 2 karakter';
         } else if (!/^[a-zA-Z\s.'-]+$/.test(value.trim())) {
-          newErrors.name =
-            'Nama hanya boleh mengandung huruf, spasi, dan tanda baca';
-        } else {
-          delete newErrors.name;
+          return 'Nama hanya boleh mengandung huruf, spasi, dan tanda baca';
         }
-        break;
+        return '';
 
       case 'phone':
         if (!value.trim()) {
-          newErrors.phone = 'Nomor WhatsApp wajib diisi';
+          return 'Nomor WhatsApp wajib diisi';
         } else {
           const cleanPhone = value.replace(/\D/g, '');
           if (cleanPhone.length < 10) {
-            newErrors.phone = 'Nomor minimal 10 digit';
+            return 'Nomor minimal 10 digit';
           } else if (cleanPhone.length > 15) {
-            newErrors.phone = 'Nomor maksimal 15 digit';
+            return 'Nomor maksimal 15 digit';
           } else if (!/^[0-9+-\s()]+$/.test(value)) {
-            newErrors.phone = 'Format nomor tidak valid';
-          } else {
-            delete newErrors.phone;
+            return 'Format nomor tidak valid';
           }
         }
-        break;
+        return '';
 
       case 'address':
         if (deliveryOption === 'delivery') {
           if (!value.trim()) {
-            newErrors.address = 'Alamat pengiriman wajib diisi';
+            return 'Alamat pengiriman wajib diisi';
           } else if (value.trim().length < 10) {
-            newErrors.address = 'Alamat terlalu pendek, minimal 10 karakter';
+            return 'Alamat terlalu pendek, minimal 10 karakter';
           } else if (value.trim().length > 200) {
-            newErrors.address = 'Alamat terlalu panjang, maksimal 200 karakter';
-          } else {
-            delete newErrors.address;
+            return 'Alamat terlalu panjang, maksimal 200 karakter';
           }
         }
-        break;
+        return '';
 
       default:
-        break;
+        return '';
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Validasi name
+    const nameError = validateField('name', formData.name);
+    if (nameError) newErrors.name = nameError;
+
+    // Validasi phone
+    const phoneError = validateField('phone', formData.phone);
+    if (phoneError) newErrors.phone = phoneError;
+
+    // Validasi address hanya jika delivery
+    if (deliveryOption === 'delivery') {
+      const addressError = validateField('address', formData.address);
+      if (addressError) newErrors.address = addressError;
     }
 
     return newErrors;
   };
 
-  const validateForm = () => {
-    return {
-      ...validateField('name', formData.name),
-      ...validateField('phone', formData.phone),
-      ...validateField('address', formData.address),
-    };
-  };
-
   const handleFieldChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // Real-time validation untuk field yang sudah di-touch
+    if (field === 'address' && selectedAddressId !== 'manual') {
+      setSelectedAddressId('manual');
+    }
+
     if (touched[field]) {
-      setErrors(() => validateField(field, value));
+      const error = validateField(field, value);
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        if (error) {
+          newErrors[field] = error;
+        } else {
+          delete newErrors[field]; // HAPUS error jika sudah valid
+        }
+        return newErrors;
+      });
     }
   };
 
   const handleFieldBlur = (field) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    setErrors(() => validateField(field, formData[field]));
+    const error = validateField(field, formData[field]);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (error) {
+        newErrors[field] = error;
+      } else {
+        delete newErrors[field]; // HAPUS error jika sudah valid
+      }
+      return newErrors;
+    });
   };
 
-  // --- LOGIC BARU: CONNECT TO SUPABASE ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Mark semua field as touched
     const allTouched = {
       name: true,
       phone: true,
@@ -149,11 +232,13 @@ const CheckoutPage = () => {
     };
     setTouched(allTouched);
 
-    // Validasi final
     const newErrors = validateForm();
+
+    if (deliveryOption !== 'delivery') {
+      delete newErrors.address;
+    }
     setErrors(newErrors);
 
-    // Jika ada error, stop submission
     if (Object.keys(newErrors).length > 0) {
       const firstErrorField = Object.keys(newErrors)[0];
       document.getElementById(firstErrorField)?.scrollIntoView({
@@ -165,7 +250,6 @@ const CheckoutPage = () => {
     }
 
     try {
-      // 1. Generate Order Number Unik
       const timestamp = Date.now().toString().slice(-6);
       const randomStr = Math.random()
         .toString(36)
@@ -173,7 +257,6 @@ const CheckoutPage = () => {
         .toUpperCase();
       const orderNumber = `ORD-${timestamp}-${randomStr}`;
 
-      // 2. INSERT ke Tabel 'orders' Supabase
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert([
@@ -200,14 +283,12 @@ const CheckoutPage = () => {
 
       if (orderError) throw orderError;
 
-      // 3. INSERT ke Tabel 'order_items' Supabase
       const orderItems = state.cart.map((item) => ({
         order_id: orderData.id,
-        product_id: item.id, // UUID Produk
-        product_name: item.name, // Backup nama produk
+        product_id: item.id,
+        product_name: item.name,
         price_at_purchase: item.price,
         quantity: item.quantity,
-        // umkm_id: item.umkm_id // Opsional jika kolom ini ada di tabel order_items
       }));
 
       const { error: itemsError } = await supabase
@@ -216,8 +297,6 @@ const CheckoutPage = () => {
 
       if (itemsError) throw itemsError;
 
-      // 4. SUKSES: Update Context & Pindah Halaman
-      // Kita kirim object order lengkap agar PaymentPage tidak perlu fetch ulang
       const fullOrder = {
         ...orderData,
         items: state.cart,
@@ -229,7 +308,7 @@ const CheckoutPage = () => {
 
       navigate('/payment', {
         state: {
-          orderData: fullOrder, // Mengirim data order yang sudah tersimpan di DB
+          orderData: fullOrder
         },
       });
     } catch (error) {
@@ -241,13 +320,8 @@ const CheckoutPage = () => {
   };
 
   const isFormValid = () => {
-    const requiredFields = ['name', 'phone'];
-    if (deliveryOption === 'delivery') requiredFields.push('address');
-
-    return (
-      requiredFields.every((field) => formData[field]?.trim()) &&
-      Object.keys(validateForm()).length === 0
-    );
+    const newErrors = validateForm();
+    return Object.keys(newErrors).length === 0;
   };
 
   if (state.cart.length === 0) {
@@ -281,7 +355,6 @@ const CheckoutPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="container mx-auto max-w-4xl px-4">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -314,9 +387,8 @@ const CheckoutPage = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Form Section */}
           <div className="space-y-6">
-            {/* Data Diri Card */}
+            {/* 1. DATA DIRI CARD (Kembali ke Posisi Awal) */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -326,12 +398,10 @@ const CheckoutPage = () => {
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <User className="w-5 h-5 text-green-600" />
-                    Data Diri
-                    <span className="text-red-500">*</span>
+                    Data Diri <span className="text-red-500">*</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Nama Field */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Nama Lengkap
@@ -371,8 +441,6 @@ const CheckoutPage = () => {
                       </motion.p>
                     )}
                   </div>
-
-                  {/* Phone Field */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Nomor WhatsApp
@@ -421,7 +489,6 @@ const CheckoutPage = () => {
               </Card>
             </motion.div>
 
-            {/* Pengiriman Card */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -430,13 +497,12 @@ const CheckoutPage = () => {
               <Card className="glass-card border border-green-200 dark:border-green-800">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-green-600" />
+                    <MapPin className="w-5 h-5 text-green-600" />Metode
                     Pengiriman
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
-                    {/* Pickup Option */}
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -454,8 +520,6 @@ const CheckoutPage = () => {
                         Gratis
                       </div>
                     </motion.button>
-
-                    {/* Delivery Option */}
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -475,57 +539,88 @@ const CheckoutPage = () => {
                     </motion.button>
                   </div>
 
-                  {/* Address Field (hanya untuk delivery) */}
+                  {/* FITUR BUKU ALAMAT (Dropdown) */}
                   {deliveryOption === 'delivery' && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       transition={{ duration: 0.3 }}
+                      className="space-y-4 pt-2"
                     >
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Alamat Lengkap <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative">
-                        <Textarea
-                          id="address"
-                          value={formData.address}
-                          onChange={(e) =>
-                            handleFieldChange('address', e.target.value)
-                          }
-                          onBlur={() => handleFieldBlur('address')}
-                          placeholder="Masukkan alamat lengkap pengiriman termasuk patokan"
-                          className={`min-h-[100px] resize-y pr-10 transition-all duration-200 ${
-                            errors.address
-                              ? 'border-red-500 focus-visible:ring-red-500'
-                              : formData.address && !errors.address
-                              ? 'border-green-500 focus-visible:ring-green-500'
-                              : 'focus-visible:ring-green-500'
-                          }`}
-                        />
-                        {formData.address && !errors.address && (
-                          <CheckCircle2 className="w-4 h-4 text-green-500 absolute right-3 top-3" />
-                        )}
+                      {savedAddresses.length > 0 && (
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                            <BookOpen className="w-4 h-4 text-green-600" />{' '}
+                            Pilih Alamat Tersimpan
+                          </label>
+                          <Select
+                            onValueChange={handleAddressSelect}
+                            value={selectedAddressId}
+                          >
+                            <SelectTrigger className="w-full bg-white dark:bg-gray-900 border-green-200 dark:border-gray-700">
+                              <SelectValue placeholder="Pilih alamat..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="manual">
+                                Input Manual / Alamat Baru
+                              </SelectItem>
+                              {savedAddresses.map((addr) => (
+                                <SelectItem key={addr.id} value={addr.id}>
+                                  {addr.label} -{' '}
+                                  {addr.full_address.substring(0, 25)}...
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Alamat Lengkap <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <Textarea
+                            id="address"
+                            value={formData.address}
+                            onChange={(e) =>
+                              handleFieldChange('address', e.target.value)
+                            }
+                            onBlur={() => handleFieldBlur('address')}
+                            placeholder="Masukkan alamat lengkap pengiriman termasuk patokan"
+                            className={`min-h-[100px] resize-y pr-10 transition-all duration-200 ${
+                              errors.address
+                                ? 'border-red-500 focus-visible:ring-red-500'
+                                : formData.address && !errors.address
+                                ? 'border-green-500 focus-visible:ring-green-500'
+                                : 'focus-visible:ring-green-500'
+                            }`}
+                          />
+                          {formData.address && !errors.address && (
+                            <CheckCircle2 className="w-4 h-4 text-green-500 absolute right-3 top-3" />
+                          )}
+                          {errors.address && (
+                            <AlertCircle className="w-4 h-4 text-red-500 absolute right-3 top-3" />
+                          )}
+                        </div>
                         {errors.address && (
-                          <AlertCircle className="w-4 h-4 text-red-500 absolute right-3 top-3" />
+                          <motion.p
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="text-red-500 text-sm mt-1 flex items-center gap-1"
+                          >
+                            <AlertCircle className="w-3 h-3" />
+                            {errors.address}
+                          </motion.p>
                         )}
                       </div>
-                      {errors.address && (
-                        <motion.p
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          className="text-red-500 text-sm mt-1 flex items-center gap-1"
-                        >
-                          <AlertCircle className="w-3 h-3" />
-                          {errors.address}
-                        </motion.p>
-                      )}
                     </motion.div>
                   )}
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* Catatan Card */}
+            {/* 3. Catatan Card */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -552,7 +647,7 @@ const CheckoutPage = () => {
             </motion.div>
           </div>
 
-          {/* Order Summary */}
+          {/* Order Summary (Kanan) */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -566,7 +661,6 @@ const CheckoutPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Order Items */}
                 <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
                   {state.cart.map((item) => (
                     <div
@@ -587,8 +681,6 @@ const CheckoutPage = () => {
                     </div>
                   ))}
                 </div>
-
-                {/* Price Breakdown */}
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">
@@ -598,7 +690,6 @@ const CheckoutPage = () => {
                       Rp {totalPrice.toLocaleString()}
                     </span>
                   </div>
-
                   {deliveryOption === 'delivery' && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600 dark:text-gray-400">
@@ -609,7 +700,6 @@ const CheckoutPage = () => {
                       </span>
                     </div>
                   )}
-
                   <div className="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
                     <span className="text-gray-900 dark:text-white">Total</span>
                     <span className="text-green-600 dark:text-green-400">
@@ -617,8 +707,6 @@ const CheckoutPage = () => {
                     </span>
                   </div>
                 </div>
-
-                {/* Checkout Button */}
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -646,13 +734,10 @@ const CheckoutPage = () => {
                     )}
                   </Button>
                 </motion.div>
-
                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-3">
                   Dengan melanjutkan, Anda menyetujui syarat dan ketentuan yang
                   berlaku
                 </p>
-
-                {/* Validation Summary */}
                 {Object.keys(errors).length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
