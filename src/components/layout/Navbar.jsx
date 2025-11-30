@@ -75,9 +75,6 @@ function Navbar() {
             <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-green-600 to-amber-600 bg-clip-text text-transparent">
               KarawangMart
             </span>
-            <span className="text-xs text-green-500 font-medium bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full">
-              Karawang
-            </span>
           </Link>
 
           {/* Navigasi Utama (Desktop) */}
@@ -240,7 +237,7 @@ function Navbar() {
                         <Button
                           onClick={() => setLogoutConfirm(true)}
                           variant="outline"
-                          className="w-full justify-start text-red-600 hover:bg-red-50 border-red-100"
+                          className="w-full justify-start text-red-600 border-red-100 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:border-red-900/50 dark:hover:bg-red-900/20 dark:hover:text-red-300 transition-colors"
                         >
                           <LogOut className="mr-2 h-4 w-4" /> Keluar
                         </Button>
@@ -301,8 +298,8 @@ function Navbar() {
                 className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-green-200 dark:border-green-800 shadow-xl"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-full">
-                    <LogOut className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
+                    <LogOut className="w-6 h-6 text-red-600 dark:text-red-400" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                     Keluar Akun?
@@ -329,7 +326,7 @@ function Navbar() {
                   </Button>
                   <Button
                     onClick={handleLogout}
-                    className="bg-amber-600 hover:bg-amber-700 text-white"
+                    className="bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 transition-all"
                   >
                     Ya, Keluar
                   </Button>
