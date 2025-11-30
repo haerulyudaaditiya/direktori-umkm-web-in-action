@@ -437,8 +437,8 @@ const ProfilePage = () => {
                       className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-green-200 dark:border-green-800 shadow-xl"
                     >
                       <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-full">
-                          <LogOut className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                        <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
+                          <LogOut className="w-6 h-6 text-red-600 dark:text-red-400" />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                           Keluar Akun?
@@ -465,7 +465,7 @@ const ProfilePage = () => {
                         </Button>
                         <Button
                           onClick={handleLogout}
-                          className="bg-amber-600 hover:bg-amber-700 text-white"
+                          className="bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 transition-all"
                         >
                           Ya, Keluar
                         </Button>
