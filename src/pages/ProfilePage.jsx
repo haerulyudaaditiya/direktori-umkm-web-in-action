@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
   Phone,
@@ -29,6 +29,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import AddressBook from '@/components/profile/AddressBook';
 import { supabase } from '@/lib/supabaseClient';
+import ReactDOM from 'react-dom'; 
 
 const ProfilePage = () => {
   const { user, profile, signOut } = useAuth();
@@ -39,6 +40,14 @@ const ProfilePage = () => {
   const [uploading, setUploading] = useState(false); // State khusus upload
   const [successMsg, setSuccessMsg] = useState('');
   const [avatarUrl, setAvatarUrl] = useState(null);
+  const [logoutConfirm, setLogoutConfirm] = useState(false);
+
+  const LogoutModalPortal = ({ children }) => {
+    return ReactDOM.createPortal(
+      children,
+      document.body
+    );
+  };
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -299,7 +308,7 @@ const ProfilePage = () => {
               <Button
                 variant="ghost"
                 className="w-full justify-start h-12 text-red-600 dark:text-red-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20 dark:hover:text-red-300 transition-colors"
-                onClick={handleLogout}
+                onClick={() => setLogoutConfirm(true)}
               >
                 <LogOut className="w-5 h-5 mr-3" /> Keluar
               </Button>
@@ -411,7 +420,61 @@ const ProfilePage = () => {
             <div className="mt-8">
               <AddressBook userId={user.id} />
             </div>
-            
+
+            <AnimatePresence>
+              {logoutConfirm && (
+                <LogoutModalPortal>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+                  >
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.9, opacity: 0 }}
+                      className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-green-200 dark:border-green-800 shadow-xl"
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-full">
+                          <LogOut className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                          Keluar Akun?
+                        </h3>
+                      </div>
+
+                      <p className="text-gray-600 dark:text-gray-300 mb-2">
+                        Anda akan keluar dari akun:
+                      </p>
+                      <p className="font-medium text-gray-900 dark:text-white mb-1">
+                        {formData.full_name || 'Pengguna'}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                        {formData.email}
+                      </p>
+
+                      <div className="flex gap-3 justify-end">
+                        <Button
+                          variant="outline"
+                          onClick={() => setLogoutConfirm(false)}
+                          className="border-green-200 text-stone-600 hover:bg-green-50 hover:text-green-700 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 transition-colors"
+                        >
+                          Batal
+                        </Button>
+                        <Button
+                          onClick={handleLogout}
+                          className="bg-amber-600 hover:bg-amber-700 text-white"
+                        >
+                          Ya, Keluar
+                        </Button>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                </LogoutModalPortal>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </div>
