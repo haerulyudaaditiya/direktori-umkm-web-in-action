@@ -29,11 +29,15 @@ import {
   Phone,
   Wheat,
   Sparkles,
+  Heart,
 } from 'lucide-react';
 import { getCategoryFallback } from '@/utils/categoryFallback';
 import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/contexts/AuthContext'; 
 
 function DetailPage() {
+  const { user } = useAuth(); // Ambil user
+  const [isFavorited, setIsFavorited] = useState(false); // State love
   const { slug } = useParams();
   const [umkm, setUmkm] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +94,45 @@ function DetailPage() {
       carouselApi.scrollTo(activeImageIndex);
     }
   }, [activeImageIndex, carouselApi]);
+
+  useEffect(() => {
+    const checkFavorite = async () => {
+      if (!user || !umkm) return;
+      const { data } = await supabase
+        .from('favorites')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('umkm_id', umkm.id)
+        .single();
+
+      setIsFavorited(!!data);
+    };
+    checkFavorite();
+  }, [user, umkm]);
+
+  // Fungsi Toggle Like
+  const handleToggleFavorite = async () => {
+    if (!user) {
+      alert('Silakan login untuk menyimpan favorit.');
+      return;
+    }
+
+    if (isFavorited) {
+      // Unlike
+      const { error } = await supabase
+        .from('favorites')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('umkm_id', umkm.id);
+      if (!error) setIsFavorited(false);
+    } else {
+      // Like
+      const { error } = await supabase
+        .from('favorites')
+        .insert([{ user_id: user.id, umkm_id: umkm.id }]);
+      if (!error) setIsFavorited(true);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -581,6 +624,22 @@ function DetailPage() {
               >
                 <Sparkles className="h-4 w-4 mr-2" />
                 Bagikan UMKM Ini
+              </Button>
+              <Button
+                onClick={handleToggleFavorite}
+                variant="outline"
+                className={`border-white bg-transparent text-white hover:bg-white hover:text-green-600 ${
+                  isFavorited
+                    ? 'bg-white text-red-500 hover:bg-white/90 hover:text-red-600'
+                    : ''
+                }`}
+              >
+                <Heart
+                  className={`h-4 w-4 mr-2 ${
+                    isFavorited ? 'fill-red-500' : ''
+                  }`}
+                />
+                {isFavorited ? 'Tersimpan' : 'Favorit'}
               </Button>
             </div>
           </div>

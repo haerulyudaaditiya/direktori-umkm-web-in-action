@@ -16,6 +16,7 @@ import {
   LogOut,
   ShoppingBag,
   ChevronDown,
+  Heart,
 } from 'lucide-react';
 // --- INTEGRASI AUTH ---
 import { useAuth } from '@/contexts/AuthContext';
@@ -136,6 +137,12 @@ function Navbar() {
                     <Link to="/history" className="flex items-center w-full">
                       <ShoppingBag className="mr-2 h-4 w-4" />
                       <span>Pesanan Saya</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link to="/favorites" className="flex items-center w-full">
+                      <Heart className="mr-2 h-4 w-4" />
+                      <span>Toko Favorit</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
