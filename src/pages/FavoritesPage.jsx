@@ -17,9 +17,9 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
+  CardHeader,
+  CardTitle,
+  CardDescription,
 } from '@/components/ui/card';
 
 import { Badge } from '@/components/ui/badge';
@@ -114,7 +114,7 @@ const FavoritesPage = () => {
   useEffect(() => {
     setImageErrors({});
   }, [favorites]);
-  
+
   const DeleteModalPortal = ({ children }) => {
     return ReactDOM.createPortal(children, document.body);
   };
@@ -261,7 +261,7 @@ const FavoritesPage = () => {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Link to={`/umkm/${umkm.slug}`} className="group">
-                    <Card className="glass-card overflow-hidden rounded-2xl border border-green-200 dark:border-green-800 transition-all relative">
+                    <Card className="glass-card overflow-hidden rounded-2xl border border-green-200 dark:border-green-800 transition-all relative h-full flex flex-col">
                       {/* TOMBOL DELETE - Tetap ada di favorites */}
                       <button
                         onClick={(e) => {
@@ -302,25 +302,29 @@ const FavoritesPage = () => {
                       </div>
 
                       {/* CARD CONTENT - Sama persis dengan DirectoryPage */}
-                      <CardHeader className="p-5 pb-3">
-                        <CardTitle className="text-xl font-bold line-clamp-1 text-gray-900 dark:text-white">
-                          {umkm.nama}
-                        </CardTitle>
-                        <CardDescription className="flex items-center gap-4 text-sm pt-2">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4" />
-                            {umkm.rentang_harga}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            Buka
-                          </span>
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-5 pt-0">
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2 min-h-[2.5rem]">
-                          {umkm.alamat}
-                        </p>
+                      <div className="flex flex-col flex-1 p-5">
+                        <CardHeader className="p-0 pb-3">
+                          <CardTitle className="text-xl font-bold line-clamp-1 text-gray-900 dark:text-white">
+                            {umkm.nama}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-4 text-sm pt-2">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-4 w-4" />
+                              {umkm.rentang_harga}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-4 w-4" />
+                              Buka
+                            </span>
+                          </CardDescription>
+                        </CardHeader>
+
+                        <div className="flex-1 min-h-[60px] mb-3">
+                          <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 h-full">
+                            {umkm.alamat}
+                          </p>
+                        </div>
+                        
                         <div className="flex flex-wrap gap-2">
                           {Array.isArray(umkm.tags) &&
                             umkm.tags.slice(0, 3).map((tag) => (
@@ -341,7 +345,7 @@ const FavoritesPage = () => {
                             </Badge>
                           )}
                         </div>
-                      </CardContent>
+                      </div>
                     </Card>
                   </Link>
                 </motion.div>
