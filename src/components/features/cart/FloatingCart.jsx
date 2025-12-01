@@ -2,20 +2,19 @@
 import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
+import { ShoppingCart, X, Plus, Minus, Trash2, Utensils } from 'lucide-react';
 import { useOrder } from '@/contexts/OrderContext';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
-import { Utensils } from 'lucide-react';
 
 const FloatingCart = () => {
   const { state, dispatch } = useOrder();
   const [isExpanded, setIsExpanded] = useState(false);
   const location = useLocation();
   const [imageErrors, setImageErrors] = useState({});
-  
+
   useEffect(() => {
-     setIsExpanded(false);
+    setIsExpanded(false);
   }, [location.pathname]);
 
   const totalPrice = state.cart.reduce(
@@ -36,6 +35,12 @@ const FloatingCart = () => {
 
   const removeItem = (id) => {
     dispatch({ type: 'REMOVE_FROM_CART', payload: id });
+  };
+
+  // Safe fallback icon function
+  const getFallbackIcon = () => {
+    // Default fallback jika tidak ada kategori
+    return <Utensils className="w-5 h-5 text-white" />;
   };
 
   if (state.cartCount === 0) return null;
@@ -78,17 +83,17 @@ const FloatingCart = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md max-h-[80vh] overflow-hidden border border-green-200 dark:border-green-800"
+              className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md max-h-[80vh] overflow-hidden border border-green-200 dark:border-green-800 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex justify-between items-center p-4 border-b border-green-200 dark:border-green-800">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                   Keranjang Pesanan
                 </h3>
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -108,12 +113,12 @@ const FloatingCart = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
-                      className="flex items-center gap-3 py-3 border-b border-gray-200 dark:border-gray-700"
+                      className="flex items-center gap-3 py-3 border-b border-green-200 dark:border-green-800 last:border-b-0"
                     >
-                      {/* Untuk setiap item di cart */}
-                      {imageErrors[item.id] ? (
+                      {/* Image dengan safe fallback */}
+                      {!item.image || imageErrors[item.id] ? (
                         <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Utensils className="w-5 h-5 text-white" />
+                          {getFallbackIcon()}
                         </div>
                       ) : (
                         <img
@@ -129,20 +134,25 @@ const FloatingCart = () => {
                         />
                       )}
 
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm text-gray-900 dark:text-white line-clamp-1">
                           {item.name}
                         </h4>
-                        <p className="text-green-600 dark:text-green-400 font-bold">
+                        {item.umkm && (
+                          <p className="text-xs text-green-600 dark:text-green-400 mt-0.5 line-clamp-1">
+                            {item.umkm}
+                          </p>
+                        )}
+                        <p className="text-green-600 dark:text-green-400 font-bold text-sm mt-1">
                           Rp {item.price.toLocaleString()}
                         </p>
 
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2 mt-2">
                           <button
                             onClick={() =>
                               updateQuantity(item.id, item.quantity - 1)
                             }
-                            className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
+                            className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-800 text-green-600 dark:text-green-400 transition-colors"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
@@ -155,7 +165,7 @@ const FloatingCart = () => {
                             onClick={() =>
                               updateQuantity(item.id, item.quantity + 1)
                             }
-                            className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
+                            className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-800 text-green-600 dark:text-green-400 transition-colors"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -164,7 +174,7 @@ const FloatingCart = () => {
 
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full"
+                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -175,7 +185,7 @@ const FloatingCart = () => {
 
               {/* Footer */}
               {state.cart.length > 0 && (
-                <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="p-4 border-t border-green-200 dark:border-green-800">
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-semibold text-gray-900 dark:text-white">
                       Total:
@@ -186,7 +196,7 @@ const FloatingCart = () => {
                   </div>
                   <Button
                     asChild
-                    className="w-full bg-green-500 hover:bg-green-600 h-12 font-bold"
+                    className="w-full bg-green-600 hover:bg-green-700 h-12 font-bold text-white transition-colors"
                     onClick={() => setIsExpanded(false)}
                   >
                     <Link to="/checkout">
