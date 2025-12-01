@@ -12,6 +12,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   AlertCircle,
+  Edit3,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +29,7 @@ const AddressBook = ({ userId }) => {
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [error, setError] = useState('');
@@ -165,7 +168,33 @@ const AddressBook = ({ userId }) => {
     }));
   };
 
-  // Save New Address
+  // Start Editing
+  const startEditing = (address) => {
+    setEditingId(address.id);
+    setFormData({
+      label: address.label,
+      recipient_name: address.recipient_name,
+      phone: address.phone,
+      full_address: address.full_address,
+    });
+    setErrors({});
+    setTouched({});
+  };
+
+  // Cancel Editing
+  const cancelEditing = () => {
+    setEditingId(null);
+    setFormData({
+      label: 'Rumah',
+      recipient_name: '',
+      phone: '',
+      full_address: '',
+    });
+    setErrors({});
+    setTouched({});
+  };
+
+  // Save Address (Create or Update)
   const handleSave = async (e) => {
     e.preventDefault();
     setSaveLoading(true);
@@ -193,19 +222,32 @@ const AddressBook = ({ userId }) => {
     }
 
     try {
-      const { error } = await supabase.from('addresses').insert([
-        {
-          user_id: userId,
-          ...formData,
-          is_default: addresses.length === 0,
-        },
-      ]);
+      if (editingId) {
+        // Update existing address
+        const { error } = await supabase
+          .from('addresses')
+          .update(formData)
+          .eq('id', editingId);
 
-      if (error) throw error;
+        if (error) throw error;
+        setSuccess('Alamat berhasil diperbarui!');
+        setEditingId(null);
+      } else {
+        // Create new address
+        const { error } = await supabase.from('addresses').insert([
+          {
+            user_id: userId,
+            ...formData,
+            is_default: addresses.length === 0,
+          },
+        ]);
 
-      setSuccess('Alamat berhasil disimpan!');
+        if (error) throw error;
+        setSuccess('Alamat berhasil disimpan!');
+        setIsAdding(false);
+      }
+
       await fetchAddresses();
-      setIsAdding(false);
       setFormData({
         label: 'Rumah',
         recipient_name: '',
@@ -297,7 +339,7 @@ const AddressBook = ({ userId }) => {
           </div>
         </div>
 
-        {!isAdding && (
+        {!isAdding && !editingId && (
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button
               onClick={() => setIsAdding(true)}
@@ -309,9 +351,9 @@ const AddressBook = ({ userId }) => {
         )}
       </div>
 
-      {/* Add Address Form */}
+      {/* Add/Edit Address Form */}
       <AnimatePresence>
-        {isAdding && (
+        {(isAdding || editingId) && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -320,9 +362,21 @@ const AddressBook = ({ userId }) => {
           >
             <Card className="glass-card border border-green-200 dark:border-green-800">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
-                  Tambah Alamat Baru
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                    {editingId ? 'Edit Alamat' : 'Tambah Alamat Baru'}
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={
+                      editingId ? cancelEditing : () => setIsAdding(false)
+                    }
+                    className="h-8 w-8 text-gray-500 hover:text-gray-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -496,11 +550,9 @@ const AddressBook = ({ userId }) => {
                 <div className="flex justify-end gap-3 pt-2">
                   <Button
                     variant="outline"
-                    onClick={() => {
-                      setIsAdding(false);
-                      setErrors({});
-                      setTouched({});
-                    }}
+                    onClick={
+                      editingId ? cancelEditing : () => setIsAdding(false)
+                    }
                     className="border-green-200 text-stone-600 hover:bg-green-50 hover:text-green-700 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 transition-colors"
                   >
                     Batal
@@ -515,6 +567,8 @@ const AddressBook = ({ userId }) => {
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                         Menyimpan...
                       </>
+                    ) : editingId ? (
+                      'Perbarui Alamat'
                     ) : (
                       'Simpan Alamat'
                     )}
@@ -597,12 +651,22 @@ const AddressBook = ({ userId }) => {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => setDeleteConfirm(addr)}
-                      className="text-gray-400 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors ml-4"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex gap-1 ml-4">
+                      <button
+                        onClick={() => startEditing(addr)}
+                        className="text-gray-400 hover:text-green-500 p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
+                        title="Edit alamat"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirm(addr)}
+                        className="text-gray-400 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        title="Hapus alamat"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
