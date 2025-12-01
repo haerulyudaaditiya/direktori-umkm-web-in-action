@@ -8,7 +8,7 @@ import {
   Building,
   Loader2,
   User,
-  PhoneIcon,
+  Phone,
   AlertTriangle,
   CheckCircle2,
   AlertCircle,
@@ -22,7 +22,6 @@ import { supabase } from '@/lib/supabaseClient';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactDOM from 'react-dom';
-
 
 const AddressBook = ({ userId }) => {
   const [addresses, setAddresses] = useState([]);
@@ -143,7 +142,6 @@ const AddressBook = ({ userId }) => {
   const handleFieldChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // Auto-format phone number to only allow digits and phone symbols
     if (field === 'phone') {
       const formattedValue = value.replace(/[^\d+-\s()]/g, '');
       setFormData((prev) => ({ ...prev, [field]: formattedValue }));
@@ -173,7 +171,6 @@ const AddressBook = ({ userId }) => {
     setSaveLoading(true);
     setError('');
 
-    // Mark all fields as touched to show all errors
     const allTouched = {
       label: true,
       recipient_name: true,
@@ -250,7 +247,7 @@ const AddressBook = ({ userId }) => {
   const isFormValid = () => {
     return Object.keys(validateForm()).length === 0;
   };
-  
+
   const DeleteModalPortal = ({ children }) => {
     return ReactDOM.createPortal(children, document.body);
   };
@@ -278,7 +275,7 @@ const AddressBook = ({ userId }) => {
             exit={{ opacity: 0, y: -10 }}
             className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-300 flex items-center gap-3"
           >
-            <MapPin className="w-5 h-5 flex-shrink-0" />
+            <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
             <p className="text-sm font-medium">{success}</p>
           </motion.div>
         )}
@@ -304,7 +301,7 @@ const AddressBook = ({ userId }) => {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button
               onClick={() => setIsAdding(true)}
-              className="bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/25 transition-all"
+              className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Plus className="w-4 h-4 mr-2" /> Tambah Alamat
             </Button>
@@ -321,9 +318,11 @@ const AddressBook = ({ userId }) => {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <Card className="border border-green-200 dark:border-green-800 shadow-lg bg-white dark:bg-gray-900">
+            <Card className="glass-card border border-green-200 dark:border-green-800">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Tambah Alamat Baru</CardTitle>
+                <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                  Tambah Alamat Baru
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -336,7 +335,7 @@ const AddressBook = ({ userId }) => {
                       <Input
                         id="label"
                         placeholder="Rumah / Kantor / Kos"
-                        className={`h-11 pr-10 transition-all duration-200 ${
+                        className={`h-11 transition-all duration-200 ${
                           errors.label
                             ? 'border-red-500 focus-visible:ring-red-500'
                             : formData.label && !errors.label
@@ -373,12 +372,12 @@ const AddressBook = ({ userId }) => {
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Nama Penerima <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative group">
-                      <User className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
+                    <div className="relative">
+                      <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                       <Input
                         id="recipient_name"
                         placeholder="Nama lengkap penerima"
-                        className={`pl-10 h-11 pr-10 transition-all duration-200 ${
+                        className={`pl-10 h-11 transition-all duration-200 ${
                           errors.recipient_name
                             ? 'border-red-500 focus-visible:ring-red-500'
                             : formData.recipient_name && !errors.recipient_name
@@ -416,12 +415,12 @@ const AddressBook = ({ userId }) => {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Nomor WhatsApp <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative group">
-                    <PhoneIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <Input
                       id="phone"
                       placeholder="081234567890"
-                      className={`pl-10 h-11 pr-10 transition-all duration-200 ${
+                      className={`pl-10 h-11 transition-all duration-200 ${
                         errors.phone
                           ? 'border-red-500 focus-visible:ring-red-500'
                           : formData.phone && !errors.phone
@@ -462,7 +461,7 @@ const AddressBook = ({ userId }) => {
                     <Textarea
                       id="full_address"
                       placeholder="Jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kode pos..."
-                      className={`min-h-[100px] resize-y pr-10 transition-all duration-200 ${
+                      className={`min-h-[100px] resize-y transition-all duration-200 ${
                         errors.full_address
                           ? 'border-red-500 focus-visible:ring-red-500'
                           : formData.full_address && !errors.full_address
@@ -507,7 +506,7 @@ const AddressBook = ({ userId }) => {
                     Batal
                   </Button>
                   <Button
-                    className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6"
+                    className="bg-green-600 hover:bg-green-700 text-white"
                     onClick={handleSave}
                     disabled={saveLoading || !isFormValid()}
                   >
@@ -535,12 +534,14 @@ const AddressBook = ({ userId }) => {
             <p className="text-sm text-gray-500">Memuat alamat...</p>
           </div>
         ) : addresses.length === 0 ? (
-          <Card className="border border-dashed border-green-200 dark:border-green-800 text-center py-12 bg-green-50/30 dark:bg-green-900/10">
-            <MapPin className="w-12 h-12 mx-auto text-green-300 mb-4" />
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+          <Card className="glass-card border border-dashed border-green-200 dark:border-green-800 text-center py-12">
+            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+              <MapPin className="w-8 h-8 text-green-600 dark:text-green-400" />
+            </div>
+            <h4 className="font-bold text-gray-900 dark:text-white mb-2">
               Belum ada alamat
             </h4>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 max-w-md mx-auto">
               Tambah alamat untuk memudahkan pengiriman pesanan
             </p>
             <Button
@@ -558,8 +559,8 @@ const AddressBook = ({ userId }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="border border-green-200 dark:border-green-800 hover:border-green-300 dark:hover:border-green-600 transition-colors shadow-sm">
-                <CardContent className="p-6">
+              <Card className="glass-card border border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4 flex-1">
                       <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400 mt-1">
@@ -572,7 +573,7 @@ const AddressBook = ({ userId }) => {
                             {addr.label}
                           </span>
                           {addr.is_default && (
-                            <Badge className="bg-green-500 hover:bg-green-600 text-white text-xs">
+                            <Badge className="bg-green-500 hover:bg-green-600 text-white border-0 text-xs">
                               Default
                             </Badge>
                           )}
@@ -585,7 +586,7 @@ const AddressBook = ({ userId }) => {
                           </div>
 
                           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                            <PhoneIcon className="w-4 h-4" />
+                            <Phone className="w-4 h-4" />
                             <span>{addr.phone}</span>
                           </div>
 
@@ -655,7 +656,7 @@ const AddressBook = ({ userId }) => {
                   </Button>
                   <Button
                     onClick={() => handleDelete(deleteConfirm.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white"
+                    className="bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20 transition-all"
                   >
                     Ya, Hapus
                   </Button>
