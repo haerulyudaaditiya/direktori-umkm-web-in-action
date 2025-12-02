@@ -13,6 +13,7 @@ import {
   Shield,
   Sparkles,
   RotateCcw,
+  AlertTriangle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +27,7 @@ import { Badge } from '@/components/ui/badge';
 import { useOrder } from '@/contexts/OrderContext';
 // Import Supabase Client (Logic Profesional)
 import { supabase } from '@/lib/supabaseClient';
+import ReactDOM from 'react-dom';
 
 const PaymentPage = () => {
   const navigate = useNavigate();
@@ -37,6 +39,13 @@ const PaymentPage = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [countdown, setCountdown] = useState(180); // 3 minutes in seconds
   const [showQR, setShowQR] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Portal Component
+  const ModalPortal = ({ children }) => {
+    return ReactDOM.createPortal(children, document.body);
+  };
 
   // Get order data from location state or context
   const order = location.state?.orderData || orderState.currentOrder;
@@ -94,7 +103,7 @@ const PaymentPage = () => {
         .update({
           payment_method: selectedMethod,
           payment_status: 'paid',
-          order_status: 'processing', // Pesanan mulai diproses
+          order_status: 'processing',
         })
         .eq('id', order.id);
 
@@ -108,7 +117,6 @@ const PaymentPage = () => {
 
       // 3. Auto navigate after success
       setTimeout(() => {
-        // Kirim ID agar halaman konfirmasi bisa fetch data terbaru
         navigate(`/order-confirmation/${order.id}`, {
           state: {
             orderId: order.id,
@@ -118,7 +126,8 @@ const PaymentPage = () => {
       }, 2000);
     } catch (error) {
       console.error('Payment failed:', error);
-      alert('Gagal memproses pembayaran. Silakan coba lagi.');
+      setErrorMessage('Gagal memproses pembayaran. Silakan coba lagi.');
+      setShowErrorModal(true);
       setIsProcessing(false);
     }
   };
@@ -591,6 +600,51 @@ const PaymentPage = () => {
           </motion.div>
         </div>
       </div>
+      {/* Error Modal */}
+      <AnimatePresence>
+        {showErrorModal && (
+          <ModalPortal>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-green-200 dark:border-green-800 shadow-xl"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
+                    <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    Pembayaran Gagal
+                  </h3>
+                </div>
+
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  {errorMessage}
+                </p>
+
+                <div className="flex gap-3 justify-end">
+                  <Button
+                    onClick={() => {
+                      setShowErrorModal(false);
+                      setErrorMessage('');
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    Coba Lagi
+                  </Button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </ModalPortal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

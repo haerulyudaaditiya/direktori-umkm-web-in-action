@@ -245,13 +245,11 @@ const OrderConfirmation = () => {
         });
       } catch (error) {
         if (error.name !== 'AbortError') {
-          // Ganti alert dengan modal
           setShareMessage(shareText);
           setShowShareModal(true);
         }
       }
     } else {
-      // Ganti alert dengan modal
       setShareMessage(shareText);
       setShowShareModal(true);
     }
