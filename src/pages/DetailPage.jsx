@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Card,
   CardContent,
@@ -33,7 +33,9 @@ import {
 } from 'lucide-react';
 import { getCategoryFallback } from '@/utils/categoryFallback';
 import { supabase } from '@/lib/supabaseClient';
-import { useAuth } from '@/contexts/AuthContext'; 
+import { useAuth } from '@/contexts/AuthContext';
+import ReactDOM from 'react-dom';
+import { useLocation } from 'react-router-dom';
 
 function DetailPage() {
   const { user } = useAuth(); // Ambil user
@@ -44,6 +46,12 @@ function DetailPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [carouselApi, setCarouselApi] = useState(null);
   const [imageErrors, setImageErrors] = useState({});
+  const location = useLocation(); 
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const LoginModalPortal = ({ children }) => {
+    return ReactDOM.createPortal(children, document.body);
+  };
 
   useEffect(() => {
     const fetchUMKMDetail = async () => {
@@ -110,10 +118,9 @@ function DetailPage() {
     checkFavorite();
   }, [user, umkm]);
 
-  // Fungsi Toggle Like
   const handleToggleFavorite = async () => {
     if (!user) {
-      alert('Silakan login untuk menyimpan favorit.');
+      setShowLoginModal(true); 
       return;
     }
 
@@ -645,6 +652,61 @@ function DetailPage() {
           </div>
         </motion.div>
       </div>
+      {/* Login Required Modal */}
+      <AnimatePresence>
+        {showLoginModal && (
+          <LoginModalPortal>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-green-200 dark:border-green-800 shadow-xl"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-full">
+                    <Sparkles className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    Login Diperlukan
+                  </h3>
+                </div>
+
+                <p className="text-gray-600 dark:text-gray-300 mb-2">
+                  Untuk menyimpan ke favorit, Anda perlu login terlebih dahulu.
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  Nikmati fitur lengkap KarawangMart dengan akun Anda.
+                </p>
+
+                <div className="flex gap-3 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowLoginModal(false)}
+                    className="border-green-200 text-stone-600 hover:bg-green-50 hover:text-green-700 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 transition-colors"
+                  >
+                    Nanti Saja
+                  </Button>
+                  <Button
+                    asChild
+                    className="bg-green-600 hover:bg-green-700 text-white shadow-md shadow-green-600/20 transition-all"
+                    onClick={() => setShowLoginModal(false)}
+                  >
+                    <Link to="/auth" state={{ from: location }}>
+                      Login Sekarang
+                    </Link>
+                  </Button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </LoginModalPortal>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
