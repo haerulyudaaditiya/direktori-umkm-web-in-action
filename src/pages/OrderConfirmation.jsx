@@ -19,12 +19,14 @@ import {
   CreditCard,
   Receipt,
   ArrowLeft,
+  AlertTriangle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useOrder } from '@/contexts/OrderContext';
 import { supabase } from '@/lib/supabaseClient'; // IMPORT SUPABASE
+import ReactDOM from 'react-dom';
 
 const OrderConfirmation = () => {
   const { orderId } = useParams();
@@ -41,6 +43,13 @@ const OrderConfirmation = () => {
   const [progress, setProgress] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [imageErrors, setImageErrors] = useState({});
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareMessage, setShareMessage] = useState('');
+
+  // Portal Component
+  const ModalPortal = ({ children }) => {
+    return ReactDOM.createPortal(children, document.body);
+  };
 
   const generateOrderNumber = (id) => {
     return `ORD-${id?.slice(0, 8).toUpperCase() || '000000'}`;
@@ -220,12 +229,12 @@ const OrderConfirmation = () => {
     if (!order) return;
 
     const orderNumber = order.order_number || generateOrderNumber(order.id);
-    const shareText = `Saya baru saja memesan dari UMKM Karawang! 🍽️\n
-📦 Pesanan: #${orderNumber}
-💰 Total: Rp ${Number(order.total_amount || order.total).toLocaleString()}
-📍 Status: ${isReady ? 'Siap Diambil' : 'Sedang Disiapkan'}
+    const shareText = `Saya baru saja memesan dari UMKM Karawang! \n
+    Pesanan: #${orderNumber}
+    Total: Rp ${Number(order.total_amount || order.total).toLocaleString()}
+    Status: ${isReady ? 'Siap Diambil' : 'Sedang Disiapkan'}
 
-Dukung UMKM lokal dengan #KarawangMart!`;
+    Dukung UMKM lokal dengan #KarawangMart!`;
 
     if (navigator.share) {
       try {
@@ -236,13 +245,15 @@ Dukung UMKM lokal dengan #KarawangMart!`;
         });
       } catch (error) {
         if (error.name !== 'AbortError') {
-          await navigator.clipboard.writeText(shareText);
-          alert('Detail pesanan disalin ke clipboard! 📋');
+          // Ganti alert dengan modal
+          setShareMessage(shareText);
+          setShowShareModal(true);
         }
       }
     } else {
-      await navigator.clipboard.writeText(shareText);
-      alert('Detail pesanan disalin ke clipboard! 📋');
+      // Ganti alert dengan modal
+      setShareMessage(shareText);
+      setShowShareModal(true);
     }
   }, [order, isReady]);
 
@@ -790,6 +801,56 @@ Dukung UMKM lokal dengan #KarawangMart!`;
           </div>
         </motion.div>
       </div>
+      {/* Share Success Modal */}
+      <AnimatePresence>
+        {showShareModal && (
+          <ModalPortal>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-green-200 dark:border-green-800 shadow-xl"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+                    <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    Berhasil Disalin!
+                  </h3>
+                </div>
+
+                <p className="text-gray-600 dark:text-gray-300 mb-2">
+                  Detail pesanan telah disalin ke clipboard.
+                </p>
+                <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                    {shareMessage.substring(0, 150)}...
+                  </p>
+                </div>
+
+                <div className="flex gap-3 justify-end">
+                  <Button
+                    onClick={() => {
+                      setShowShareModal(false);
+                      setShareMessage('');
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white shadow-md shadow-green-600/20 transition-all"
+                  >
+                    Tutup
+                  </Button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </ModalPortal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
