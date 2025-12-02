@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Camera,
   ArrowLeft,
+  AlertTriangle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,12 +42,25 @@ const ProfilePage = () => {
   const [successMsg, setSuccessMsg] = useState('');
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [logoutConfirm, setLogoutConfirm] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('error'); // 'error' atau 'info'
+  const [validationErrors, setValidationErrors] = useState({});
+
+  // Alert Modal Portal
+  const AlertModalPortal = ({ children }) => {
+    return ReactDOM.createPortal(children, document.body);
+  };
+
+  // Fungsi helper untuk menampilkan modal alert
+  const showAlert = (message, type = 'error') => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setShowAlertModal(true);
+  };
 
   const LogoutModalPortal = ({ children }) => {
-    return ReactDOM.createPortal(
-      children,
-      document.body
-    );
+    return ReactDOM.createPortal(children, document.body);
   };
 
   const [formData, setFormData] = useState({
@@ -67,8 +81,18 @@ const ProfilePage = () => {
   }, [profile, user]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setSuccessMsg('');
+
+    // Clear validation error untuk field ini
+    if (validationErrors[name]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleAvatarUpload = async (event) => {
@@ -78,12 +102,14 @@ const ProfilePage = () => {
 
       if (!file) return;
 
+      event.target.value = '';
+
       if (file.size > 2 * 1024 * 1024) {
-        alert('Ukuran file terlalu besar! Maksimal 2MB.');
+        showAlert('Ukuran file terlalu besar! Maksimal 2MB.');
         return;
       }
       if (!file.type.startsWith('image/')) {
-        alert('File harus berupa gambar.');
+        showAlert('File harus berupa gambar.');
         return;
       }
 
@@ -107,11 +133,11 @@ const ProfilePage = () => {
 
       if (updateError) throw updateError;
 
-      setAvatarUrl(publicUrl); // Update tampilan lokal langsung
+      setAvatarUrl(publicUrl);
       setSuccessMsg('Foto profil berhasil diperbarui!');
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Gagal mengupload foto. Pastikan koneksi lancar.');
+      showAlert('Gagal mengupload foto. Pastikan koneksi lancar.');
     } finally {
       setUploading(false);
     }
@@ -122,15 +148,31 @@ const ProfilePage = () => {
     setLoading(true);
     setSuccessMsg('');
 
+    // Clear previous errors
+    setValidationErrors({});
+
+    const errors = {};
     if (formData.phone.length < 10) {
-      alert('Nomor WhatsApp tidak valid (minimal 10 digit).');
-      setLoading(false);
-      return;
+      errors.phone = 'Nomor WhatsApp tidak valid (minimal 10 digit).';
+    }
+    if (formData.full_name.trim().length < 3) {
+      errors.full_name = 'Nama lengkap terlalu pendek.';
     }
 
-    if (formData.full_name.trim().length < 3) {
-      alert('Nama lengkap terlalu pendek.');
+    // Jika ada error, tampilkan di field
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
       setLoading(false);
+
+      // Scroll ke field pertama yang error
+      const firstError = Object.keys(errors)[0];
+      setTimeout(() => {
+        document.getElementById(firstError)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 100);
+
       return;
     }
 
@@ -158,7 +200,8 @@ const ProfilePage = () => {
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       console.error('Update error:', error.message);
-      alert('Gagal memperbarui profil. Silakan coba lagi.');
+      // GANTI ALERT
+      showAlert('Gagal memperbarui profil. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -238,7 +281,12 @@ const ProfilePage = () => {
 
                   {/* Tombol Kamera (Trigger) */}
                   <button
-                    onClick={() => fileInputRef.current.click()}
+                    onClick={() => {
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                      }
+                      fileInputRef.current.click();
+                    }}
                     disabled={uploading}
                     className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 p-2 rounded-full border border-gray-200 dark:border-gray-600 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors z-10"
                     title="Ganti Foto Profil"
@@ -338,13 +386,23 @@ const ProfilePage = () => {
                     <div className="relative group">
                       <User className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
                       <Input
+                        id="full_name"
                         name="full_name"
                         value={formData.full_name}
                         onChange={handleChange}
-                        className="pl-10 h-11 border-green-200 dark:border-green-800 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                        className={`pl-10 h-11 transition-all ${
+                          validationErrors.full_name
+                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                            : 'border-green-200 dark:border-green-800 focus:border-green-500 focus:ring-2 focus:ring-green-500/20'
+                        }`}
                         placeholder="Nama Lengkap"
                       />
                     </div>
+                    {validationErrors.full_name && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {validationErrors.full_name}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -354,6 +412,7 @@ const ProfilePage = () => {
                     <div className="relative group">
                       <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
                       <Input
+                        id="phone"
                         name="phone"
                         value={formData.phone}
                         onChange={(e) =>
@@ -362,10 +421,19 @@ const ProfilePage = () => {
                             phone: e.target.value.replace(/\D/g, ''),
                           })
                         }
-                        className="pl-10 h-11 border-green-200 dark:border-green-800 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                        className={`pl-10 h-11 transition-all ${
+                          validationErrors.phone
+                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                            : 'border-green-200 dark:border-green-800 focus:border-green-500 focus:ring-2 focus:ring-green-500/20'
+                        }`}
                         placeholder="08..."
                       />
                     </div>
+                    {validationErrors.phone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {validationErrors.phone}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -478,6 +546,62 @@ const ProfilePage = () => {
           </motion.div>
         </div>
       </div>
+      {/* Alert Modal */}
+      <AnimatePresence>
+        {showAlertModal && (
+          <AlertModalPortal>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full border border-green-200 dark:border-green-800 shadow-xl"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className={`p-2 rounded-full ${
+                      alertType === 'error'
+                        ? 'bg-red-100 dark:bg-red-900/30'
+                        : 'bg-amber-100 dark:bg-amber-900/30'
+                    }`}
+                  >
+                    {alertType === 'error' ? (
+                      <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                    ) : (
+                      <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    )}
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    {alertType === 'error' ? 'Terjadi Kesalahan' : 'Perhatian'}
+                  </h3>
+                </div>
+
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  {alertMessage}
+                </p>
+
+                <div className="flex justify-end">
+                  <Button
+                    onClick={() => setShowAlertModal(false)}
+                    className={`${
+                      alertType === 'error'
+                        ? 'bg-red-600 hover:bg-red-700'
+                        : 'bg-amber-600 hover:bg-amber-700'
+                    } text-white`}
+                  >
+                    Tutup
+                  </Button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </AlertModalPortal>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
