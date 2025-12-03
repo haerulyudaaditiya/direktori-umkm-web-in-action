@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-import { ArrowLeft, Star, Clock, Plus, Store } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,6 +25,7 @@ const MenuPage = () => {
   useEffect(() => {
     const fetchUMKMAndMenu = async () => {
       setIsLoading(true);
+
       try {
         const { data: umkmData, error: umkmError } = await supabase
           .from('umkms')
@@ -37,18 +38,11 @@ const MenuPage = () => {
         if (umkmData) {
           const products = umkmData.products || [];
 
-          // --- LOGIC DINAMIS (PROFESIONAL) ---
-          // Menggunakan helper dari utils/categoryConstants.js
-
           const formattedData = {
             ...umkmData,
-
-            // 1. Layanan Jasa (Smart Filter)
             layanan: products.filter((p) =>
               checkCategoryMatch(p.kategori_produk, SERVICE_KEYWORDS)
             ),
-
-            // 2. Produk Retail (Smart Filter: Retail tapi BUKAN Jasa)
             produk: products.filter((p) => {
               const isRetail = checkCategoryMatch(
                 p.kategori_produk,
@@ -60,9 +54,6 @@ const MenuPage = () => {
               );
               return isRetail && !isService;
             }),
-
-            // 3. Menu Makanan/Minuman (Smart Fallback)
-            // Apapun yang BUKAN Jasa dan BUKAN Retail --> Masuk Makanan.
             menu: products.filter((p) => {
               const isService = checkCategoryMatch(
                 p.kategori_produk,
@@ -92,22 +83,18 @@ const MenuPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
         <div className="container mx-auto max-w-4xl px-3 sm:px-4">
-          {/* 1. Header Profile Skeleton (Kecil, bukan Hero Besar) */}
           <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-            <Skeleton className="h-10 w-10 rounded-md flex-shrink-0" />{' '}
-            {/* Back Button */}
+            <Skeleton className="h-10 w-10 rounded-md flex-shrink-0" />
             <div className="flex-1 min-w-0 space-y-2">
-              <Skeleton className="h-8 w-3/4 sm:w-1/2 rounded-lg" />{' '}
-              {/* Nama UMKM */}
+              <Skeleton className="h-8 w-3/4 sm:w-1/2 rounded-lg" />
               <div className="flex items-center gap-2">
-                <Skeleton className="h-5 w-12 rounded-md" /> {/* Rating */}
-                <Skeleton className="h-5 w-16 rounded-md" /> {/* Jam Buka */}
-                <Skeleton className="h-5 w-10 rounded-md" /> {/* Harga */}
+                <Skeleton className="h-5 w-12 rounded-md" />
+                <Skeleton className="h-5 w-16 rounded-md" />
+                <Skeleton className="h-5 w-10 rounded-md" />
               </div>
             </div>
           </div>
 
-          {/* 2. Tabs Category Skeleton */}
           <div className="flex gap-2 mb-6 overflow-hidden">
             {[1, 2, 3, 4, 5].map((i) => (
               <Skeleton
@@ -116,41 +103,27 @@ const MenuPage = () => {
               />
             ))}
           </div>
-
-          {/* 3. Grid Cards Skeleton (MIMIC FoodSection Layout) */}
-          {/* Menggunakan Layout Grid yang sama dengan FoodSection */}
           <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card
                 key={i}
-                // Class ini SAMA PERSIS dengan FoodSection.jsx
                 className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-green-100 dark:border-green-800 shadow-sm h-full flex flex-col"
               >
-                {/* Image Area (h-48 Sesuai FoodSection) */}
                 <Skeleton className="h-48 w-full rounded-none" />
-
-                {/* Content Area */}
                 <div className="p-4 flex-1 flex flex-col">
                   <div className="flex justify-between items-start mb-3 gap-2">
-                    <Skeleton className="h-6 w-3/4 rounded-md" />{' '}
-                    {/* Nama Menu */}
-                    <Skeleton className="h-5 w-10 rounded-md" />{' '}
-                    {/* Rating Kecil */}
+                    <Skeleton className="h-6 w-3/4 rounded-md" />
+                    <Skeleton className="h-5 w-10 rounded-md" />
                   </div>
-
-                  {/* Deskripsi Line Clamp 2 */}
                   <div className="space-y-2 flex-1 mb-4">
                     <Skeleton className="h-3 w-full rounded" />
                     <Skeleton className="h-3 w-2/3 rounded" />
                   </div>
-
-                  {/* Footer: Harga & Tombol */}
                   <div className="flex justify-between items-center pt-3 mt-auto border-t border-gray-100 dark:border-gray-700">
                     <div className="space-y-1">
-                      <Skeleton className="h-6 w-24 rounded" /> {/* Harga */}
-                      <Skeleton className="h-3 w-16 rounded" /> {/* Satuan */}
+                      <Skeleton className="h-6 w-24 rounded" />
+                      <Skeleton className="h-3 w-16 rounded" />
                     </div>
-                    {/* Tombol Rounded Full */}
                     <Skeleton className="h-9 w-24 rounded-full" />
                   </div>
                 </div>
@@ -164,14 +137,23 @@ const MenuPage = () => {
 
   if (!umkm) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Card className="p-8 text-center max-w-md">
-          <Store className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-          <h2 className="text-xl font-bold">UMKM Tidak Ditemukan</h2>
-          <Button asChild className="mt-4">
-            <Link to="/direktori">Kembali</Link>
-          </Button>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-8">
+        <div className="container mx-auto max-w-2xl px-4">
+          <Card className="glass-card border border-green-200 dark:border-green-800 text-center p-12">
+            <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+              <Store className="h-8 w-8 text-red-600 dark:text-red-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+              UMKM Tidak Ditemukan
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Maaf, kami tidak menemukan menu untuk UMKM ini.
+            </p>
+            <Button asChild className="bg-green-600 hover:bg-green-700">
+              <Link to="/direktori">Kembali ke Direktori</Link>
+            </Button>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -180,10 +162,8 @@ const MenuPage = () => {
   const hasFood = umkm.menu && umkm.menu.length > 0;
   const hasService = umkm.layanan && umkm.layanan.length > 0;
   const hasRetail = umkm.produk && umkm.produk.length > 0;
+  const hasAnyProducts = hasFood || hasService || hasRetail;
 
-  // Fallback Logic untuk Tipe Toko
-  // Jika kategori toko mengandung 'kuliner'/'makan'/'minum', anggap sebagai Food Section
-  // meskipun produknya mungkin salah input kategori.
   const mainCategory = (umkm.kategori || '').toLowerCase();
   const isKulinerStore =
     mainCategory.includes('kuliner') ||
@@ -196,7 +176,6 @@ const MenuPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
       <div className="container mx-auto max-w-4xl px-3 sm:px-4">
-        {/* Header Profile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -232,26 +211,38 @@ const MenuPage = () => {
           </div>
         </motion.div>
 
-        {/* Sections */}
-        {showFoodSection && (
-          // Fallback: Jika menu kosong tapi ini toko kuliner, ambil semua produk sebagai menu
-          <FoodSection menu={hasFood ? umkm.menu : umkm.products} umkm={umkm} />
-        )}
-
-        {(umkmType === 'service' || hasService) && hasService && (
-          <ServiceSection layanan={umkm.layanan} umkm={umkm} />
-        )}
-
-        {(umkmType === 'retail' || hasRetail) && hasRetail && (
-          <RetailSection produk={umkm.produk} umkm={umkm} />
-        )}
-
-        {!hasFood && !hasService && !hasRetail && (
-          <div className="text-center py-12 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-300">
-            <p className="text-gray-500">
-              Belum ada daftar menu/produk untuk UMKM ini.
+        {!hasAnyProducts ? (
+          <Card className="text-center p-12 glass-card border border-green-200 dark:border-green-800">
+            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+              <Store className="h-8 w-8 text-green-600 dark:text-green-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
+              Belum Ada Menu/Produk
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              UMKM ini belum menambahkan menu atau produk.
             </p>
-          </div>
+            <Button asChild className="bg-green-600 hover:bg-green-700">
+              <Link to={`/umkm/${slug}`}>Kembali ke Profil UMKM</Link>
+            </Button>
+          </Card>
+        ) : (
+          <>
+            {showFoodSection && (
+              <FoodSection
+                menu={hasFood ? umkm.menu : umkm.products}
+                umkm={umkm}
+              />
+            )}
+
+            {(umkmType === 'service' || hasService) && hasService && (
+              <ServiceSection layanan={umkm.layanan} umkm={umkm} />
+            )}
+
+            {(umkmType === 'retail' || hasRetail) && hasRetail && (
+              <RetailSection produk={umkm.produk} umkm={umkm} />
+            )}
+          </>
         )}
       </div>
     </div>
