@@ -278,14 +278,14 @@ function DetailPage() {
                       className="w-full h-80 md:h-[480px] relative"
                     >
                       {imageErrors[i] ? (
-                        <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
                           {(() => {
                             const fallbackConfig = getCategoryFallback(
                               umkm.kategori
                             );
                             const IconComponent = fallbackConfig.icon;
                             return (
-                              <IconComponent className="w-16 h-16 text-white" />
+                              <IconComponent className="w-16 h-16 text-gray-400 dark:text-gray-600" />
                             );
                           })()}
                         </div>
@@ -355,13 +355,15 @@ function DetailPage() {
                   }`}
                 >
                   {imageErrors[`thumb_${i}`] ? (
-                    <div className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
                       {(() => {
                         const fallbackConfig = getCategoryFallback(
                           umkm.kategori
                         );
                         const IconComponent = fallbackConfig.icon;
-                        return <IconComponent className="w-6 h-6 text-white" />;
+                        return (
+                          <IconComponent className="w-6 h-6 text-gray-400 dark:text-gray-600" />
+                        );
                       })()}
                     </div>
                   ) : (
@@ -520,16 +522,34 @@ function DetailPage() {
                 <Button
                   asChild
                   className="w-full bg-green-600 hover:bg-green-700 h-12"
+                  disabled={!umkm.lat || !umkm.lng}
                 >
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${umkm.lat},${umkm.lng}`}
+                    href={
+                      umkm.lat && umkm.lng
+                        ? `https://www.google.com/maps/search/?api=1&query=${umkm.lat},${umkm.lng}`
+                        : '#'
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2"
+                    className={`flex items-center gap-2 ${
+                      !umkm.lat || !umkm.lng
+                        ? 'cursor-not-allowed opacity-60'
+                        : ''
+                    }`}
+                    onClick={(e) => {
+                      if (!umkm.lat || !umkm.lng) {
+                        e.preventDefault();
+                      }
+                    }}
                   >
                     <MapPin className="h-4 w-4" />
-                    Buka di Google Maps
-                    <ExternalLink className="h-4 w-4" />
+                    {umkm.lat && umkm.lng
+                      ? 'Buka di Google Maps'
+                      : 'Lokasi Tidak Tersedia'}
+                    {umkm.lat && umkm.lng && (
+                      <ExternalLink className="h-4 w-4" />
+                    )}
                   </a>
                 </Button>
 
@@ -571,23 +591,70 @@ function DetailPage() {
             {/* Map Preview */}
             <Card className="glass-card border border-green-200 dark:border-green-800">
               <CardHeader>
-                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   Lokasi
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <motion.div
-                  className="w-full h-48 rounded-lg overflow-hidden border border-green-200 dark:border-green-800"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8 }}
-                >
-                  {/* Note: iframe src in DB should be trusted or sanitized. For this MVP assuming trusted inputs */}
-                  <div
-                    className="w-full h-full"
-                    dangerouslySetInnerHTML={{ __html: umkm.lokasi_map }}
-                  />
-                </motion.div>
+                {umkm.lokasi_map ? (
+                  <motion.div
+                    className="w-full h-48 rounded-lg overflow-hidden border border-green-200 dark:border-green-800"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <div
+                      className="w-full h-full"
+                      dangerouslySetInnerHTML={{ __html: umkm.lokasi_map }}
+                    />
+                  </motion.div>
+                ) : umkm.lat && umkm.lng ? (
+                  <motion.div
+                    className="w-full h-48 rounded-lg overflow-hidden border border-green-200 dark:border-green-800 flex items-center justify-center bg-green-50 dark:bg-gray-800/50"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <div className="text-center p-4">
+                      <MapPin className="h-8 w-8 text-green-600 dark:text-green-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                        Peta tidak tersedia, tapi Anda bisa buka di Google Maps
+                      </p>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${umkm.lat},${umkm.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          Buka di Maps
+                        </a>
+                      </Button>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    className="w-full h-48 rounded-lg overflow-hidden border border-green-200 dark:border-green-800 flex items-center justify-center bg-gray-50 dark:bg-gray-800/50"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <div className="text-center p-4">
+                      <MapPin className="h-8 w-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                        Lokasi peta tidak tersedia
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500 max-w-xs">
+                        {umkm.alamat}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
               </CardContent>
             </Card>
           </motion.div>
