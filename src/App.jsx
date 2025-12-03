@@ -15,6 +15,7 @@ import ProfilePage from './pages/ProfilePage';
 import FavoritesPage from './pages/FavoritesPage';
 import MitraRegistrationPage from './pages/MitraRegistrationPage';
 import DashboardPage from './pages/merchant/DashboardPage';
+import ProductPage from './pages/merchant/ProductPage';
 
 function App() {
   return (
@@ -83,6 +84,14 @@ function App() {
         element={
           <ProtectedRoute>
             <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="merchant/products"
+        element={
+          <ProtectedRoute>
+            <ProductPage />
           </ProtectedRoute>
         }
       />

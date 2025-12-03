@@ -24,6 +24,7 @@ import {
   TrendingUp,
   ChevronDown,
   LogOut,
+  MenuSquare,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -189,7 +190,7 @@ const MerchantHeader = React.memo(
                   {/* Menu Management */}
                   <DropdownMenuItem asChild className="cursor-pointer">
                     <Link
-                      to={`/menu/${myShop.slug}`}
+                      to="/merchant/products"
                       className="flex items-center w-full"
                     >
                       <ChefHat className="mr-2 h-4 w-4" />
@@ -800,7 +801,7 @@ const DashboardPage = () => {
                     variant="outline"
                     className="h-auto py-4 flex-col items-center justify-center gap-2 border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
                   >
-                    <Link to={`/menu/${myShop.slug}`} className="text-center">
+                    <Link to="/merchant/products" className="text-center">
                       <ChefHat className="w-6 h-6 mb-2" />
                       <span className="font-semibold">Kelola Menu</span>
                       <span className="text-xs text-gray-500">
