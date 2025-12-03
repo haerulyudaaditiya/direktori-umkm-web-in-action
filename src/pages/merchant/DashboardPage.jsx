@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
@@ -9,13 +8,10 @@ import {
   DollarSign,
   Clock,
   CheckCircle,
-  XCircle,
   ChefHat,
   Bell,
   Loader2,
   ArrowLeft,
-  Users,
-  TrendingUp,
   ShoppingBag,
   MapPin,
   Phone,
@@ -25,6 +21,9 @@ import {
   AlertTriangle,
   Wheat,
   User,
+  TrendingUp,
+  ChevronDown,
+  LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,11 +39,19 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 // Pisahkan Header menjadi komponen terpisah di luar DashboardPage
-// Pisahkan Header menjadi komponen terpisah di luar DashboardPage
 const MerchantHeader = React.memo(
-  ({ myShop, user, loading, toggleStoreStatus }) => {
+  ({ myShop, user, loading, onToggleStore }) => {
     const getInitials = (name) => {
       if (!name) return 'M';
       return name
@@ -81,7 +88,6 @@ const MerchantHeader = React.memo(
       >
         <div className="container mx-auto max-w-6xl px-4 py-3">
           <div className="flex items-center justify-between">
-            {/* Left: Brand - Mobile: hanya logo, Desktop: logo + nama */}
             <div className="flex items-center gap-4">
               <Link to="/" className="flex items-center gap-2 group">
                 <Wheat className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -89,83 +95,130 @@ const MerchantHeader = React.memo(
                   {myShop.nama}
                 </span>
                 <span className="font-bold text-gray-900 dark:text-white sm:hidden text-sm">
-                  {myShop.nama.length > 12 
-                    ? `${myShop.nama.substring(0, 10)}...` 
+                  {myShop.nama.length > 12
+                    ? `${myShop.nama.substring(0, 10)}...`
                     : myShop.nama}
                 </span>
               </Link>
-              
-              {/* Badge Status untuk Mobile */}
-              <Badge
-                className={`${myShop.status_buka ? 'bg-green-500' : 'bg-red-500'} sm:hidden`}
-              >
-                {myShop.status_buka ? 'BUKA' : 'TUTUP'}
-              </Badge>
             </div>
 
-            {/* Right: Actions - Mobile: hanya avatar, Desktop: semua tombol */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Tombol Lihat Toko - Desktop only */}
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300 hidden sm:flex"
-              >
-                <Link to={`/umkm/${myShop.slug}`} target="_blank">
-                  <Eye className="w-4 h-4 mr-1" />
-                  <span className="hidden lg:inline">Lihat Toko</span>
-                  <span className="lg:hidden">Toko</span>
-                </Link>
-              </Button>
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="pl-2 pr-3 rounded-full h-10 gap-2 border border-transparent hover:bg-green-100/50 dark:hover:bg-green-900/50"
+                  >
+                    <Avatar className="h-8 w-8 border-2 border-green-200 dark:border-green-800">
+                      <AvatarFallback className="bg-green-600 text-white font-bold text-xs">
+                        {getInitials(user?.user_metadata?.full_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden lg:flex flex-col items-start text-xs">
+                      <span className="font-semibold text-gray-700 dark:text-gray-200 truncate max-w-[100px]">
+                        {user?.user_metadata?.full_name || 'Merchant'}
+                      </span>
+                      <span className="text-xs text-green-600 dark:text-green-400">
+                        Toko: {myShop.status_buka ? 'BUKA' : 'TUTUP'}
+                      </span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-gray-500" />
+                  </Button>
+                </DropdownMenuTrigger>
 
-              {/* Toggle Status - Desktop only */}
-              <div className="hidden sm:flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-1 rounded-lg border border-green-200 dark:border-green-800">
-                <Badge
-                  className={myShop.status_buka ? 'bg-green-500' : 'bg-red-500'}
-                >
-                  {myShop.status_buka ? 'BUKA' : 'TUTUP'}
-                </Badge>
-                <Switch
-                  checked={myShop.status_buka}
-                  onCheckedChange={toggleStoreStatus}
-                  className="data-[state=checked]:bg-green-600"
-                />
-              </div>
+                <DropdownMenuContent align="end" className="w-56 mt-2">
+                  <DropdownMenuLabel className="flex flex-col">
+                    <span className="font-semibold">
+                      {user?.user_metadata?.full_name}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
+                      {myShop.nama}
+                    </span>
+                  </DropdownMenuLabel>
 
-              {/* Icon Lihat Toko untuk Mobile */}
-              <Link
-                to={`/umkm/${myShop.slug}`}
-                target="_blank"
-                className="sm:hidden p-2 text-green-600 hover:bg-green-50 rounded-lg"
-                title="Lihat Toko"
-              >
-                <Eye className="w-4 h-4" />
-              </Link>
+                  <DropdownMenuSeparator />
 
-              {/* Toggle Switch untuk Mobile (simplified) */}
-              <button
-                onClick={toggleStoreStatus}
-                className="sm:hidden p-2 text-green-600 hover:bg-green-50 rounded-lg"
-                title="Buka/Tutup Toko"
-              >
-                {myShop.status_buka ? (
-                  <div className="relative">
-                    <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                  </div>
-                ) : (
-                  <div className="relative">
-                    <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                  </div>
-                )}
-              </button>
+                  {/* Lihat Toko */}
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link
+                      to={`/umkm/${myShop.slug}`}
+                      target="_blank"
+                      className="flex items-center w-full"
+                    >
+                      <Eye className="mr-2 h-4 w-4" />
+                      <span>Lihat Toko</span>
+                    </Link>
+                  </DropdownMenuItem>
 
-              {/* User Avatar */}
-              <Avatar className="h-8 w-8 border-2 border-green-200 dark:border-green-800">
-                <AvatarFallback className="bg-green-600 text-white text-xs font-bold">
-                  {getInitials(user?.user_metadata?.full_name)}
-                </AvatarFallback>
-              </Avatar>
+                  {/* Status Toko dengan Switch */}
+                  <DropdownMenuItem className="cursor-pointer">
+                    <div
+                      className="flex items-center justify-between w-full"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (onToggleStore) onToggleStore();
+                      }}
+                    >
+                      <div className="flex items-center">
+                        <Store className="mr-2 h-4 w-4" />
+                        <span>Status Toko</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          className={
+                            myShop.status_buka
+                              ? 'bg-green-500 hover:bg-green-600'
+                              : 'bg-red-500 hover:bg-red-600'
+                          }
+                        >
+                          {myShop.status_buka ? 'BUKA' : 'TUTUP'}
+                        </Badge>
+                        <Switch
+                          checked={myShop.status_buka}
+                          onCheckedChange={onToggleStore}
+                          className="data-[state=checked]:bg-green-600 scale-75"
+                        />
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Menu Management */}
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link
+                      to={`/menu/${myShop.slug}`}
+                      className="flex items-center w-full"
+                    >
+                      <ChefHat className="mr-2 h-4 w-4" />
+                      <span>Kelola Menu</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link to="/profile" className="flex items-center w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Edit Profil</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Logout */}
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // Implement logout logic here
+                      console.log('Logout merchant');
+                    }}
+                    className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/20"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Keluar</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -185,17 +238,6 @@ const DashboardPage = () => {
     todayOrders: 0,
     pendingOrders: 0,
   });
-
-  // eslint-disable-next-line no-unused-vars
-  const getInitials = (name) => {
-    if (!name) return 'M';
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join('')
-      .toUpperCase();
-  };
 
   // 1. Load Data Toko & Pesanan
   useEffect(() => {
@@ -281,14 +323,12 @@ const DashboardPage = () => {
 
       if (error) throw error;
 
-      // Update UI Lokal
       setOrders((prev) =>
         prev.map((o) =>
           o.id === orderId ? { ...o, order_status: newStatus } : o
         )
       );
 
-      // Update stats jika status berubah menjadi completed
       if (newStatus === 'completed') {
         const updatedOrder = orders.find((o) => o.id === orderId);
         if (updatedOrder && updatedOrder.payment_status === 'paid') {
@@ -333,7 +373,7 @@ const DashboardPage = () => {
     });
   };
 
-  // Warna status
+  // Warna status (disamakan dengan halaman lain)
   const getStatusColor = (status) => {
     switch (status) {
       case 'new':
@@ -412,10 +452,9 @@ const DashboardPage = () => {
       {/* --- HEADER DASHBOARD --- */}
       <MerchantHeader
         myShop={myShop}
-        stats={stats}
         user={user}
         loading={loading}
-        toggleStoreStatus={toggleStoreStatus}
+        onToggleStore={toggleStoreStatus}
       />
 
       {/* --- STATS CARDS --- */}
@@ -448,8 +487,8 @@ const DashboardPage = () => {
             <Card className="glass-card border border-green-200 dark:border-green-800">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                    <ShoppingBag className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl">
+                    <ShoppingBag className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -484,8 +523,8 @@ const DashboardPage = () => {
             <Card className="glass-card border border-green-200 dark:border-green-800">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
-                    <Package className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl">
+                    <Package className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -542,7 +581,7 @@ const DashboardPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <Card className="glass-card border-l-4 border-l-green-500 hover:shadow-lg transition-all duration-300 overflow-hidden">
+                    <Card className="glass-card border border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300">
                       <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 pb-4">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                           <div>
@@ -586,7 +625,6 @@ const DashboardPage = () => {
                       </CardHeader>
 
                       <CardContent className="pt-6 space-y-6">
-                        {/* Customer Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-3">
                             <div className="flex items-start gap-3">
@@ -626,7 +664,6 @@ const DashboardPage = () => {
                             )}
                           </div>
 
-                          {/* Order Items */}
                           <div className="space-y-3">
                             <div className="flex items-start gap-3">
                               <ShoppingBag className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5" />
@@ -671,7 +708,6 @@ const DashboardPage = () => {
                           </div>
                         </div>
 
-                        {/* Notes */}
                         {order.customer_notes && (
                           <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
                             <div className="flex items-start gap-2">
@@ -688,63 +724,39 @@ const DashboardPage = () => {
                           </div>
                         )}
 
-                        {/* Action Buttons */}
                         <div className="flex flex-wrap gap-3 justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
                           {order.order_status === 'new' && (
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
+                            <Button
+                              onClick={() =>
+                                updateStatus(order.id, 'processing')
+                              }
+                              className="bg-green-600 hover:bg-green-700 text-white"
                             >
-                              <Button
-                                onClick={() =>
-                                  updateStatus(order.id, 'processing')
-                                }
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
-                              >
-                                <ChefHat className="w-4 h-4 mr-2" />
-                                Proses Pesanan
-                              </Button>
-                            </motion.div>
+                              <ChefHat className="w-4 h-4 mr-2" />
+                              Proses Pesanan
+                            </Button>
                           )}
                           {order.order_status === 'processing' && (
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
+                            <Button
+                              onClick={() => updateStatus(order.id, 'ready')}
+                              className="bg-green-600 hover:bg-green-700 text-white"
                             >
-                              <Button
-                                onClick={() => updateStatus(order.id, 'ready')}
-                                className="bg-green-600 hover:bg-green-700 text-white"
-                              >
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Siap Diambil/Diantar
-                              </Button>
-                            </motion.div>
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              Siap Diambil/Diantar
+                            </Button>
                           )}
                           {order.order_status === 'ready' && (
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
+                            <Button
+                              onClick={() =>
+                                updateStatus(order.id, 'completed')
+                              }
+                              variant="outline"
+                              className="border-green-500 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
                             >
-                              <Button
-                                onClick={() =>
-                                  updateStatus(order.id, 'completed')
-                                }
-                                variant="outline"
-                                className="border-green-500 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
-                              >
-                                <CheckCircle2 className="w-4 h-4 mr-2" />
-                                Selesaikan Pesanan
-                              </Button>
-                            </motion.div>
+                              <CheckCircle2 className="w-4 h-4 mr-2" />
+                              Selesaikan Pesanan
+                            </Button>
                           )}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            Detail
-                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -773,7 +785,7 @@ const DashboardPage = () => {
                   <Button
                     asChild
                     variant="outline"
-                    className="h-auto py-4 flex-col items-center justify-center gap-2 border-green-200 text-stone-600 hover:bg-green-50 hover:text-green-700 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 transition-colors"
+                    className="h-auto py-4 flex-col items-center justify-center gap-2 border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
                   >
                     <Link to={`/umkm/${myShop.slug}`} className="text-center">
                       <Eye className="w-6 h-6 mb-2" />
@@ -786,7 +798,7 @@ const DashboardPage = () => {
                   <Button
                     asChild
                     variant="outline"
-                    className="h-auto py-4 flex-col items-center justify-center gap-2 border-green-200 text-stone-600 hover:bg-green-50 hover:text-green-700 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 transition-colors"
+                    className="h-auto py-4 flex-col items-center justify-center gap-2 border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
                   >
                     <Link to={`/menu/${myShop.slug}`} className="text-center">
                       <ChefHat className="w-6 h-6 mb-2" />
@@ -799,7 +811,7 @@ const DashboardPage = () => {
                   <Button
                     asChild
                     variant="outline"
-                    className="h-auto py-4 flex-col items-center justify-center gap-2 border-green-200 text-stone-600 hover:bg-green-50 hover:text-green-700 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 transition-colors"
+                    className="h-auto py-4 flex-col items-center justify-center gap-2 border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
                   >
                     <Link to="/profile" className="text-center">
                       <Store className="w-6 h-6 mb-2" />
