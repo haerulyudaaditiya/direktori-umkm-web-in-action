@@ -133,20 +133,20 @@ const CheckoutPage = () => {
         }
         return '';
 
-      case 'phone':
+      case 'phone': {
         if (!value.trim()) {
           return 'Nomor WhatsApp wajib diisi';
-        } else {
-          const cleanPhone = value.replace(/\D/g, '');
-          if (cleanPhone.length < 10) {
-            return 'Nomor minimal 10 digit';
-          } else if (cleanPhone.length > 15) {
-            return 'Nomor maksimal 15 digit';
-          } else if (!/^[0-9+-\s()]+$/.test(value)) {
-            return 'Format nomor tidak valid';
-          }
+        }
+
+        const cleanPhone = value.replace(/\D/g, '');
+
+        if (cleanPhone.length < 10) {
+          return 'Nomor minimal 10 digit';
+        } else if (cleanPhone.length > 15) {
+          return 'Nomor maksimal 15 digit';
         }
         return '';
+      }
 
       case 'address':
         if (deliveryOption === 'delivery') {
@@ -450,15 +450,11 @@ const CheckoutPage = () => {
                         id="phone"
                         value={formData.phone}
                         onChange={(e) => {
-                          // Auto-format: hanya allow angka dan simbol telepon
-                          const value = e.target.value.replace(
-                            /[^\d+-\s()]/g,
-                            ''
-                          );
+                          const value = e.target.value.replace(/[^\d]/g, '');
                           handleFieldChange('phone', value);
                         }}
                         onBlur={() => handleFieldBlur('phone')}
-                        placeholder="Contoh: 081234567890 atau +6281234567890"
+                        placeholder="Contoh: 0812..."
                         className={`pr-10 transition-all duration-200 ${
                           errors.phone
                             ? 'border-red-500 focus-visible:ring-red-500'
@@ -497,8 +493,8 @@ const CheckoutPage = () => {
               <Card className="glass-card border border-green-200 dark:border-green-800">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-green-600" />Metode
-                    Pengiriman
+                    <MapPin className="w-5 h-5 text-green-600" />
+                    Metode Pengiriman
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">

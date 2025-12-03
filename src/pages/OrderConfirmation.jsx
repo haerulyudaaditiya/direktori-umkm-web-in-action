@@ -259,7 +259,7 @@ const OrderConfirmation = () => {
     if (!order) return;
 
     const orderNumber = order.order_number || generateOrderNumber(order.id);
-    const phoneNumber = '6281234567890'; // Nanti bisa ambil dari relation umkm
+    const phoneNumber = '081234567890'; // Nanti bisa ambil dari relation umkm
 
     const message = `Halo, saya ingin bertanya tentang pesanan #${orderNumber} atas nama ${
       order.customer_name || order.customer?.name
@@ -751,7 +751,7 @@ const OrderConfirmation = () => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 p-2 rounded-lg">
                       <Phone className="w-4 h-4 text-green-600 dark:text-green-400" />
-                      <span>+62 812-3456-7890</span>
+                      <span>0812-3456-7890</span>
                     </div>
                     <div className="flex items-center gap-2 p-2 rounded-lg">
                       <MessageCircle className="w-4 h-4 text-green-600 dark:text-green-400" />

@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
     session,
     user,
     profile,
-    role: profile?.role || 'guest',
+    role: profile?.role || 'customer',
     loading,
     error,
     signIn: (data) => supabase.auth.signInWithPassword(data),

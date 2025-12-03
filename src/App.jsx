@@ -13,6 +13,8 @@ import OrderHistoryPage from './pages/OrderHistoryPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ProfilePage from './pages/ProfilePage';
 import FavoritesPage from './pages/FavoritesPage';
+import MitraRegistrationPage from './pages/MitraRegistrationPage';
+import DashboardPage from './pages/merchant/DashboardPage';
 
 function App() {
   return (
@@ -64,10 +66,26 @@ function App() {
           }
         />
         <Route
+          path="merchant-registration"
+          element={
+            <ProtectedRoute>
+              <MitraRegistrationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="order-confirmation/:orderId"
           element={<OrderConfirmation />}
         />
       </Route>
+      <Route
+        path="merchant/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

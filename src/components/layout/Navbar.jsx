@@ -36,7 +36,7 @@ import ReactDOM from 'react-dom';
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const [logoutConfirm, setLogoutConfirm] = useState(false);
 
   const navItems = [
@@ -127,6 +127,24 @@ function Navbar() {
                 <DropdownMenuContent align="end" className="w-56 mt-2">
                   <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {profile?.role === 'merchant' && (
+                    <>
+                      <DropdownMenuItem
+                        asChild
+                        className="cursor-pointer bg-green-50/60 dark:bg-green-900/10 focus:bg-green-100 dark:focus:bg-green-900/30 text-green-700 dark:text-green-400 focus:text-green-800 dark:focus:text-green-300 font-semibold mb-1"
+                      >
+                        <Link
+                          to="/merchant/dashboard"
+                          className="flex items-center w-full"
+                        >
+                          <Store className="mr-2 h-4 w-4" />
+                          <span>Dashboard Toko</span>
+                        </Link>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuSeparator className="bg-green-100 dark:bg-green-800/50" />
+                    </>
+                  )}
                   <DropdownMenuItem asChild className="cursor-pointer">
                     <Link to="/profile" className="flex items-center w-full">
                       <User className="mr-2 h-4 w-4" />
