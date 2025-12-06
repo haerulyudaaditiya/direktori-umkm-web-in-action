@@ -16,6 +16,7 @@ import FavoritesPage from './pages/FavoritesPage';
 import MitraRegistrationPage from './pages/MitraRegistrationPage';
 import DashboardPage from './pages/merchant/DashboardPage';
 import ProductPage from './pages/merchant/ProductPage';
+import EditStorePage from './pages/merchant/EditStorePage';
 
 function App() {
   return (
@@ -92,6 +93,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ProductPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="merchant/settings"
+        element={
+          <ProtectedRoute>
+            <EditStorePage />
           </ProtectedRoute>
         }
       />

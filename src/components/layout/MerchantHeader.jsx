@@ -189,7 +189,10 @@ const MerchantHeader = React.memo(
                     </DropdownMenuItem>
 
                     <DropdownMenuItem asChild className="cursor-pointer">
-                      <Link to="/profile" className="flex items-center w-full">
+                      <Link
+                        to="/merchant/settings"
+                        className="flex items-center w-full"
+                      >
                         <User className="mr-2 h-4 w-4" />
                         <span>Edit Profil</span>
                       </Link>
