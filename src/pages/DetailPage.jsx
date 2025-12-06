@@ -198,7 +198,7 @@ function DetailPage() {
                 <Wheat className="h-10 w-10 text-green-600 dark:text-green-400" />
               </motion.div>
               <CardTitle className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-                UMKM Tidak Ditemukan 😢
+                UMKM Tidak Ditemukan
               </CardTitle>
               <CardDescription className="text-lg mb-8 text-gray-600 dark:text-gray-300">
                 Maaf, kami tidak menemukan data untuk "
