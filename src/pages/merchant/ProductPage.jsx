@@ -21,6 +21,7 @@ import {
   AlertCircle,
   CheckCircle,
   X,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +49,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import MerchantHeader from '@/components/layout/MerchantHeader';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 
 const ProductPage = () => {
   const { user } = useAuth();
@@ -466,6 +468,31 @@ const ProductPage = () => {
 
       <div className={loading ? 'pt-0' : 'pt-16'}>
         <div className="container mx-auto max-w-6xl px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-4 mb-8"
+          >
+            <Button
+              asChild
+              variant="outline"
+              size="icon"
+              className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-800 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-200 transition-colors"
+            >
+              <Link to="/merchant/dashboard">
+                <ArrowLeft className="w-4 h-4" />
+              </Link>
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Kelola Menu
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                Tambah, edit, atau hapus menu toko Anda
+              </p>
+            </div>
+          </motion.div>
+          
           {/* Stats Cards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
