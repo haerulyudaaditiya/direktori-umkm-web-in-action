@@ -19,6 +19,9 @@ import {
   Plus,
   Trash2,
   Eye,
+  Tag, 
+  Navigation, 
+  Map,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +46,20 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import MerchantHeader from '@/components/layout/MerchantHeader';
 import ReactDOM from 'react-dom';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Fix Leaflet icon
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl:
+    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl:
+    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 const EditStorePage = () => {
   const { user } = useAuth();
@@ -73,6 +90,27 @@ const EditStorePage = () => {
     setShowAlertModal(true);
   };
 
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [customTagInput, setCustomTagInput] = useState('');
+
+  // Predefined tags
+  const PREDEFINED_TAGS = [
+    'Halal',
+    'Vegetarian',
+    'Ramah Anak',
+    'Parkir Luas',
+    'Delivery',
+    'Takeaway',
+    'Wifi Gratis',
+    'AC',
+    'Tempat Duduk',
+    'Pembayaran Digital',
+    'Kartu Kredit/Debit',
+    'Buka 24 Jam',
+    'Tersedia Kursi Roda',
+    'Hewan Peliharaan Diizinkan',
+  ];
+
   // Form State
   const [formData, setFormData] = useState({
     nama: '',
@@ -84,6 +122,10 @@ const EditStorePage = () => {
     jam_buka: '08:00 - 21:00',
     rentang_harga: '$',
     foto: [],
+    lokasi_map: '', 
+    lat: null, 
+    lng: null, 
+    tags: [],
   });
 
   const [formTouched, setFormTouched] = useState({});
@@ -115,6 +157,9 @@ const EditStorePage = () => {
             jam_buka: data.jam_buka || '08:00 - 21:00',
             rentang_harga: data.rentang_harga || '$',
             foto: Array.isArray(data.foto) ? data.foto : [],
+            lat: data.lat || null,
+            lng: data.lng || null,
+            tags: data.tags || [],
           });
         }
       } catch (err) {
@@ -268,6 +313,171 @@ const EditStorePage = () => {
     }));
   };
 
+  const handleToggleTag = (tag) => {
+    setFormData((prev) => {
+      const newTags = prev.tags.includes(tag)
+        ? prev.tags.filter((t) => t !== tag)
+        : [...prev.tags, tag];
+
+      if (newTags.length > 10) {
+        showAlert('Maksimal 10 tags', 'error');
+        return prev;
+      }
+
+      return { ...prev, tags: newTags };
+    });
+  };
+
+  const handleAddCustomTag = () => {
+    const tag = customTagInput.trim();
+
+    if (!tag) {
+      showAlert('Tag tidak boleh kosong', 'error');
+      return;
+    }
+
+    if (formData.tags.includes(tag)) {
+      showAlert('Tag sudah ada', 'error');
+      return;
+    }
+
+    if (formData.tags.length >= 10) {
+      showAlert('Maksimal 10 tags', 'error');
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      tags: [...prev.tags, tag],
+    }));
+
+    setCustomTagInput('');
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
+    }));
+  };
+
+  // GPS Handlers
+  const handleGetCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      showAlert('Browser tidak mendukung geolocation', 'error');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setFormData((prev) => ({
+          ...prev,
+          lat: latitude,
+          lng: longitude,
+        }));
+        showAlert('Lokasi berhasil diperoleh', 'success');
+      },
+      (error) => {
+        showAlert('Gagal mendapatkan lokasi: ' + error.message, 'error');
+      }
+    );
+  };
+
+  const handleMapPositionChange = (lat, lng) => {
+    setFormData((prev) => ({
+      ...prev,
+      lat: lat,
+      lng: lng,
+    }));
+  };
+
+  // Map Picker Modal Component
+  const MapPickerModal = ({ isOpen, onClose, position, onPositionChange }) => {
+    const [tempPosition, setTempPosition] = useState(
+      position || [-6.2088, 106.8456]
+    );
+
+    function LocationMarker() {
+      useMapEvents({
+        click(e) {
+          setTempPosition([e.latlng.lat, e.latlng.lng]);
+        },
+      });
+
+      return tempPosition === null ? null : (
+        <Marker
+          position={tempPosition}
+          draggable={true}
+          eventHandlers={{
+            dragend: (e) => {
+              const marker = e.target;
+              const position = marker.getLatLng();
+              setTempPosition([position.lat, position.lng]);
+            },
+          }}
+        />
+      );
+    }
+
+    if (!isOpen) return null;
+
+    return ReactDOM.createPortal(
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[10001] p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              Pilih Lokasi di Peta
+            </h3>
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
+
+          <div className="flex-1 min-h-[400px] rounded-lg overflow-hidden border border-green-200 dark:border-green-800">
+            <MapContainer
+              center={tempPosition}
+              zoom={13}
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <LocationMarker />
+            </MapContainer>
+          </div>
+
+          <div className="mt-4 flex justify-between items-center">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Latitude: {tempPosition[0]?.toFixed(6)} | Longitude:{' '}
+              {tempPosition[1]?.toFixed(6)}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={onClose}
+                className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50"
+              >
+                Batal
+              </Button>
+              <Button
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => {
+                  onPositionChange(tempPosition[0], tempPosition[1]);
+                  onClose();
+                }}
+              >
+                Konfirmasi Lokasi
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
   // 3. Handle Save Text Data
   const handleSave = async (e) => {
     e.preventDefault();
@@ -308,6 +518,9 @@ const EditStorePage = () => {
         jam_buka: formData.jam_buka,
         rentang_harga: formData.rentang_harga,
         foto: formData.foto,
+        lat: formData.lat,
+        lng: formData.lng,
+        tags: formData.tags,
       };
 
       const { error } = await supabase
@@ -800,11 +1013,274 @@ const EditStorePage = () => {
             </Card>
           </motion.div>
 
-          {/* Action Buttons */}
+          {/* Section 4: Tags */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
+          >
+            <Card className="glass-card border border-green-200 dark:border-green-800">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <Tag className="w-5 h-5 text-green-600" />
+                  Tags / Kategori Tambahan
+                </CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-300">
+                  Pilih atau tambah tags yang menggambarkan usaha Anda (maksimal
+                  10)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Predefined Tags Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {PREDEFINED_TAGS.map((tag) => (
+                    <Button
+                      key={tag}
+                      type="button"
+                      variant={
+                        formData.tags.includes(tag) ? 'default' : 'outline'
+                      }
+                      className={`h-9 text-sm transition-all duration-200 ${
+                        formData.tags.includes(tag)
+                          ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-600/20 border-transparent'
+                          : 'border-green-200 text-stone-600 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 dark:hover:text-green-400'
+                      }`}
+                      onClick={() => handleToggleTag(tag)}
+                    >
+                      {tag}
+                    </Button>
+                  ))}
+                </div>
+
+                {/* Custom Tags Input */}
+                {/* Custom Tags Input */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Tambah tag custom:
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={customTagInput}
+                      onChange={(e) => setCustomTagInput(e.target.value)}
+                      placeholder="Contoh: 'Ramen', 'Kekinian', 'Coffee Shop'"
+                      className="flex-1 border-green-200 dark:border-green-800 focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
+                      maxLength={20}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddCustomTag();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleAddCustomTag}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                      disabled={!customTagInput.trim()}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Selected Tags Display */}
+                {formData.tags.length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Tags terpilih ({formData.tags.length}/10):
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.tags.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="
+                            bg-green-100 text-green-800 border border-green-200
+                            dark:bg-green-900/30 dark:text-green-300 dark:border-green-700
+                            hover:bg-green-200 dark:hover:bg-green-900/50
+                            px-3 py-1 rounded-full flex items-center gap-1 transition-colors duration-200 cursor-default
+                          "
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveTag(tag)}
+                            className="ml-1 text-green-600 hover:text-red-600 dark:text-green-400 dark:hover:text-red-400 transition-colors"
+                            title="Hapus tag"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Section 5: Lokasi GPS */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Card className="glass-card border border-green-200 dark:border-green-800">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-green-600" />
+                  Lokasi GPS (Opsional)
+                </CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-300">
+                  Tambahkan koordinat untuk menampilkan peta di halaman toko
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Action Buttons (Updated: Gaya 'Tinted' & 'Ghost' agar lebih Premium) */}
+                <div className="flex flex-wrap gap-3">
+                  {/* Tombol Hijau (Lokasi Saat Ini) */}
+                  <Button
+                    type="button"
+                    onClick={handleGetCurrentLocation}
+                    className="bg-green-100 text-green-700 hover:bg-green-200 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800 dark:hover:bg-green-900/50 shadow-sm transition-all border"
+                  >
+                    <Navigation className="w-4 h-4 mr-2" />
+                    Gunakan Lokasi Saat Ini
+                  </Button>
+
+                  {/* Tombol Biru (Pilih Peta) */}
+                  <Button
+                    type="button"
+                    onClick={() => setShowMapModal(true)}
+                    className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 dark:hover:bg-blue-900/50 shadow-sm transition-all border"
+                  >
+                    <Map className="w-4 h-4 mr-2" />
+                    Pilih Lewat Peta
+                  </Button>
+
+                  {/* Tombol Merah (Hapus) - DIPERBAIKI: Pakai Background Merah Muda agar sejajar */}
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        lat: null,
+                        lng: null,
+                      }));
+                    }}
+                    // UPDATE: Style disamakan (bg-red-100, border-red-200)
+                    className="bg-red-100 text-red-700 hover:bg-red-200 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800 dark:hover:bg-red-900/50 shadow-sm transition-all border"
+                    disabled={formData.lat === null && formData.lng === null}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Hapus
+                  </Button>
+                </div>
+
+                {/* Koordinat Display */}
+                {formData.lat !== null && formData.lng !== null ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Input Latitude (Updated: Tambah Ikon MapPin di dalam) */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Latitude
+                        </label>
+                        <div className="relative group">
+                          <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
+                          <Input
+                            value={formData.lat}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value);
+                              if (!isNaN(value)) {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  lat: value,
+                                }));
+                              }
+                            }}
+                            type="number"
+                            step="0.000001"
+                            className="pl-10 h-11 border-green-200 dark:border-green-800 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                            placeholder="-6.208763"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Input Longitude (Updated: Tambah Ikon Map di dalam) */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Longitude
+                        </label>
+                        <div className="relative group">
+                          <Map className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
+                          <Input
+                            value={formData.lng}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value);
+                              if (!isNaN(value)) {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  lng: value,
+                                }));
+                              }
+                            }}
+                            type="number"
+                            step="0.000001"
+                            className="pl-10 h-11 border-green-200 dark:border-green-800 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                            placeholder="106.845599"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Preview Map (Updated: Tambah Shadow & Ring) */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Preview Lokasi
+                      </label>
+                      <div className="h-48 rounded-xl overflow-hidden border border-green-200 dark:border-green-800 shadow-inner ring-4 ring-green-50 dark:ring-green-900/10">
+                        <MapContainer
+                          center={[formData.lat, formData.lng]}
+                          zoom={15}
+                          style={{ height: '100%', width: '100%' }}
+                          dragging={false}
+                          touchZoom={false}
+                          scrollWheelZoom={false}
+                          doubleClickZoom={false}
+                        >
+                          <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          />
+                          <Marker position={[formData.lat, formData.lng]} />
+                        </MapContainer>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Empty State (Updated: Sedikit lebih rapi)
+                  <div className="text-center py-10 border-2 border-dashed border-green-200 dark:border-green-800 rounded-xl bg-green-50/30 dark:bg-green-900/10">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <MapPin className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <p className="text-gray-900 dark:text-white font-medium">
+                      Belum ada koordinat yang ditambahkan
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Klik tombol di atas untuk menambahkan lokasi
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Action Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
             className="flex justify-end gap-4 pt-4"
           >
             <Button
@@ -893,6 +1369,13 @@ const EditStorePage = () => {
           </AlertModalPortal>
         )}
       </AnimatePresence>
+
+      <MapPickerModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        position={formData.lat !== null ? [formData.lat, formData.lng] : null}
+        onPositionChange={handleMapPositionChange}
+      />
     </div>
   );
 };
