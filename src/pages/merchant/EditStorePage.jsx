@@ -19,8 +19,8 @@ import {
   Plus,
   Trash2,
   Eye,
-  Tag, 
-  Navigation, 
+  Tag,
+  Navigation,
   Map,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -49,6 +49,7 @@ import ReactDOM from 'react-dom';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useMap } from 'react-leaflet';
 
 // Fix Leaflet icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -122,9 +123,9 @@ const EditStorePage = () => {
     jam_buka: '08:00 - 21:00',
     rentang_harga: '$',
     foto: [],
-    lokasi_map: '', 
-    lat: null, 
-    lng: null, 
+    lokasi_map: '',
+    lat: null,
+    lng: null,
     tags: [],
   });
 
@@ -362,26 +363,156 @@ const EditStorePage = () => {
   };
 
   // GPS Handlers
-  const handleGetCurrentLocation = () => {
+  const handleGetCurrentLocation = async () => {
     if (!navigator.geolocation) {
-      showAlert('Browser tidak mendukung geolocation', 'error');
+      showAlert('Browser Anda tidak mendukung Geolocation', 'error');
       return;
     }
 
+    showAlert('Sedang mencari titik lokasi Anda...', 'info');
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    };
+
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
+      async (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+
+        console.log('Akurasi GPS:', accuracy, 'meter');
+
+        if (accuracy > 5000) {
+          showAlert(
+            `Akurasi GPS rendah (±${Math.round(
+              accuracy
+            )}m). Mencoba lokasi via alamat...`,
+            'warning'
+          );
+
+          try {
+            const location = await getApproximateLocation();
+            if (location) {
+              setFormData((prev) => ({
+                ...prev,
+                lat: location.lat,
+                lng: location.lng,
+              }));
+              showAlert(
+                `Lokasi ditetapkan di ${location.city}. Silakan sesuaikan di peta.`,
+                'success'
+              );
+              return;
+            }
+          } catch (error) {
+            console.log('Reverse geocode failed:', error);
+          }
+        }
+
         setFormData((prev) => ({
           ...prev,
-          lat: latitude,
-          lng: longitude,
+          lat: parseFloat(latitude.toFixed(6)),
+          lng: parseFloat(longitude.toFixed(6)),
         }));
-        showAlert('Lokasi berhasil diperoleh', 'success');
+
+        if (accuracy > 500) {
+          showAlert(
+            `Lokasi ditemukan (Akurasi: ±${Math.round(
+              accuracy
+            )}m). Silakan koreksi manual jika perlu.`,
+            'warning'
+          );
+        } else {
+          showAlert('Lokasi berhasil ditemukan!', 'success');
+        }
       },
-      (error) => {
-        showAlert('Gagal mendapatkan lokasi: ' + error.message, 'error');
-      }
+      async (error) => {
+        console.error('GPS Error:', error);
+
+        try {
+          showAlert(
+            'GPS tidak tersedia, mencoba lokasi via jaringan...',
+            'info'
+          );
+          const location = await getApproximateLocation();
+          if (location) {
+            setFormData((prev) => ({
+              ...prev,
+              lat: location.lat,
+              lng: location.lng,
+            }));
+            showAlert(
+              `Lokasi ditetapkan di ${location.city}. Silakan sesuaikan di peta.`,
+              'success'
+            );
+          } else {
+            throw new Error('Gagal mendapatkan lokasi');
+          }
+        } catch {
+          let msg = 'Gagal mendapatkan lokasi.';
+          if (error.code === 1) {
+            msg =
+              'Izin lokasi ditolak. Mohon izinkan browser mengakses lokasi, atau gunakan "Pilih Lewat Peta".';
+          } else if (error.code === 2) {
+            msg =
+              'Sinyal GPS tidak tersedia. Silakan gunakan fitur "Pilih Lewat Peta".';
+          } else if (error.code === 3) {
+            msg = 'Waktu permintaan lokasi habis.';
+          }
+          showAlert(msg, 'error');
+        }
+      },
+      options
     );
+  };
+
+  const getApproximateLocation = async () => {
+    try {
+      // Coba dapatkan lokasi dari IP-based service
+      const response = await fetch('https://ipapi.co/json/');
+      if (!response.ok) throw new Error('IP location failed');
+
+      const data = await response.json();
+      const city = data.city || 'Karawang';
+      const region = data.region || 'Jawa Barat';
+
+      // Gunakan OpenStreetMap Nominatim untuk geocode kota ke koordinat
+      const geocodeResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          city + ', ' + region + ', Indonesia'
+        )}&limit=1`
+      );
+
+      const geocodeData = await geocodeResponse.json();
+
+      if (geocodeData && geocodeData[0]) {
+        const { lat, lon } = geocodeData[0];
+        return {
+          lat: parseFloat(lat),
+          lng: parseFloat(lon),
+          city: city,
+          region: region,
+        };
+      }
+
+      // Fallback ke koordinat Karawang
+      return {
+        lat: -6.3016,
+        lng: 107.3019,
+        city: 'Karawang',
+        region: 'Jawa Barat',
+      };
+    } catch (error) {
+      console.error('Approximate location error:', error);
+      // Ultimate fallback ke Karawang
+      return {
+        lat: -6.3016,
+        lng: 107.3019,
+        city: 'Karawang',
+        region: 'Jawa Barat',
+      };
+    }
   };
 
   const handleMapPositionChange = (lat, lng) => {
@@ -392,84 +523,115 @@ const EditStorePage = () => {
     }));
   };
 
+  const MapFixer = ({ isOpen }) => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (isOpen && map) {
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 200);
+      }
+    }, [isOpen, map]);
+
+    return null;
+  };
+
   // Map Picker Modal Component
   const MapPickerModal = ({ isOpen, onClose, position, onPositionChange }) => {
-    const [tempPosition, setTempPosition] = useState(
-      position || [-6.2088, 106.8456]
-    );
+    // Default ke Karawang jika position null
+    const defaultCenter = [-6.3016, 107.3019];
+    const [tempPosition, setTempPosition] = useState(position || defaultCenter);
 
-    function LocationMarker() {
-      useMapEvents({
+    // Update tempPosition jika prop position berubah
+    useEffect(() => {
+      if (position) {
+        setTempPosition(position);
+      }
+    }, [position]);
+
+    const LocationMarker = () => {
+      const map = useMapEvents({
         click(e) {
           setTempPosition([e.latlng.lat, e.latlng.lng]);
+          map.flyTo(e.latlng, map.getZoom()); // Efek animasi geser
         },
       });
 
-      return tempPosition === null ? null : (
-        <Marker
-          position={tempPosition}
-          draggable={true}
-          eventHandlers={{
-            dragend: (e) => {
-              const marker = e.target;
-              const position = marker.getLatLng();
-              setTempPosition([position.lat, position.lng]);
-            },
-          }}
-        />
-      );
-    }
+      return tempPosition ? <Marker position={tempPosition} /> : null;
+    };
 
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[10001] p-4">
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-              Pilih Lokasi di Peta
-            </h3>
-            <Button variant="ghost" size="icon" onClick={onClose}>
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[99999] p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-2xl w-full max-w-4xl flex flex-col h-[80vh] border border-green-200 dark:border-green-800">
+          {/* Header Modal */}
+          <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-10">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-green-600" />
+                Pilih Lokasi Toko
+              </h3>
+              <p className="text-sm text-gray-500">
+                Klik pada peta untuk menandai lokasi
+              </p>
+            </div>
+            {/* UPDATE: Tombol X lebih rapi */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="text-stone-500 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 transition-colors"
+            >
               <X className="w-5 h-5" />
             </Button>
           </div>
 
-          <div className="flex-1 min-h-[400px] rounded-lg overflow-hidden border border-green-200 dark:border-green-800">
+          {/* Map Container */}
+          <div className="flex-1 relative bg-gray-100 w-full">
             <MapContainer
               center={tempPosition}
               zoom={13}
-              style={{ height: '100%', width: '100%' }}
+              style={{ height: '100%', width: '100%', position: 'absolute' }}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <LocationMarker />
+              <MapFixer isOpen={isOpen} />
             </MapContainer>
           </div>
 
-          <div className="mt-4 flex justify-between items-center">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Latitude: {tempPosition[0]?.toFixed(6)} | Longitude:{' '}
-              {tempPosition[1]?.toFixed(6)}
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/50"
-              >
-                Batal
-              </Button>
-              <Button
-                className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => {
-                  onPositionChange(tempPosition[0], tempPosition[1]);
-                  onClose();
-                }}
-              >
-                Konfirmasi Lokasi
-              </Button>
+          {/* Footer Info & Actions */}
+          <div className="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="text-sm bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 px-3 py-2 rounded-lg w-full md:w-auto border border-green-100 dark:border-green-800">
+                <span className="font-semibold">Koordinat Dipilih:</span>{' '}
+                {tempPosition[0].toFixed(6)}, {tempPosition[1].toFixed(6)}
+              </div>
+
+              <div className="flex gap-2 w-full md:w-auto">
+                <Button
+                  variant="outline"
+                  onClick={onClose}
+                  className="border-green-300 text-stone-600 hover:bg-green-50 hover:text-green-700 dark:border-green-800 dark:text-stone-300 dark:hover:bg-green-900/20 transition-colors flex-1 md:flex-none"
+                >
+                  Batal
+                </Button>
+
+                <Button
+                  className="bg-green-600 hover:bg-green-700 text-white flex-1 md:flex-none shadow-md shadow-green-600/20"
+                  onClick={() => {
+                    onPositionChange(tempPosition[0], tempPosition[1]);
+                    onClose();
+                  }}
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Simpan Lokasi
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -1177,6 +1339,17 @@ const EditStorePage = () => {
                   </Button>
                 </div>
 
+                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="flex items-start gap-1">
+                    <AlertCircle className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                    <span>
+                      <strong>Tips:</strong> Jika lokasi tidak akurat (misal:
+                      masih di Jakarta), gunakan "Pilih Lewat Peta" untuk
+                      pinpoint manual di Karawang.
+                    </span>
+                  </p>
+                </div>
+
                 {/* Koordinat Display */}
                 {formData.lat !== null && formData.lng !== null ? (
                   <div className="space-y-4">
@@ -1234,27 +1407,66 @@ const EditStorePage = () => {
                       </div>
                     </div>
 
-                    {/* Preview Map (Updated: Tambah Shadow & Ring) */}
+                    {/* Preview Map*/}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Preview Lokasi
-                      </label>
-                      <div className="h-48 rounded-xl overflow-hidden border border-green-200 dark:border-green-800 shadow-inner ring-4 ring-green-50 dark:ring-green-900/10">
+                      <div className="flex justify-between items-center">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Preview Lokasi
+                        </label>
+                        <Badge variant="outline" className="text-xs">
+                          Interaktif
+                        </Badge>
+                      </div>
+
+                      <div className="h-72 md:h-96 rounded-xl overflow-hidden border-2 border-green-200 dark:border-green-800 shadow-lg">
                         <MapContainer
                           center={[formData.lat, formData.lng]}
                           zoom={15}
                           style={{ height: '100%', width: '100%' }}
-                          dragging={false}
-                          touchZoom={false}
-                          scrollWheelZoom={false}
-                          doubleClickZoom={false}
+                          dragging={true}
+                          touchZoom={true}
+                          scrollWheelZoom={true}
+                          doubleClickZoom={true}
+                          zoomControl={true}
+                          whenCreated={(map) => {
+                            setTimeout(() => map.invalidateSize(), 0);
+                          }}
                         >
                           <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                           />
-                          <Marker position={[formData.lat, formData.lng]} />
+                          <Marker
+                            position={[formData.lat, formData.lng]}
+                            draggable={true}
+                            eventHandlers={{
+                              dragend: (e) => {
+                                const marker = e.target;
+                                const position = marker.getLatLng();
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  lat: position.lat,
+                                  lng: position.lng,
+                                }));
+                              },
+                            }}
+                          />
                         </MapContainer>
+                      </div>
+
+                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 gap-2">
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span>Drag untuk geser</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span>Scroll untuk zoom</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                          <span>Double click zoom in</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1276,24 +1488,27 @@ const EditStorePage = () => {
             </Card>
           </motion.div>
 
-          {/* Action Buttons */}
+          {/* Action Buttons - FIXED */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
             className="flex justify-end gap-4 pt-4"
           >
+            {/* Tombol Batal - TAMBAHKAN h-11 */}
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate('/merchant/dashboard')}
-              className="border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300"
+              className="h-11 px-6 border-green-300 text-green-700 hover:bg-green-50 hover:text-green-700 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/50 dark:hover:text-green-300 transition-colors"
             >
               Batal
             </Button>
+
+            {/* Tombol Simpan - BUANG min-w, TAMBAH px-6 */}
             <Button
               type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white min-w-[150px] h-11"
+              className="h-11 px-6 bg-green-600 hover:bg-green-700 text-white shadow-md shadow-green-600/20 transition-all active:scale-[0.98]"
               disabled={saving}
             >
               {saving ? (
