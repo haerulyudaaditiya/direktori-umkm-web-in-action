@@ -111,7 +111,7 @@ function DetailPage() {
         .select('id')
         .eq('user_id', user.id)
         .eq('umkm_id', umkm.id)
-        .single();
+        .maybeSingle(); 
 
       setIsFavorited(!!data);
     };

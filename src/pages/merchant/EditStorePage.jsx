@@ -671,6 +671,15 @@ const EditStorePage = () => {
     }
 
     try {
+      let lokasi_map_value = formData.lokasi_map; 
+      if (formData.lat && formData.lng) {
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+        if (apiKey) {
+          lokasi_map_value = `<iframe src="https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${formData.lat},${formData.lng}&zoom=16" width="100%" height="100%" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+        } else {
+          lokasi_map_value = `<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1000!2d${formData.lng}!3d${formData.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1760000000000!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+        }
+      }
       const payload = {
         nama: formData.nama,
         kategori: formData.kategori,
@@ -683,6 +692,7 @@ const EditStorePage = () => {
         lat: formData.lat,
         lng: formData.lng,
         tags: formData.tags,
+        lokasi_map: lokasi_map_value,
       };
 
       const { error } = await supabase
