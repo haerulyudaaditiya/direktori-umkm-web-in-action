@@ -605,7 +605,12 @@ function DetailPage() {
                   >
                     <div
                       className="w-full h-full"
-                      dangerouslySetInnerHTML={{ __html: umkm.lokasi_map }}
+                      dangerouslySetInnerHTML={{
+                        __html: umkm.lokasi_map.replace(
+                          'allowfullscreen',
+                          'allowfullscreen loading="lazy"'
+                        ),
+                      }}
                     />
                   </motion.div>
                 ) : umkm.lat && umkm.lng ? (
